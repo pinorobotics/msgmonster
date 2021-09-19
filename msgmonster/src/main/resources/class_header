@@ -1,0 +1,9 @@
+/**
+ * Definition for ${msgName}
+ *
+ * ${msgComment}
+ */
+@MessageMetadata(
+    type = ${className}.NAME,
+    md5sum = "${md5sum}")
+

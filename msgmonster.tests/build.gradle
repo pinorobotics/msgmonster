@@ -1,0 +1,43 @@
+// Requires gradle 5.4
+// gradle clean test
+
+plugins {
+    id 'java'
+}
+
+apply plugin : 'eclipse'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    testImplementation project(':msgmonster')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
+    testImplementation('org.junit.jupiter:junit-jupiter-params:5.4.2')
+    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.4.2')
+}
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+String testDir = "$buildDir/${projectName}"
+String testSrcDir = "$projectDir/src/test"
+
+// Gradle has no UnZip task so we reuse Copy for that
+task myTestCopy(type: Copy) {
+    mkdir file(testDir)
+    from zipTree("${project.rootDir}/${projectName}/release/${releaseFileName}")
+    into "$buildDir"
+}
+
+java {
+    modularity.inferModulePath = true
+}
+
+test {
+    useJUnitPlatform()
+}
+
+test.dependsOn myTestCopy

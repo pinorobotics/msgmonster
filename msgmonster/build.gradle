@@ -1,0 +1,66 @@
+// Requires gradle 6.5
+// gradle clean build
+
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+}
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+jar { 
+    manifest { 
+        attributes 'Implementation-Version': "${rootProject.version}",
+                   'Main-Class': 'id.msgmonster.app.MsgmonsterApp'
+    }
+}
+
+java {
+    modularity.inferModulePath = true
+}
+
+def packageDir = "$buildDir/package/${projectName}"
+
+ext.artifacts = fileTree(include: ['*'], dir: "$packageDir/libs")
+
+task createRelease(type: Zip) {
+    archiveFileName = "$releaseFileName"
+    destinationDirectory = file("$projectDir/release")
+    from file("$packageDir/..")
+}
+
+task copyLibs(type: Copy) {
+    from "$projectDir/libs"
+    from jar.archiveFile
+    into "${packageDir}/libs"
+}
+
+task copyReadme(type: Copy) {
+    from("${project.rootDir}/README.md")
+    into("$projectDir/src/main/resources")
+}
+
+task createPackage(type: Copy, dependsOn: copyLibs) {
+    from "${project.rootDir}/README.md"
+    from "${project.rootDir}/LICENSE-2.0.txt"
+    from "$projectDir/src/main/msgmonster"
+    into packageDir
+}
+
+task cleanRelease(type: Delete) {
+    delete "$packageDir"
+    delete "$projectDir/release"
+}
+
+compileJava.dependsOn copyReadme
+createRelease.dependsOn createPackage, javadoc
+assemble.dependsOn createRelease
+clean.dependsOn cleanRelease

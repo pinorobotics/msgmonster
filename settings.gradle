@@ -1,0 +1,2 @@
+include 'msgmonster'
+include 'msgmonster.tests'

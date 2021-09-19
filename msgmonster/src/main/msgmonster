@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#
+# Copyright 2021 msgmonster project
+# 
+# Website: https://github.com/pinorobotics
+#
+# Authors:
+# - aeon_flux <aeon_flux@eclipso.ch>
+#
+
+#set -x
+
+# User can make a symbolic link to the file
+# In that case RUN_PATH should be resolved and
+# point to the original file, otherwise we would
+# not be able to find all libs and jars it
+# depends on
+RUN_PATH=$(readlink "$0")
+if [ $? -ne 0 ]; then
+   RUN_PATH="$0"
+fi
+RUN_PATH=$(dirname "$RUN_PATH")
+
+# When started under cygwin or MSYS we need to 
+# process classpath in the way that Java on Windows
+# expects it
+CP_SEP=":"
+if [[ "$OS" =~ Windows ]]; then
+    RUN_PATH=$(cygpath -d "$RUN_PATH")
+    CP_SEP=";"
+fi
+
+java -cp "${RUN_PATH}/libs/*" pinorobotics.msgmonster.app.MsgmonsterApp "$@"

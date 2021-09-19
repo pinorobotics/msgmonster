@@ -1,0 +1,9 @@
+allprojects {
+    repositories {
+        jcenter() 
+    }
+}
+
+ext {
+    releaseFileName = "${projectName}-v${version}.zip"
+}
