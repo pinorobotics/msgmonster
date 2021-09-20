@@ -21,6 +21,37 @@
  */
 package id.jrosclient.tests.integration;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import id.xfunction.AssertRunCommand;
+
 public class MsgmonsterAppTests {
+
+    private static final String COMMAND_PATH = Paths.get("")
+            .toAbsolutePath()
+            .resolve("build/msgmonster/msgmonster")
+            .toString();
+    private static Path inputFolder;
+    private static Path outputFolder;
+
+    @BeforeAll
+    public static void setup() throws IOException {
+        inputFolder = Paths.get("").resolve("samples/visualization_msgs");
+        outputFolder = Files.createTempDirectory("msgmonster");
+    }
+    
+    @Test
+    public void test_happy() throws Exception {
+        new AssertRunCommand(COMMAND_PATH, inputFolder.toAbsolutePath().toString(), outputFolder.toString())
+                .withReturnCode(0)
+                .withOutputConsumer(System.out::println)
+                .run();
+    }
 
 }

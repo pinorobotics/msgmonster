@@ -2,5 +2,5 @@
  * ${fieldComment}
  */
 @Streamed
-public ${fieldType} ${fieldName} = new ${fieldType}Message();
+public ${fieldType} ${fieldName} = new ${fieldType}();
 

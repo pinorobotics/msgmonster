@@ -29,15 +29,22 @@ public class Field {
             "float64", "double",
             "float32", "float",
             "uint32", "int",
-            "uint8", "byte");
+            "uint8", "byte",
+            "bool", "boolean");
     private static final Map<String, String> BASIC_TYPE_MAP = Map.of(
             "time", "Time",
             "duration", "Duration");
+    private static final Map<String, String> STDMSG_TYPE_MAP = Map.of(
+            "Header", "HeaderMessage",
+            "string", "StringMessage",
+            "int32", "Int32Message");
     private String name, type, comment;
+    private String value;
 
-    public Field(String name, String type, String comment) {
+    public Field(String name, String type, String value, String comment) {
         this.name = name;
         this.type = type;
+        this.value = value;
         this.comment = comment;
     }
 
@@ -53,10 +60,14 @@ public class Field {
         return comment;
     }
     
+    public String getValue() {
+        return value;
+    }
+    
     @Override
     public String toString() {
-        return String.format("%s <%s> %s\n", name, type,
-                comment);
+        return String.format("%s <%s> [%s] {%s}\n", name, type,
+                value, comment);
     }
 
     public boolean hasArrayType() {
@@ -72,12 +83,21 @@ public class Field {
     }
 
     public String getJavaType() {
+        if (hasArrayType()) {
+            return getJavaType(type.replaceAll("(.*)\\[\\d*\\]", "$1"));
+        }
+        return getJavaType(type);
+    }
+    
+    private String getJavaType(String type) {
         if (hasBasicType()) {
             return BASIC_TYPE_MAP.get(type);
         } else if (hasPrimitiveType()) {
             return PRIMITIVES_TYPE_MAP.get(type);
         } else if (hasForeignType()) {
             return type.replaceAll(".*/(.*)", "$1");
+        } else if (hasStdMsgType()) {
+            return STDMSG_TYPE_MAP.get(type);
         }
         return type;
     }
@@ -90,9 +110,22 @@ public class Field {
     }
 
     public String getJavaFullType() {
+        if (hasArrayType()) {
+            return getJavaFullType(type.replaceAll("(.*)\\[\\d*\\]", "$1"));
+        }
+        return getJavaFullType(type);
+    }
+
+    private String getJavaFullType(String type) {
         if (hasBasicType())
-            return "id.jrosmessages.primitives" + getJavaType();
+            return "id.jrosmessages.primitives." + getJavaType();
+        if (hasStdMsgType())
+            return "id.jrosmessages.std_msgs." + getJavaType();
         if (hasPrimitiveType()) return getJavaType();
-        return "id.jrosmessages." + type.replace("/", ".");
+        return "id.jrosmessages." + type.replace("/", ".") + "Message";
+    }
+    
+    public boolean hasStdMsgType() {
+        return STDMSG_TYPE_MAP.containsKey(type);
     }
 }

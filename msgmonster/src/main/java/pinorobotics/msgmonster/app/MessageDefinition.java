@@ -33,8 +33,8 @@ public class MessageDefinition {
         this.comment = comment;
     }
 
-    public void addField(String type, String name, String comment) {
-        fields.add(new Field(name, type, comment));
+    public void addField(String type, String name, String value, String comment) {
+        fields.add(new Field(name, type, value, comment));
     }
     
     public String getComment() {

@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -43,6 +44,7 @@ import id.xfunction.text.Substitutor;
 
 public class MsgmonsterApp {
 
+    private static final String MESSAGES_SUBFOLDER = "msg";
     private static final ResourceUtils resourceUtils = new ResourceUtils();
     private CommandLineInterface cli;
     private Path outputFolder;
@@ -64,11 +66,18 @@ public class MsgmonsterApp {
             return;
         }
         outputFolder = Paths.get(args[1]);
-        Files.walk(Paths.get(args[0]), 1)
+        Path inputFolder = Paths.get(args[0]);
+        verifyInputFolder(inputFolder);
+        Files.walk(inputFolder.resolve(MESSAGES_SUBFOLDER), 1)
             .filter(p -> !p.toFile().isDirectory())
             .filter(p -> p.getFileName().toString().endsWith(".msg"))
             .limit(1)
             .forEach(Unchecked.wrapAccept(this::generateJavaClass));
+    }
+
+    private void verifyInputFolder(Path inputFolder) {
+        XAsserts.assertTrue(inputFolder.resolve(MESSAGES_SUBFOLDER).toFile().isDirectory(),
+                "There is no msg/ folder inside of input folder " + inputFolder);
     }
 
     public static void main(String[] args) throws Exception {
@@ -83,11 +92,11 @@ public class MsgmonsterApp {
         substitution.clear();
         cli.print("Processing file " + msgFile);
         var definition = readMessageDefinition(msgFile);
+        substitution.put("${msgComment}", definition.getComment());
         System.out.println(definition);
         PicoWriter topWriter = new PicoWriter();
         generateHeader(topWriter);
-        var packagePath = msgFile.subpath(msgFile.getNameCount() - 2, msgFile.getNameCount());
-        substitution.put("${msgName}", packagePath.toString());
+        substitution.put("${msgName}", readMessageName(msgFile));
         topWriter.writeln(String.format("package id.jrosmessages.%s;", msgFile.getParent().getFileName()));
         topWriter.writeln();
         generateImports(topWriter, definition);
@@ -103,6 +112,10 @@ public class MsgmonsterApp {
         var classOutput = topWriter.toString();
         classOutput = substitutor.substitute(classOutput, substitution);
         System.out.println(classOutput);
+    }
+
+    private String readMessageName(Path msgFile) {
+        return msgFile.getParent().getParent().getFileName() + "/" + msgFile.getFileName();
     }
 
     private MessageDefinition readMessageDefinition(Path msgFile) throws IOException {
@@ -125,8 +138,10 @@ public class MsgmonsterApp {
         var msgComment = "";
         if (pos < 0) pos = 0;
         if (pos < fieldLineNums.get(0)) {
-            // looks like there are comments on the top of the file which does
-            // not belong to the field so we use them as message definition comments
+            // looks like there are comments on the top of the file which are
+            // separated from the rest of text with empty line
+            // We decide that they does not belong to the field so we use them
+            // as message definition comments
             msgComment = lines.subList(0, pos).stream()
                 .collect(Collectors.joining("\n"));
         }
@@ -142,8 +157,7 @@ public class MsgmonsterApp {
                 pos = fieldLineNums.get(0);
             }
         }
-        msgComment = msgComment.replaceAll("^#\\s", "");
-        substitution.put("${msgComment}", msgComment);
+        msgComment = cleanComment(msgComment);
         var curFieldNum = 0;
         var comment = new StringBuilder();
         var def = new MessageDefinition(msgComment);
@@ -154,11 +168,23 @@ public class MsgmonsterApp {
                 comment.append(line);
                 continue;
             }
-            var scanner = new Scanner(line);
-            def.addField(scanner.next(), scanner.next(), comment.toString());
+            curFieldNum++;
+            var buf = line.split("#");
+            if (buf.length == 2) {
+                comment.append(buf[1].trim());
+            }
+            System.out.println(Arrays.toString(buf));
+            var scanner = new Scanner(buf[0].trim());
+            scanner.useDelimiter("(\\s+|=)");
+            def.addField(scanner.next(), scanner.next(), scanner.hasNext()? scanner.next(): "",
+                    cleanComment(comment.toString()));
             comment.setLength(0);
         }
         return def;
+    }
+
+    private String cleanComment(String comment) {
+        return comment.replaceAll("^#\\s*", "").trim();
     }
 
     private void generateClassFields(PicoWriter writer, MessageDefinition definition) {
@@ -211,15 +237,21 @@ public class MsgmonsterApp {
 
     private void generateImports(PicoWriter writer, MessageDefinition definition) {
         writer.write(resourceUtils.readResource("imports"));
+        var imports = new ArrayList<String>();
         for (var field: definition.getFields()) {
             if (field.hasPrimitiveType()) continue;
-            else if (field.hasBasicType() || field.hasForeignType()) {
-                writer.writeln(String.format(
+            else if (field.hasBasicType() || field.hasForeignType() || field.hasStdMsgType()) {
+                imports.add(String.format(
                         "import %s;", field.getJavaFullType()));
             } else {
                 throw new XRE("Type %s is unknown", field.getType());
             }
         }
+        imports.stream()
+            .sorted()
+            .distinct()
+            .forEach(writer::writeln);
+        writer.writeln();
     }
 
     private String asPackageName(Path path) {
