@@ -1,3 +1,6 @@
+// Requires gradle 7.2
+// gradle clean build
+
 allprojects {
     repositories {
         jcenter() 

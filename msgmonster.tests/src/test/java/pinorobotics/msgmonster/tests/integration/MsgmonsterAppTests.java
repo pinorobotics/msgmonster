@@ -19,7 +19,7 @@
  * Authors:
  * - aeon_flux <aeon_flux@eclipso.ch>
  */
-package id.jrosclient.tests.integration;
+package pinorobotics.msgmonster.tests.integration;
 
 import java.io.IOException;
 import java.nio.file.Files;
