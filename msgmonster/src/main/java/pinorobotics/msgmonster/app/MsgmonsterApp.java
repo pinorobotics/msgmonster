@@ -111,10 +111,41 @@ public class MsgmonsterApp {
         memvarWriter.writeln(resourceUtils.readResource("class_fields_header"));
         generateEnums(memvarWriter, definition);
         generateClassFields(memvarWriter, definition);
+        generateWithMethods(memvarWriter, definition);
         topWriter.writeln_l("}");
         var classOutput = topWriter.toString();
         classOutput = substitutor.substitute(classOutput, substitution);
         System.out.println(classOutput);
+    }
+
+    private void generateWithMethods(PicoWriter writer, MessageDefinition definition) {
+        for (var field: definition.getFields()) {
+            var body = "";
+            if (field.hasArrayType()) {
+                body = resourceUtils.readResource("with_method");
+            } else {
+                body = resourceUtils.readResource("with_method");
+            }
+            Map<String, String> substitution = new HashMap<>(this.substitution);
+            substitution.put("${fieldType}", field.getJavaType());
+            substitution.put("${fieldName}", field.getName());
+            substitution.put("${methodName}", "with" + camelCase("_" + field.getName()));
+            body = substitutor.substitute(body, substitution);
+            writeWithIdent(writer, body);
+        }
+    }
+
+    private String camelCase(String text) {
+        var words = text.split("_");
+        var buf = new StringBuilder();
+        for (var w: words) {
+            if (w.isEmpty()) continue;
+            buf.append(Character.toTitleCase(w.charAt(0)));
+            if (w.length() > 1) {
+                buf.append(w.substring(1));
+            }
+        }
+        return buf.toString();
     }
 
     private String calcMd5Sum(Path msgFile) {

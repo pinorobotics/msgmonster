@@ -1,0 +1,5 @@
+public ${className} ${methodName}(${fieldType} ${fieldName}) {
+    this.${fieldName} = ${fieldName};
+    return this;
+}
+
