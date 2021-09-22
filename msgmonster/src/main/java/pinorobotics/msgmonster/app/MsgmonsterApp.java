@@ -39,6 +39,7 @@ import id.xfunction.XAsserts;
 import id.xfunction.cli.ArgumentParsingException;
 import id.xfunction.cli.CommandLineInterface;
 import id.xfunction.function.Unchecked;
+import id.xfunction.lang.XExec;
 import id.xfunction.lang.XRE;
 import id.xfunction.text.Substitutor;
 
@@ -92,26 +93,66 @@ public class MsgmonsterApp {
         substitution.clear();
         cli.print("Processing file " + msgFile);
         var definition = readMessageDefinition(msgFile);
-        substitution.put("${msgComment}", definition.getComment());
         System.out.println(definition);
         PicoWriter topWriter = new PicoWriter();
         generateHeader(topWriter);
-        substitution.put("${msgName}", readMessageName(msgFile));
+        substitution.put("${msgName}", definition.getName());
+        substitution.put("${md5sum}", calcMd5Sum(msgFile));
         topWriter.writeln(String.format("package id.jrosmessages.%s;", msgFile.getParent().getFileName()));
         topWriter.writeln();
         generateImports(topWriter, definition);
-        generateClassHeader(topWriter);
+        generateClassHeader(topWriter, definition);
         String className = msgFile.getFileName().toString().replaceAll(".msg", "");
         topWriter.writeln_r(String.format("public class %s implements Message {",
                 className));
         substitution.put("${className}", className);
         var memvarWriter = topWriter.createDeferredWriter();
         memvarWriter.writeln();
+        memvarWriter.writeln(resourceUtils.readResource("class_fields_header"));
+        generateEnums(memvarWriter, definition);
         generateClassFields(memvarWriter, definition);
         topWriter.writeln_l("}");
         var classOutput = topWriter.toString();
         classOutput = substitutor.substitute(classOutput, substitution);
         System.out.println(classOutput);
+    }
+
+    private String calcMd5Sum(Path msgFile) {
+        var proc = new XExec("md5sum", msgFile.toAbsolutePath().toString())
+                .run();
+        if (proc.await() != 0) throw new XRE("md5sum calc error: " + proc.stderrAsString());
+        return proc.stdoutAsString().split("\\s+")[0];
+    }
+
+    private void generateEnums(PicoWriter writer, MessageDefinition definition) {
+        var body = resourceUtils.readResource("enum_field");
+        for (var enumDef: definition.getEnums()) {
+            writer.writeln_r("public enum UnknownType {");
+            var memvarWriter = writer.createDeferredWriter();
+            for (var field: enumDef.getFields()) {
+                writeField(memvarWriter, body, field);
+            }
+            writer.writeln_l("}");
+            writer.writeln();
+        }
+    }
+
+    private void generateJavadocComment(PicoWriter writer, String comment) {
+        writer.writeln("/**");
+        var scanner = new Scanner(comment);
+        while (scanner.hasNext()) {
+            writer.writeln(" * " + scanner.nextLine());
+        }
+        writer.writeln(" */");
+    }
+    
+    private void writeField(PicoWriter writer, String fieldTemplate, Field field) {
+        Map<String, String> substitution = new HashMap<>();
+        substitution.put("${fieldType}", field.getJavaType());
+        substitution.put("${fieldName}", field.getName());
+        fieldTemplate = substitutor.substitute(fieldTemplate, substitution);
+        if (!field.getComment().isEmpty()) generateJavadocComment(writer, field.getComment());
+        writeWithIdent(writer, fieldTemplate);
     }
 
     private String readMessageName(Path msgFile) {
@@ -130,7 +171,7 @@ public class MsgmonsterApp {
         for (int i = 0; i < lines.size(); i++) {
             var line = lines.get(i);
             if (line.isEmpty()) continue;
-            if (line.startsWith("#")) continue;
+            if (line.trim().startsWith("#")) continue;
             fieldLineNums.add(i);
         }
         XAsserts.assertTrue(!fieldLineNums.isEmpty(), "No fields in " + msgFile);
@@ -144,6 +185,8 @@ public class MsgmonsterApp {
             // as message definition comments
             msgComment = lines.subList(0, pos).stream()
                 .collect(Collectors.joining("\n"));
+        } else {
+            pos = 0;
         }
         if (fieldLineNums.size() > 1) {
             // if there are many fields and only one comment on the top
@@ -159,28 +202,53 @@ public class MsgmonsterApp {
         }
         msgComment = cleanComment(msgComment);
         var curFieldNum = 0;
-        var comment = new StringBuilder();
-        var def = new MessageDefinition(msgComment);
+        var commentBuf = new StringBuilder();
+        var def = new MessageDefinition(readMessageName(msgFile), msgComment);
+        EnumDefinition curEnum = null;
         for (int i = pos; i < lines.size(); i++) {
             String line = lines.get(i);
             if (line.isEmpty()) continue;
             if (i < fieldLineNums.get(curFieldNum)) {
-                comment.append(line);
+                addComment(commentBuf, line);
                 continue;
             }
             curFieldNum++;
             var buf = line.split("#");
             if (buf.length == 2) {
-                comment.append(buf[1].trim());
+                addComment(commentBuf, buf[1]);
             }
             System.out.println(Arrays.toString(buf));
             var scanner = new Scanner(buf[0].trim());
-            scanner.useDelimiter("(\\s+|=)");
-            def.addField(scanner.next(), scanner.next(), scanner.hasNext()? scanner.next(): "",
-                    cleanComment(comment.toString()));
-            comment.setLength(0);
+            scanner.useDelimiter("[\\s+=]+");
+//            while (scanner.hasNext())
+//                System.out.println(scanner.next());
+            var type = scanner.next();
+            var name = scanner.next();
+            var value = scanner.hasNext()? scanner.next(): "";
+            var comment = commentBuf.toString();
+            commentBuf.setLength(0);
+            try {
+                var id = Integer.parseInt(value);
+                if (id == 0) {
+                    if (curEnum != null)
+                        def.addEnum(curEnum);
+                    curEnum = new EnumDefinition();
+                }
+                if (id == curEnum.getFields().size()) {
+                    curEnum.addField(type, name, value, comment);
+                    continue;
+                }
+            } catch (Exception e) {
+                // not an integer, ignoring
+            }
+            def.addField(type, name, value, comment);
         }
+        if (curEnum != null && !curEnum.getFields().isEmpty()) def.addEnum(curEnum);
         return def;
+    }
+
+    private void addComment(StringBuilder commentBuf, String line) {
+        commentBuf.append(cleanComment(line) + "\n");
     }
 
     private String cleanComment(String comment) {
@@ -188,7 +256,6 @@ public class MsgmonsterApp {
     }
 
     private void generateClassFields(PicoWriter writer, MessageDefinition definition) {
-        writer.writeln(resourceUtils.readResource("class_fields_header"));
         for (var field: definition.getFields()) {
             var body = "";
             if (field.hasArrayType()) {
@@ -198,12 +265,7 @@ public class MsgmonsterApp {
             } else {
                 body = resourceUtils.readResource("class_field");
             }
-            Map<String, String> substitution = new HashMap<>();
-            substitution.put("${fieldType}", field.getJavaType());
-            substitution.put("${fieldName}", field.getName());
-            substitution.put("${fieldComment}", field.getComment());
-            body = substitutor.substitute(body, substitution);
-            writeWithIdent(writer, body);
+            writeField(writer, body, field);
         }
     }
     
@@ -227,12 +289,16 @@ public class MsgmonsterApp {
             writer.writeln(buf.toString());
             buf.setLength(0);
         }
-        writer.writeln();
+        if (buf.length() != 0) writer.writeln(buf.toString());
+        else writer.writeln();
     }
 
-    private void generateClassHeader(PicoWriter writer) {
-        var comment = resourceUtils.readResource("class_header");
-        writer.write(comment);
+    private void generateClassHeader(PicoWriter writer, MessageDefinition definition) {
+        var comment = "Definition for " + definition.getName();
+        comment += "\n" + definition.getComment();
+        generateJavadocComment(writer, comment);
+        var header = resourceUtils.readResource("class_header");
+        writer.write(header);
     }
 
     private void generateImports(PicoWriter writer, MessageDefinition definition) {
@@ -244,7 +310,7 @@ public class MsgmonsterApp {
                 imports.add(String.format(
                         "import %s;", field.getJavaFullType()));
             } else {
-                throw new XRE("Type %s is unknown", field.getType());
+                //throw new XRE("Type %s is unknown", field.getType());
             }
         }
         imports.stream()

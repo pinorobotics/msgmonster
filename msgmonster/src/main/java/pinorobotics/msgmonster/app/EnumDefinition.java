@@ -24,33 +24,16 @@ package pinorobotics.msgmonster.app;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageDefinition {
+public class EnumDefinition {
 
     private List<Field> fields = new ArrayList<>();
-    private List<EnumDefinition> enums = new ArrayList<>();
-    private String comment;
-    private String msgName;
-    
-    public MessageDefinition(String msgName, String comment) {
-        this.msgName = msgName;
-        this.comment = comment;
-    }
 
     public void addField(String type, String name, String value, String comment) {
         fields.add(new Field(name, type, value, comment));
     }
     
-    public void addEnum(EnumDefinition enumDef) {
-        enums.add(enumDef);
-    }
-    
-    public String getComment() {
-        return comment;
-    }
-    
     public String toString() {
         var buf = new StringBuilder();
-        buf.append(comment + "\n");
         for (int i = 0; i < fields.size(); i++) {
             buf.append(fields.get(i));
         }
@@ -59,13 +42,5 @@ public class MessageDefinition {
 
     public List<Field> getFields() {
         return fields;
-    }
-    
-    public List<EnumDefinition> getEnums() {
-        return enums;
-    }
-
-    public String getName() {
-        return msgName;
     }
 }

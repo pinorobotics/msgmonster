@@ -42,7 +42,7 @@ public class MsgmonsterAppTests {
 
     @BeforeAll
     public static void setup() throws IOException {
-        inputFolder = Paths.get("").resolve("samples/visualization_msgs");
+        inputFolder = Paths.get("").resolve("samples/actionlib_msgs");
         outputFolder = Files.createTempDirectory("msgmonster");
     }
     
