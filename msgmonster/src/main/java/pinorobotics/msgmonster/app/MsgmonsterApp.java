@@ -113,10 +113,30 @@ public class MsgmonsterApp {
         generateClassFields(memvarWriter, definition);
         generateWithMethods(memvarWriter, definition);
         generateHashCode(memvarWriter, definition);
+        generateEquals(memvarWriter, definition);
         topWriter.writeln_l("}");
         var classOutput = topWriter.toString();
         classOutput = substitutor.substitute(classOutput, substitution);
         System.out.println(classOutput);
+    }
+
+    private void generateEquals(PicoWriter writer, MessageDefinition definition) {
+        resourceUtils.readResourceAsStream("equals").forEach(line -> {
+            if (!line.contains("${...}")) {
+                writer.writeln(line);
+                return;
+            }
+            var ident = line.substring(0, line.length() - line.stripLeading().length());
+            for (var field: definition.getFields()) {
+                if (field.hasArrayType()) {
+                    writer.writeln(String.format("%sArrays.equals(%2$s, other.%2$s) &&", ident, field.getName()));
+                } else if (field.hasPrimitiveType()) {
+                    writer.writeln(String.format("%s%2$s == other.%2$s &&", ident, field.getName()));
+                } else {
+                    writer.writeln(String.format("%sObjects.equals(%2$s, other.%2$s) &&", ident, field.getName()));
+                }
+            }
+        });
     }
 
     private void generateHashCode(PicoWriter writer, MessageDefinition definition) {
