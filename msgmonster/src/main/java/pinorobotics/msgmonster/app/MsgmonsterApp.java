@@ -114,10 +114,28 @@ public class MsgmonsterApp {
         generateWithMethods(memvarWriter, definition);
         generateHashCode(memvarWriter, definition);
         generateEquals(memvarWriter, definition);
+        generateToString(memvarWriter, definition);
         topWriter.writeln_l("}");
         var classOutput = topWriter.toString();
         classOutput = substitutor.substitute(classOutput, substitution);
         System.out.println(classOutput);
+    }
+
+    private void generateToString(PicoWriter writer, MessageDefinition definition) {
+        resourceUtils.readResourceAsStream("toString").forEach(line -> {
+            if (!line.contains("${...}")) {
+                writer.writeln(line);
+                return;
+            }
+            var ident = line.substring(0, line.length() - line.stripLeading().length());
+            for (var field: definition.getFields()) {
+                if (field.hasArrayType()) {
+                    writer.writeln(String.format("%s\"%2$s\", Arrays.toString(%2$s),", ident, field.getName()));
+                } else {
+                    writer.writeln(String.format("%s\"%2$s\", %2$s,", ident, field.getName()));
+                }
+            }
+        });
     }
 
     private void generateEquals(PicoWriter writer, MessageDefinition definition) {

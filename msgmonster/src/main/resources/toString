@@ -1,0 +1,7 @@
+@Override
+public String toString() {
+    return XJson.asString(
+        ${...}
+    );
+}
+
