@@ -1,6 +1,6 @@
 @Override
 public boolean equals(Object obj) {
-    MarkerMessage other = (MarkerMessage) obj;
+    var other = (${className}) obj;
     return
         ${...}
     ;

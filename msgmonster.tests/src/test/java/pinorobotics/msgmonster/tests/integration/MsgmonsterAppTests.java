@@ -21,18 +21,24 @@
  */
 package pinorobotics.msgmonster.tests.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import id.xfunction.AssertRunCommand;
+import id.xfunction.ResourceUtils;
+import id.xfunction.function.Unchecked;
 
 public class MsgmonsterAppTests {
 
+    private static final ResourceUtils resourceUtils = new ResourceUtils();
     private static final String COMMAND_PATH = Paths.get("")
             .toAbsolutePath()
             .resolve("build/msgmonster/msgmonster")
@@ -42,7 +48,7 @@ public class MsgmonsterAppTests {
 
     @BeforeAll
     public static void setup() throws IOException {
-        inputFolder = Paths.get("").resolve("samples/actionlib_msgs");
+        inputFolder = Paths.get("").resolve("samples/test_msgs");
         outputFolder = Files.createTempDirectory("msgmonster");
     }
     
@@ -52,6 +58,17 @@ public class MsgmonsterAppTests {
                 .withReturnCode(0)
                 .withOutputConsumer(System.out::println)
                 .run();
+        assertFoldersEquals(Paths.get("").resolve("samples/expected"), outputFolder);
     }
 
+    private void assertFoldersEquals(Path expectedFolder, Path actualFolder) throws IOException {
+        Files.list(expectedFolder)
+            .forEach(Unchecked.wrapAccept(expectedFile -> {
+                var expected = Files.lines(expectedFile)
+                        .collect(Collectors.joining("\n"));
+                var actual = Files.lines(actualFolder.resolve(expectedFile.getFileName().toString()))
+                        .collect(Collectors.joining("\n"));
+                assertEquals(expected, actual);
+            }));
+    }
 }

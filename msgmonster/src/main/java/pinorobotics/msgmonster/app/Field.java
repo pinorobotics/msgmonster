@@ -22,7 +22,6 @@
 package pinorobotics.msgmonster.app;
 
 import java.util.Map;
-import java.util.Set;
 
 public class Field {
     private static final Map<String, String> PRIMITIVES_TYPE_MAP = Map.of(
@@ -30,6 +29,7 @@ public class Field {
             "float32", "float",
             "uint32", "int",
             "uint8", "byte",
+            "byte", "byte",
             "bool", "boolean");
     private static final Map<String, String> BASIC_TYPE_MAP = Map.of(
             "time", "Time",
@@ -38,14 +38,17 @@ public class Field {
             "Header", "HeaderMessage",
             "string", "StringMessage",
             "int32", "Int32Message");
+    private Formatter formatter = new Formatter();
     private String name, type, comment;
     private String value;
+    private boolean isArray;
 
     public Field(String name, String type, String value, String comment) {
         this.name = name;
-        this.type = type;
+        this.type = type.replaceAll("(.*)\\[\\d*\\]", "$1");
         this.value = value;
         this.comment = comment;
+        isArray = type.contains("[");
     }
 
     public String getName() {
@@ -71,7 +74,7 @@ public class Field {
     }
 
     public boolean hasArrayType() {
-        return type.contains("[");
+        return isArray;
     }
 
     public boolean hasPrimitiveType() {
@@ -83,9 +86,6 @@ public class Field {
     }
 
     public String getJavaType() {
-        if (hasArrayType()) {
-            return getJavaType(type.replaceAll("(.*)\\[\\d*\\]", "$1"));
-        }
         return getJavaType(type);
     }
     
@@ -99,7 +99,7 @@ public class Field {
         } else if (hasStdMsgType()) {
             return STDMSG_TYPE_MAP.get(type);
         }
-        return type;
+        return formatter.formatAsJavaClassName(type);
     }
 
     /**
@@ -110,9 +110,6 @@ public class Field {
     }
 
     public String getJavaFullType() {
-        if (hasArrayType()) {
-            return getJavaFullType(type.replaceAll("(.*)\\[\\d*\\]", "$1"));
-        }
         return getJavaFullType(type);
     }
 

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ public class MsgmonsterApp {
     private static final ResourceUtils resourceUtils = new ResourceUtils();
     private CommandLineInterface cli;
     private Path outputFolder;
+    private Formatter formatter = new Formatter();
     private Map<String, String> substitution = new HashMap<>();
     private Substitutor substitutor = new Substitutor();
 
@@ -67,13 +69,19 @@ public class MsgmonsterApp {
             return;
         }
         outputFolder = Paths.get(args[1]);
+        if (!outputFolder.toFile().isDirectory())
+            throw new XRE("Output folder %s not found", outputFolder);
         Path inputFolder = Paths.get(args[0]);
-        verifyInputFolder(inputFolder);
-        Files.walk(inputFolder.resolve(MESSAGES_SUBFOLDER), 1)
-            .filter(p -> !p.toFile().isDirectory())
-            .filter(p -> p.getFileName().toString().endsWith(".msg"))
-            .limit(1)
-            .forEach(Unchecked.wrapAccept(this::generateJavaClass));
+        if (!inputFolder.toFile().isDirectory()) {
+            generateJavaClass(inputFolder);
+        } else {
+            verifyInputFolder(inputFolder);
+            Files.walk(inputFolder.resolve(MESSAGES_SUBFOLDER), 1)
+                .filter(p -> !p.toFile().isDirectory())
+                .filter(p -> p.getFileName().toString().endsWith(".msg"))
+                //.limit(1)
+                .forEach(Unchecked.wrapAccept(this::generateJavaClass));
+        }
     }
 
     private void verifyInputFolder(Path inputFolder) {
@@ -93,16 +101,16 @@ public class MsgmonsterApp {
         substitution.clear();
         cli.print("Processing file " + msgFile);
         var definition = readMessageDefinition(msgFile);
-        System.out.println(definition);
         PicoWriter topWriter = new PicoWriter();
-        generateHeader(topWriter);
+        generateHeader(topWriter, definition.getName());
         substitution.put("${msgName}", definition.getName());
         substitution.put("${md5sum}", calcMd5Sum(msgFile));
-        topWriter.writeln(String.format("package id.jrosmessages.%s;", msgFile.getParent().getFileName()));
+        topWriter.writeln(String.format("package id.jrosmessages.%s;",
+                asPackageName(msgFile)));
         topWriter.writeln();
         generateImports(topWriter, definition);
         generateClassHeader(topWriter, definition);
-        String className = msgFile.getFileName().toString().replaceAll(".msg", "");
+        String className = formatter.format(msgFile);
         topWriter.writeln_r(String.format("public class %s implements Message {",
                 className));
         substitution.put("${className}", className);
@@ -118,7 +126,9 @@ public class MsgmonsterApp {
         topWriter.writeln_l("}");
         var classOutput = topWriter.toString();
         classOutput = substitutor.substitute(classOutput, substitution);
-        System.out.println(classOutput);
+        Path outFile = outputFolder.resolve(className + ".java");
+        Files.deleteIfExists(outFile);
+        Files.writeString(outFile, classOutput, StandardOpenOption.CREATE_NEW);
     }
 
     private void generateToString(PicoWriter writer, MessageDefinition definition) {
@@ -176,32 +186,18 @@ public class MsgmonsterApp {
 
     private void generateWithMethods(PicoWriter writer, MessageDefinition definition) {
         for (var field: definition.getFields()) {
-            var body = "";
-            if (field.hasArrayType()) {
-                body = resourceUtils.readResource("with_method");
-            } else {
-                body = resourceUtils.readResource("with_method");
-            }
+            var body = resourceUtils.readResource("with_method");
             Map<String, String> substitution = new HashMap<>(this.substitution);
-            substitution.put("${fieldType}", field.getJavaType());
+            if (field.hasArrayType()) {
+                substitution.put("${fieldType}", field.getJavaType() + "...");
+            } else {
+                substitution.put("${fieldType}", field.getJavaType());
+            }
             substitution.put("${fieldName}", field.getName());
-            substitution.put("${methodName}", "with" + camelCase("_" + field.getName()));
+            substitution.put("${methodName}", "with" + formatter.formatAsMethodName("_" + field.getName()));
             body = substitutor.substitute(body, substitution);
             writeWithIdent(writer, body);
         }
-    }
-
-    private String camelCase(String text) {
-        var words = text.split("_");
-        var buf = new StringBuilder();
-        for (var w: words) {
-            if (w.isEmpty()) continue;
-            buf.append(Character.toTitleCase(w.charAt(0)));
-            if (w.length() > 1) {
-                buf.append(w.substring(1));
-            }
-        }
-        return buf.toString();
     }
 
     private String calcMd5Sum(Path msgFile) {
@@ -242,8 +238,8 @@ public class MsgmonsterApp {
         writeWithIdent(writer, fieldTemplate);
     }
 
-    private String readMessageName(Path msgFile) {
-        return msgFile.getParent().getParent().getFileName() + "/" + msgFile.getFileName();
+    private Path readMessageName(Path msgFile) {
+        return msgFile.getParent().getParent().getFileName().resolve(msgFile.getFileName());
     }
 
     private MessageDefinition readMessageDefinition(Path msgFile) throws IOException {
@@ -304,7 +300,6 @@ public class MsgmonsterApp {
             if (buf.length == 2) {
                 addComment(commentBuf, buf[1]);
             }
-            System.out.println(Arrays.toString(buf));
             var scanner = new Scanner(buf[0].trim());
             scanner.useDelimiter("[\\s+=]+");
 //            while (scanner.hasNext())
@@ -393,7 +388,9 @@ public class MsgmonsterApp {
         var imports = new ArrayList<String>();
         for (var field: definition.getFields()) {
             if (field.hasPrimitiveType()) continue;
-            else if (field.hasBasicType() || field.hasForeignType() || field.hasStdMsgType()) {
+            if (field.hasArrayType())
+                imports.add("import java.util.Arrays;");
+            if (field.hasBasicType() || field.hasForeignType() || field.hasStdMsgType()) {
                 imports.add(String.format(
                         "import %s;", field.getJavaFullType()));
             } else {
@@ -408,12 +405,16 @@ public class MsgmonsterApp {
     }
 
     private String asPackageName(Path path) {
-        var name = path.toString().replaceAll(".msg", "");
-        return name.replace('/', '.');
+        path = readMessageName(path);
+        return path.getParent().toString();
     }
 
-    private void generateHeader(PicoWriter writer) {
-        writer.write(resourceUtils.readResource("header"));
+    private void generateHeader(PicoWriter writer, String msgName) {
+        var header = resourceUtils.readResource("header");
+        Map<String, String> substitution = new HashMap<>();
+        substitution.put("${msgName}", msgName);
+        header = substitutor.substitute(header, substitution);
+        writer.write(header);
     }
     
 }

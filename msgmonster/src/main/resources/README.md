@@ -13,12 +13,14 @@ Latest prerelease version can be found here <https://github.com/pinorobotics/msg
 # Usage
 
 ```bash
-msgmonster INPUT_FOLDER OUTPUT_FOLDER
+msgmonster < INPUT_FILE | INPUT_FOLDER > <OUTPUT_FOLDER>
 ```
 
 Where: 
 
-INPUT_FOLDER - folder with msg files
+INPUT_FOLDER - msg file
+
+INPUT_FOLDER - folder with msg subdirectory where msg files are stored
 
 OUTPUT_FOLDER - output folder where to place all generated Java classes
 
@@ -29,6 +31,11 @@ To see this help:
 ``` bash
 msgmonster
 ```
+Generate messages defined in actionlib_msgs folder:
+
+``` bash
+/opt/ros/noetic/share/actionlib_msgs
+
 
 # Contributors
 

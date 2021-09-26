@@ -21,6 +21,7 @@
  */
 package pinorobotics.msgmonster.app;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +32,8 @@ public class MessageDefinition {
     private String comment;
     private String msgName;
     
-    public MessageDefinition(String msgName, String comment) {
-        this.msgName = msgName;
+    public MessageDefinition(Path msgName, String comment) {
+        this.msgName = msgName.toString().replace(".msg", "");
         this.comment = comment;
     }
 
