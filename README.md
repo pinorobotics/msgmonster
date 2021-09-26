@@ -1,10 +1,10 @@
-**msgmonster** - application for generating jrosclient Message classes from ROS msg files.
+**msgmonster** - application for generating Message Java classes for [jrosclient](https://github.com/lambdaprime/jrosclient) from ROS msg files.
 
 # Download
 
-You can download **msgmonster** release versions from <https://github.com/pinorobotics/msgmonster/releases>
+You can download **msgmonster** release versions from [here](https://github.com/pinorobotics/msgmonster/releases)
 
-Latest prerelease version can be found here <https://github.com/pinorobotics/msgmonster/tree/main/msgmonster/release>
+Latest prerelease version can be found [here](https://github.com/pinorobotics/msgmonster/tree/main/msgmonster/release)
 
 # Requirements
 
@@ -18,11 +18,11 @@ msgmonster < INPUT_FILE | INPUT_FOLDER > <OUTPUT_FOLDER>
 
 Where: 
 
-INPUT_FOLDER - msg file
+- `INPUT_FILE` - msg file
 
-INPUT_FOLDER - folder with msg subdirectory where msg files are stored
+- `INPUT_FOLDER` - folder with msg subdirectory where msg files are stored
 
-OUTPUT_FOLDER - output folder where to place all generated Java classes
+- `OUTPUT_FOLDER` - output folder where to place all generated Java classes
 
 # Examples
 
@@ -34,8 +34,8 @@ msgmonster
 Generate messages defined in actionlib_msgs folder:
 
 ``` bash
-/opt/ros/noetic/share/actionlib_msgs
-
+msgmonster /opt/ros/noetic/share/actionlib_msgs actionlib_msgs
+```
 
 # Contributors
 
