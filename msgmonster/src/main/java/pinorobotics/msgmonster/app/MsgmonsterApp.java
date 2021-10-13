@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -69,8 +68,7 @@ public class MsgmonsterApp {
             return;
         }
         outputFolder = Paths.get(args[1]);
-        if (!outputFolder.toFile().isDirectory())
-            throw new XRE("Output folder %s not found", outputFolder);
+        outputFolder.toFile().mkdirs();
         Path inputFolder = Paths.get(args[0]);
         if (!inputFolder.toFile().isDirectory()) {
             generateJavaClass(inputFolder);
@@ -100,6 +98,12 @@ public class MsgmonsterApp {
     private void generateJavaClass(Path msgFile) throws IOException {
         substitution.clear();
         cli.print("Processing file " + msgFile);
+        String className = formatter.format(msgFile);
+        Path outFile = outputFolder.resolve(className + ".java");
+        if (outFile.toFile().exists()) {
+            cli.print("Message file already exist - ignoring");
+            return;
+        }
         var definition = readMessageDefinition(msgFile);
         PicoWriter topWriter = new PicoWriter();
         generateHeader(topWriter, definition.getName());
@@ -110,7 +114,6 @@ public class MsgmonsterApp {
         topWriter.writeln();
         generateImports(topWriter, definition);
         generateClassHeader(topWriter, definition);
-        String className = formatter.format(msgFile);
         topWriter.writeln_r(String.format("public class %s implements Message {",
                 className));
         substitution.put("${className}", className);
@@ -126,8 +129,6 @@ public class MsgmonsterApp {
         topWriter.writeln_l("}");
         var classOutput = topWriter.toString();
         classOutput = substitutor.substitute(classOutput, substitution);
-        Path outFile = outputFolder.resolve(className + ".java");
-        Files.deleteIfExists(outFile);
         Files.writeString(outFile, classOutput, StandardOpenOption.CREATE_NEW);
     }
 
@@ -291,6 +292,10 @@ public class MsgmonsterApp {
         for (int i = pos; i < lines.size(); i++) {
             String line = lines.get(i);
             if (line.isEmpty()) continue;
+            if (curFieldNum == fieldLineNums.size()) {
+                addComment(commentBuf, line);
+                continue;
+            }
             if (i < fieldLineNums.get(curFieldNum)) {
                 addComment(commentBuf, line);
                 continue;
