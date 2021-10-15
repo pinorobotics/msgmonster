@@ -13,10 +13,12 @@ Latest prerelease version can be found [here](https://github.com/pinorobotics/ms
 # Usage
 
 ```bash
-msgmonster < INPUT_FILE | INPUT_FOLDER > <OUTPUT_FOLDER>
+msgmonster <PACKAGE_NAME> < INPUT_FILE | INPUT_FOLDER > <OUTPUT_FOLDER>
 ```
 
 Where: 
+
+- `PACKAGE_NAME` - name of the Java package to which all generated messages would belong
 
 - `INPUT_FILE` - msg file
 
@@ -34,7 +36,7 @@ msgmonster
 Generate messages defined in actionlib_msgs folder:
 
 ``` bash
-msgmonster /opt/ros/noetic/share/actionlib_msgs actionlib_msgs
+msgmonster myros.actionlib_msgs /opt/ros/noetic/share/actionlib_msgs actionlib_msgs
 ```
 
 # Contributors

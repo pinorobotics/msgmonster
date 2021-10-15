@@ -91,7 +91,7 @@ public class CollisionObjectMessage implements Message {
     * The shapes and subframe poses are defined relative to this pose.
     */
    @Streamed
-   public Pose pose = new Pose();
+   public PoseMessage pose = new PoseMessage();
    
    /**
     * The id of the object (name used in MoveIt)
@@ -103,7 +103,7 @@ public class CollisionObjectMessage implements Message {
     * The object type in a database of known objects
     */
    @Streamed
-   public ObjectType type = new ObjectType();
+   public ObjectTypeMessage type = new ObjectTypeMessage();
    
    /**
     * The collision geometries associated with the object.
@@ -111,28 +111,28 @@ public class CollisionObjectMessage implements Message {
     * Solid geometric primitives
     */
    @Streamed
-   public SolidPrimitive[] primitives = new SolidPrimitive[0];
+   public SolidPrimitiveMessage[] primitives = new SolidPrimitiveMessage[0];
    
    @Streamed
-   public Pose[] primitive_poses = new Pose[0];
+   public PoseMessage[] primitive_poses = new PoseMessage[0];
    
    /**
     * Meshes
     */
    @Streamed
-   public Mesh[] meshes = new Mesh[0];
+   public MeshMessage[] meshes = new MeshMessage[0];
    
    @Streamed
-   public Pose[] mesh_poses = new Pose[0];
+   public PoseMessage[] mesh_poses = new PoseMessage[0];
    
    /**
     * Bounding planes (equation is specified, but the plane can be oriented using an additional pose)
     */
    @Streamed
-   public Plane[] planes = new Plane[0];
+   public PlaneMessage[] planes = new PlaneMessage[0];
    
    @Streamed
-   public Pose[] plane_poses = new Pose[0];
+   public PoseMessage[] plane_poses = new PoseMessage[0];
    
    /**
     * Named subframes on the object. Use these to define points of interest on the object that you want
@@ -145,7 +145,7 @@ public class CollisionObjectMessage implements Message {
    public StringMessage[] subframe_names = new StringMessage[0];
    
    @Streamed
-   public Pose[] subframe_poses = new Pose[0];
+   public PoseMessage[] subframe_poses = new PoseMessage[0];
    
    /**
     * Operation to be performed
@@ -158,7 +158,7 @@ public class CollisionObjectMessage implements Message {
        return this;
    }
    
-   public CollisionObjectMessage withPose(Pose pose) {
+   public CollisionObjectMessage withPose(PoseMessage pose) {
        this.pose = pose;
        return this;
    }
@@ -168,37 +168,37 @@ public class CollisionObjectMessage implements Message {
        return this;
    }
    
-   public CollisionObjectMessage withType(ObjectType type) {
+   public CollisionObjectMessage withType(ObjectTypeMessage type) {
        this.type = type;
        return this;
    }
    
-   public CollisionObjectMessage withPrimitives(SolidPrimitive... primitives) {
+   public CollisionObjectMessage withPrimitives(SolidPrimitiveMessage... primitives) {
        this.primitives = primitives;
        return this;
    }
    
-   public CollisionObjectMessage withPrimitivePoses(Pose... primitive_poses) {
+   public CollisionObjectMessage withPrimitivePoses(PoseMessage... primitive_poses) {
        this.primitive_poses = primitive_poses;
        return this;
    }
    
-   public CollisionObjectMessage withMeshes(Mesh... meshes) {
+   public CollisionObjectMessage withMeshes(MeshMessage... meshes) {
        this.meshes = meshes;
        return this;
    }
    
-   public CollisionObjectMessage withMeshPoses(Pose... mesh_poses) {
+   public CollisionObjectMessage withMeshPoses(PoseMessage... mesh_poses) {
        this.mesh_poses = mesh_poses;
        return this;
    }
    
-   public CollisionObjectMessage withPlanes(Plane... planes) {
+   public CollisionObjectMessage withPlanes(PlaneMessage... planes) {
        this.planes = planes;
        return this;
    }
    
-   public CollisionObjectMessage withPlanePoses(Pose... plane_poses) {
+   public CollisionObjectMessage withPlanePoses(PoseMessage... plane_poses) {
        this.plane_poses = plane_poses;
        return this;
    }
@@ -208,7 +208,7 @@ public class CollisionObjectMessage implements Message {
        return this;
    }
    
-   public CollisionObjectMessage withSubframePoses(Pose... subframe_poses) {
+   public CollisionObjectMessage withSubframePoses(PoseMessage... subframe_poses) {
        this.subframe_poses = subframe_poses;
        return this;
    }

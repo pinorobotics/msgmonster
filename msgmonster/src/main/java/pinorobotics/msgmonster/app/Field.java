@@ -95,7 +95,7 @@ public class Field {
         } else if (hasPrimitiveType()) {
             return PRIMITIVES_TYPE_MAP.get(type);
         } else if (hasForeignType()) {
-            return type.replaceAll(".*/(.*)", "$1");
+            return formatter.formatAsJavaClassName(type.replaceAll(".*/(.*)", "$1"));
         } else if (hasStdMsgType()) {
             return STDMSG_TYPE_MAP.get(type);
         }
