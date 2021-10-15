@@ -74,7 +74,7 @@ public class GoalIDMessage implements Message {
    public int hashCode() {
        return Objects.hash(
            stamp,
-           id,
+           id
        );
    }
    
@@ -83,7 +83,7 @@ public class GoalIDMessage implements Message {
        var other = (GoalIDMessage) obj;
        return
            Objects.equals(stamp, other.stamp) &&
-           Objects.equals(id, other.id) &&
+           Objects.equals(id, other.id)
        ;
    }
    
@@ -91,7 +91,7 @@ public class GoalIDMessage implements Message {
    public String toString() {
        return XJson.asString(
            "stamp", stamp,
-           "id", id,
+           "id", id
        );
    }
    

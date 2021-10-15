@@ -56,7 +56,7 @@ public class AllowedCollisionEntryMessage implements Message {
    @Override
    public int hashCode() {
        return Objects.hash(
-           Arrays.hashCode(enabled),
+           Arrays.hashCode(enabled)
        );
    }
    
@@ -64,14 +64,14 @@ public class AllowedCollisionEntryMessage implements Message {
    public boolean equals(Object obj) {
        var other = (AllowedCollisionEntryMessage) obj;
        return
-           Arrays.equals(enabled, other.enabled) &&
+           Arrays.equals(enabled, other.enabled)
        ;
    }
    
    @Override
    public String toString() {
        return XJson.asString(
-           "enabled", Arrays.toString(enabled),
+           "enabled", Arrays.toString(enabled)
        );
    }
    

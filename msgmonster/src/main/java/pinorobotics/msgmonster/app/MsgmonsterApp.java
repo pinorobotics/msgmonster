@@ -139,12 +139,18 @@ public class MsgmonsterApp {
                 return;
             }
             var ident = line.substring(0, line.length() - line.stripLeading().length());
-            for (var field: definition.getFields()) {
+            var fields = definition.getFields();
+            for (int i = 0; i < fields.size(); i++) {
+                var field = fields.get(i);
                 if (field.hasArrayType()) {
-                    writer.writeln(String.format("%s\"%2$s\", Arrays.toString(%2$s),", ident, field.getName()));
+                    writer.write(String.format("%s\"%2$s\", Arrays.toString(%2$s)", ident, field.getName()));
                 } else {
-                    writer.writeln(String.format("%s\"%2$s\", %2$s,", ident, field.getName()));
+                    writer.write(String.format("%s\"%2$s\", %2$s", ident, field.getName()));
                 }
+                if (i == fields.size() - 1)
+                    writer.writeln("");
+                else
+                    writer.writeln(",");
             }
         });
     }
@@ -156,14 +162,20 @@ public class MsgmonsterApp {
                 return;
             }
             var ident = line.substring(0, line.length() - line.stripLeading().length());
-            for (var field: definition.getFields()) {
+            var fields = definition.getFields();
+            for (int i = 0; i < fields.size(); i++) {
+                var field = fields.get(i);
                 if (field.hasArrayType()) {
-                    writer.writeln(String.format("%sArrays.equals(%2$s, other.%2$s) &&", ident, field.getName()));
+                    writer.write(String.format("%sArrays.equals(%2$s, other.%2$s)", ident, field.getName()));
                 } else if (field.hasPrimitiveType()) {
-                    writer.writeln(String.format("%s%2$s == other.%2$s &&", ident, field.getName()));
+                    writer.write(String.format("%s%2$s == other.%2$s", ident, field.getName()));
                 } else {
-                    writer.writeln(String.format("%sObjects.equals(%2$s, other.%2$s) &&", ident, field.getName()));
+                    writer.write(String.format("%sObjects.equals(%2$s, other.%2$s)", ident, field.getName()));
                 }
+                if (i == fields.size() - 1)
+                    writer.writeln("");
+                else
+                    writer.writeln(" &&");
             }
         });
     }
@@ -175,12 +187,18 @@ public class MsgmonsterApp {
                 return;
             }
             var ident = line.substring(0, line.length() - line.stripLeading().length());
-            for (var field: definition.getFields()) {
+            var fields = definition.getFields();
+            for (int i = 0; i < fields.size(); i++) {
+                var field = fields.get(i);
                 if (field.hasArrayType()) {
-                    writer.writeln(String.format("%sArrays.hashCode(%s),", ident, field.getName()));
+                    writer.write(String.format("%sArrays.hashCode(%s)", ident, field.getName()));
                 } else {
-                    writer.writeln(String.format("%s%s,", ident, field.getName()));
+                    writer.write(String.format("%s%s", ident, field.getName()));
                 }
+                if (i == fields.size() - 1)
+                    writer.writeln("");
+                else
+                    writer.writeln(",");
             }
         });
     }

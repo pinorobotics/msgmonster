@@ -66,7 +66,7 @@ public class GoalStatusArrayMessage implements Message {
    public int hashCode() {
        return Objects.hash(
            header,
-           Arrays.hashCode(status_list),
+           Arrays.hashCode(status_list)
        );
    }
    
@@ -75,7 +75,7 @@ public class GoalStatusArrayMessage implements Message {
        var other = (GoalStatusArrayMessage) obj;
        return
            Objects.equals(header, other.header) &&
-           Arrays.equals(status_list, other.status_list) &&
+           Arrays.equals(status_list, other.status_list)
        ;
    }
    
@@ -83,7 +83,7 @@ public class GoalStatusArrayMessage implements Message {
    public String toString() {
        return XJson.asString(
            "header", header,
-           "status_list", Arrays.toString(status_list),
+           "status_list", Arrays.toString(status_list)
        );
    }
    

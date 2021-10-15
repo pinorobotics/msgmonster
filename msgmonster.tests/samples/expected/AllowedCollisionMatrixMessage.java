@@ -98,7 +98,7 @@ public class AllowedCollisionMatrixMessage implements Message {
            Arrays.hashCode(entry_names),
            Arrays.hashCode(entry_values),
            Arrays.hashCode(default_entry_names),
-           Arrays.hashCode(default_entry_values),
+           Arrays.hashCode(default_entry_values)
        );
    }
    
@@ -109,7 +109,7 @@ public class AllowedCollisionMatrixMessage implements Message {
            Arrays.equals(entry_names, other.entry_names) &&
            Arrays.equals(entry_values, other.entry_values) &&
            Arrays.equals(default_entry_names, other.default_entry_names) &&
-           Arrays.equals(default_entry_values, other.default_entry_values) &&
+           Arrays.equals(default_entry_values, other.default_entry_values)
        ;
    }
    
@@ -119,7 +119,7 @@ public class AllowedCollisionMatrixMessage implements Message {
            "entry_names", Arrays.toString(entry_names),
            "entry_values", Arrays.toString(entry_values),
            "default_entry_names", Arrays.toString(default_entry_names),
-           "default_entry_values", Arrays.toString(default_entry_values),
+           "default_entry_values", Arrays.toString(default_entry_values)
        );
    }
    

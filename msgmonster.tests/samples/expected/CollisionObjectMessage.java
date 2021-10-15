@@ -233,7 +233,7 @@ public class CollisionObjectMessage implements Message {
            Arrays.hashCode(plane_poses),
            Arrays.hashCode(subframe_names),
            Arrays.hashCode(subframe_poses),
-           operation,
+           operation
        );
    }
    
@@ -253,7 +253,7 @@ public class CollisionObjectMessage implements Message {
            Arrays.equals(plane_poses, other.plane_poses) &&
            Arrays.equals(subframe_names, other.subframe_names) &&
            Arrays.equals(subframe_poses, other.subframe_poses) &&
-           operation == other.operation &&
+           operation == other.operation
        ;
    }
    
@@ -272,7 +272,7 @@ public class CollisionObjectMessage implements Message {
            "plane_poses", Arrays.toString(plane_poses),
            "subframe_names", Arrays.toString(subframe_names),
            "subframe_poses", Arrays.toString(subframe_poses),
-           "operation", operation,
+           "operation", operation
        );
    }
    

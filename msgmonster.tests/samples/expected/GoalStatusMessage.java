@@ -136,7 +136,7 @@ public class GoalStatusMessage implements Message {
        return Objects.hash(
            goal_id,
            status,
-           text,
+           text
        );
    }
    
@@ -146,7 +146,7 @@ public class GoalStatusMessage implements Message {
        return
            Objects.equals(goal_id, other.goal_id) &&
            status == other.status &&
-           Objects.equals(text, other.text) &&
+           Objects.equals(text, other.text)
        ;
    }
    
@@ -155,7 +155,7 @@ public class GoalStatusMessage implements Message {
        return XJson.asString(
            "goal_id", goal_id,
            "status", status,
-           "text", text,
+           "text", text
        );
    }
    
