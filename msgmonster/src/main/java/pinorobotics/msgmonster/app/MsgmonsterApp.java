@@ -52,6 +52,7 @@ public class MsgmonsterApp {
     private Formatter formatter = new Formatter();
     private Map<String, String> substitution = new HashMap<>();
     private Substitutor substitutor = new Substitutor();
+    private Path packageName;
 
     private static void usage() {
         resourceUtils.readResourceAsStream("README.md")
@@ -63,13 +64,14 @@ public class MsgmonsterApp {
     }
     
     private void run(String[] args) throws Exception {
-        if (args.length < 2) {
+        if (args.length < 3) {
             usage();
             return;
         }
-        outputFolder = Paths.get(args[1]);
+        packageName =  Paths.get(args[0]);
+        outputFolder = Paths.get(args[2]);
         outputFolder.toFile().mkdirs();
-        Path inputFolder = Paths.get(args[0]);
+        Path inputFolder = Paths.get(args[1]);
         if (!inputFolder.toFile().isDirectory()) {
             generateJavaClass(inputFolder);
         } else {
@@ -109,8 +111,8 @@ public class MsgmonsterApp {
         generateHeader(topWriter, definition.getName());
         substitution.put("${msgName}", definition.getName());
         substitution.put("${md5sum}", calcMd5Sum(msgFile));
-        topWriter.writeln(String.format("package id.jrosmessages.%s;",
-                asPackageName(msgFile)));
+        topWriter.writeln(String.format("package %s;",
+                packageName));
         topWriter.writeln();
         generateImports(topWriter, definition);
         generateClassHeader(topWriter, definition);
@@ -425,11 +427,6 @@ public class MsgmonsterApp {
             .distinct()
             .forEach(writer::writeln);
         writer.writeln();
-    }
-
-    private String asPackageName(Path path) {
-        path = readMessageName(path);
-        return path.getParent().toString();
     }
 
     private void generateHeader(PicoWriter writer, String msgName) {

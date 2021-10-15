@@ -54,7 +54,8 @@ public class MsgmonsterAppTests {
     
     @Test
     public void test_happy() throws Exception {
-        new AssertRunCommand(COMMAND_PATH, inputFolder.toAbsolutePath().toString(), outputFolder.toString())
+        new AssertRunCommand(COMMAND_PATH, "id.jrosmessages.test_msgs",
+                    inputFolder.toAbsolutePath().toString(), outputFolder.toString())
                 .withReturnCode(0)
                 .withOutputConsumer(System.out::println)
                 .run();
