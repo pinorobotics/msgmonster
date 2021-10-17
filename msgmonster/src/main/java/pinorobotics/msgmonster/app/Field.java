@@ -30,7 +30,8 @@ public class Field {
             "uint32", "int",
             "uint8", "byte",
             "byte", "byte",
-            "bool", "boolean");
+            "bool", "boolean",
+            "int8", "byte");
     private static final Map<String, String> BASIC_TYPE_MAP = Map.of(
             "time", "Time",
             "duration", "Duration");
