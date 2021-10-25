@@ -22,5 +22,7 @@
 open module msgmonster.tests {
     requires id.xfunction;
     requires org.junit.jupiter.api;
+    requires org.junit.jupiter.params;
+    requires msgmonster;
     exports pinorobotics.msgmonster.tests.integration;
 }

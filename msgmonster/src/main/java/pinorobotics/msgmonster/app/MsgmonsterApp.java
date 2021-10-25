@@ -39,13 +39,10 @@ import id.xfunction.XAsserts;
 import id.xfunction.cli.ArgumentParsingException;
 import id.xfunction.cli.CommandLineInterface;
 import id.xfunction.function.Unchecked;
-import id.xfunction.lang.XExec;
-import id.xfunction.lang.XRE;
 import id.xfunction.text.Substitutor;
 
 public class MsgmonsterApp {
 
-    private static final String MESSAGES_SUBFOLDER = "msg";
     private static final ResourceUtils resourceUtils = new ResourceUtils();
     private CommandLineInterface cli;
     private Path outputFolder;
@@ -53,17 +50,19 @@ public class MsgmonsterApp {
     private Map<String, String> substitution = new HashMap<>();
     private Substitutor substitutor = new Substitutor();
     private Path packageName;
+    private RosMsgCommand rosmsg;
 
     private static void usage() {
         resourceUtils.readResourceAsStream("README.md")
             .forEach(System.out::println);
     }
 
-    public MsgmonsterApp(CommandLineInterface cli) {
+    public MsgmonsterApp(CommandLineInterface cli, RosMsgCommand rosmsg) {
         this.cli = cli;
+        this.rosmsg = rosmsg;
     }
     
-    private void run(String[] args) throws Exception {
+    public void run(String[] args) throws Exception {
         if (args.length < 3) {
             usage();
             return;
@@ -71,27 +70,19 @@ public class MsgmonsterApp {
         packageName =  Paths.get(args[0]);
         outputFolder = Paths.get(args[2]);
         outputFolder.toFile().mkdirs();
-        Path inputFolder = Paths.get(args[1]);
-        if (!inputFolder.toFile().isDirectory()) {
-            generateJavaClass(inputFolder);
+        Path input = Paths.get(args[1]);
+        if (!rosmsg.isPackage(input)) {
+            generateJavaClass(input);
         } else {
-            verifyInputFolder(inputFolder);
-            Files.walk(inputFolder.resolve(MESSAGES_SUBFOLDER), 1)
-                .filter(p -> !p.toFile().isDirectory())
-                .filter(p -> p.getFileName().toString().endsWith(".msg"))
+            rosmsg.listMessageFiles(input)
                 //.limit(1)
                 .forEach(Unchecked.wrapAccept(this::generateJavaClass));
         }
     }
 
-    private void verifyInputFolder(Path inputFolder) {
-        XAsserts.assertTrue(inputFolder.resolve(MESSAGES_SUBFOLDER).toFile().isDirectory(),
-                "There is no msg/ folder inside of input folder " + inputFolder);
-    }
-
     public static void main(String[] args) throws Exception {
         try {
-            new MsgmonsterApp(new CommandLineInterface()).run(args);
+            new MsgmonsterApp(new CommandLineInterface(), new RosMsgCommand()).run(args);
         } catch (ArgumentParsingException e) {
             usage();
         }
@@ -110,7 +101,7 @@ public class MsgmonsterApp {
         PicoWriter topWriter = new PicoWriter();
         generateHeader(topWriter, definition.getName());
         substitution.put("${msgName}", definition.getName());
-        substitution.put("${md5sum}", calcMd5Sum(msgFile));
+        substitution.put("${md5sum}", rosmsg.calcMd5Sum(msgFile));
         topWriter.writeln(String.format("package %s;",
                 packageName));
         topWriter.writeln();
@@ -221,13 +212,6 @@ public class MsgmonsterApp {
         }
     }
 
-    private String calcMd5Sum(Path msgFile) {
-        var proc = new XExec("md5sum", msgFile.toAbsolutePath().toString())
-                .run();
-        if (proc.await() != 0) throw new XRE("md5sum calc error: " + proc.stderrAsString());
-        return proc.stdoutAsString().split("\\s+")[0];
-    }
-
     private void generateEnums(PicoWriter writer, MessageDefinition definition) {
         var body = resourceUtils.readResource("enum_field");
         for (var enumDef: definition.getEnums()) {
@@ -260,11 +244,11 @@ public class MsgmonsterApp {
     }
 
     private Path readMessageName(Path msgFile) {
-        return msgFile.getParent().getParent().getFileName().resolve(msgFile.getFileName());
+        return msgFile.getParent().getFileName().resolve(msgFile.getFileName());
     }
 
     private MessageDefinition readMessageDefinition(Path msgFile) throws IOException {
-        var lines = Files.lines(msgFile)
+        var lines = rosmsg.lines(msgFile)
             .map(String::trim)
             .collect(Collectors.toCollection(ArrayList<String>::new));
         while (!lines.isEmpty()) {

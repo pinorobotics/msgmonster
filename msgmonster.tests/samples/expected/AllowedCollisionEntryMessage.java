@@ -37,7 +37,7 @@ import id.xfunction.XJson;
  */
 @MessageMetadata(
     type = AllowedCollisionEntryMessage.NAME,
-    md5sum = "eb7ab8d163d3a1b5e934196c2385059c")
+    md5sum = "17ec56b810bbff82fc5397be928800de")
 public class AllowedCollisionEntryMessage implements Message {
    
    static final String NAME = "test_msgs/AllowedCollisionEntry";

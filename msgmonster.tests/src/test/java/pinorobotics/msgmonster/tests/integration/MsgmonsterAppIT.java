@@ -27,49 +27,38 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import id.xfunction.AssertRunCommand;
-import id.xfunction.ResourceUtils;
-import id.xfunction.function.Unchecked;
 
-public class MsgmonsterAppTests {
+public class MsgmonsterAppIT {
 
-    private static final ResourceUtils resourceUtils = new ResourceUtils();
     private static final String COMMAND_PATH = Paths.get("")
             .toAbsolutePath()
             .resolve("build/msgmonster/msgmonster")
             .toString();
-    private static Path inputFolder;
     private static Path outputFolder;
 
     @BeforeAll
     public static void setup() throws IOException {
-        inputFolder = Paths.get("").resolve("samples/test_msgs");
         outputFolder = Files.createTempDirectory("msgmonster");
     }
     
-    @Test
-    public void test_happy() throws Exception {
+    @ParameterizedTest
+    @CsvSource("std_msgs/String, StringMessage.java")
+    public void test_happy(String msgFile, String expectedFile) throws Exception {
         new AssertRunCommand(COMMAND_PATH, "id.jrosmessages.test_msgs",
-                    inputFolder.toAbsolutePath().toString(), outputFolder.toString())
+                msgFile, outputFolder.toString())
                 .withReturnCode(0)
                 .withOutputConsumer(System.out::println)
                 .run();
-        assertFoldersEquals(Paths.get("").resolve("samples/expected"), outputFolder);
+        var expected = Files.readString(Paths.get("")
+                .resolve(Paths.get("samples", expectedFile)));
+        var actual = Files.readString(outputFolder.resolve(expectedFile));
+        assertEquals(expected, actual);
     }
 
-    private void assertFoldersEquals(Path expectedFolder, Path actualFolder) throws IOException {
-        Files.list(expectedFolder)
-            .forEach(Unchecked.wrapAccept(expectedFile -> {
-                var expected = Files.lines(expectedFile)
-                        .collect(Collectors.joining("\n"));
-                var actual = Files.lines(actualFolder.resolve(expectedFile.getFileName().toString()))
-                        .collect(Collectors.joining("\n"));
-                assertEquals(expected, actual);
-            }));
-    }
 }

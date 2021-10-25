@@ -45,7 +45,7 @@ import java.util.Arrays;
  */
 @MessageMetadata(
     type = CollisionObjectMessage.NAME,
-    md5sum = "63912510a0beeaaf29258dd0c5269e1d")
+    md5sum = "c5c6b7e6ac4834c0d55e2d6699b32509")
 public class CollisionObjectMessage implements Message {
    
    static final String NAME = "test_msgs/CollisionObject";

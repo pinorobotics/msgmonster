@@ -39,7 +39,7 @@ import java.util.Arrays;
  */
 @MessageMetadata(
     type = AllowedCollisionMatrixMessage.NAME,
-    md5sum = "dde23f050e07fb7be050b2676ad72200")
+    md5sum = "bc576a2c619c2ad019b895307f5743af")
 public class AllowedCollisionMatrixMessage implements Message {
    
    static final String NAME = "test_msgs/AllowedCollisionMatrix";
