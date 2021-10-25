@@ -396,9 +396,9 @@ public class MsgmonsterApp {
         writer.write(resourceUtils.readResource("imports"));
         var imports = new ArrayList<String>();
         for (var field: definition.getFields()) {
-            if (field.hasPrimitiveType()) continue;
             if (field.hasArrayType())
                 imports.add("import java.util.Arrays;");
+            if (field.hasPrimitiveType()) continue;
             if (field.hasBasicType() || field.hasForeignType() || field.hasStdMsgType()) {
                 imports.add(String.format(
                         "import %s;", field.getJavaFullType()));

@@ -24,13 +24,14 @@
 
 package id.jrosmessages.test_msgs;
 
-
 import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
 import id.kineticstreamer.annotations.Streamed;
 import id.xfunction.XJson;
+
+import java.util.Arrays;
 
 /**
  * Definition for test_msgs/AllowedCollisionEntry
