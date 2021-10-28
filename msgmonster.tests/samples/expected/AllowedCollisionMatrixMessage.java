@@ -116,10 +116,10 @@ public class AllowedCollisionMatrixMessage implements Message {
    @Override
    public String toString() {
        return XJson.asString(
-           "entry_names", Arrays.toString(entry_names),
-           "entry_values", Arrays.toString(entry_values),
-           "default_entry_names", Arrays.toString(default_entry_names),
-           "default_entry_values", Arrays.toString(default_entry_values)
+           "entry_names", List.of(entry_names),
+           "entry_values", List.of(entry_values),
+           "default_entry_names", List.of(default_entry_names),
+           "default_entry_values", List.of(default_entry_values)
        );
    }
    

@@ -264,14 +264,14 @@ public class CollisionObjectMessage implements Message {
            "pose", pose,
            "id", id,
            "type", type,
-           "primitives", Arrays.toString(primitives),
-           "primitive_poses", Arrays.toString(primitive_poses),
-           "meshes", Arrays.toString(meshes),
-           "mesh_poses", Arrays.toString(mesh_poses),
-           "planes", Arrays.toString(planes),
-           "plane_poses", Arrays.toString(plane_poses),
-           "subframe_names", Arrays.toString(subframe_names),
-           "subframe_poses", Arrays.toString(subframe_poses),
+           "primitives", List.of(primitives),
+           "primitive_poses", List.of(primitive_poses),
+           "meshes", List.of(meshes),
+           "mesh_poses", List.of(mesh_poses),
+           "planes", List.of(planes),
+           "plane_poses", List.of(plane_poses),
+           "subframe_names", List.of(subframe_names),
+           "subframe_poses", List.of(subframe_poses),
            "operation", operation
        );
    }

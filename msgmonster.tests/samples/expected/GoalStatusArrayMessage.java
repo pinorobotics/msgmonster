@@ -83,7 +83,7 @@ public class GoalStatusArrayMessage implements Message {
    public String toString() {
        return XJson.asString(
            "header", header,
-           "status_list", Arrays.toString(status_list)
+           "status_list", List.of(status_list)
        );
    }
    

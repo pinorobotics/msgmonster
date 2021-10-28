@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -136,7 +137,7 @@ public class MsgmonsterApp {
             for (int i = 0; i < fields.size(); i++) {
                 var field = fields.get(i);
                 if (field.hasArrayType()) {
-                    writer.write(String.format("%s\"%2$s\", Arrays.toString(%2$s)", ident, field.getName()));
+                    writer.write(String.format("%s\"%2$s\", List.of(%2$s)", ident, field.getName()));
                 } else {
                     writer.write(String.format("%s\"%2$s\", %2$s", ident, field.getName()));
                 }
