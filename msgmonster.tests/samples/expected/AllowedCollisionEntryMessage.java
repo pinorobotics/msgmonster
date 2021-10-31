@@ -72,7 +72,7 @@ public class AllowedCollisionEntryMessage implements Message {
    @Override
    public String toString() {
        return XJson.asString(
-           "enabled", List.of(enabled)
+           "enabled", enabled
        );
    }
    
