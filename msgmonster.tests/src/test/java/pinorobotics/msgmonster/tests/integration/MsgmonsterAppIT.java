@@ -47,7 +47,7 @@ public class MsgmonsterAppIT {
     public void test_happy(String msgFile, String expectedFile) throws Exception {
         new AssertRunCommand(
                         COMMAND_PATH, "id.jrosmessages.test_msgs", msgFile, outputFolder.toString())
-                .withReturnCode(0)
+                .assertReturnCode(0)
                 .withOutputConsumer(System.out::println)
                 .run();
         var expected = Files.readString(Paths.get("").resolve(Paths.get("samples", expectedFile)));

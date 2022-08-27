@@ -13,10 +13,12 @@ eclipse.classpath.file {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'io.github.lambdaprime:id.xfunction:19.0-SNAPSHOT'
+    implementation 'org.ainslec:picocog:1.0.7'
 
     // transitively export following dependency to tests project
-    apiElements fileTree(include: ['*.jar'], dir: 'libs')
+    apiElements 'io.github.lambdaprime:id.xfunction:19.0-SNAPSHOT'
+    apiElements 'org.ainslec:picocog:1.0.7'
 }
 
 jar { 
@@ -37,6 +39,7 @@ task createRelease(type: Zip) {
 }
 
 task copyLibs(type: Copy) {
+    from configurations.runtimeClasspath
     from "$projectDir/libs"
     from jar.archiveFile
     into "${packageDir}/libs"

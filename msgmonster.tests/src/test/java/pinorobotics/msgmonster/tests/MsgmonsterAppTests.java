@@ -19,7 +19,6 @@ package pinorobotics.msgmonster.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import id.xfunction.XAsserts;
 import id.xfunction.cli.CommandLineInterface;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,8 @@ public class MsgmonsterAppTests {
             var fileB = pathB.toFile();
             var c = (fileA.isDirectory() ? 1 : 0) + (fileB.isDirectory() ? 1 : 0);
             if (c == 2) continue;
-            XAsserts.assertTrue(c == 0, String.format("Folder missmatch: %s != %s", pathA, pathB));
+            Assertions.assertTrue(
+                    c == 0, String.format("Folder missmatch: %s != %s", pathA, pathB));
             assertEquals(Files.readString(pathA), Files.readString(pathB));
         }
     }

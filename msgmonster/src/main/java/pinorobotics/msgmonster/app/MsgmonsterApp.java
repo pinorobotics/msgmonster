@@ -17,8 +17,8 @@
  */
 package pinorobotics.msgmonster.app;
 
+import id.xfunction.Preconditions;
 import id.xfunction.ResourceUtils;
-import id.xfunction.XAsserts;
 import id.xfunction.cli.ArgumentParsingException;
 import id.xfunction.cli.CommandLineInterface;
 import id.xfunction.function.Unchecked;
@@ -280,7 +280,7 @@ public class MsgmonsterApp {
             if (line.trim().startsWith("#")) continue;
             fieldLineNums.add(i);
         }
-        XAsserts.assertTrue(!fieldLineNums.isEmpty(), "No fields in " + msgFile);
+        Preconditions.isTrue(!fieldLineNums.isEmpty(), "No fields in " + msgFile);
         var pos = lines.indexOf("");
         var msgComment = "";
         if (pos < 0) pos = 0;
