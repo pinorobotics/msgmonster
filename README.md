@@ -19,10 +19,12 @@ Download [latest prerelease version](https://github.com/pinorobotics/msgmonster/
 # Usage
 
 ```bash
-msgmonster <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
+msgmonster <ROS_VERSION> <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
 ```
 
 Where: 
+
+- `ROS_VERSION` - version of ROS for which message is generated (ros1, ros2)
 
 - `JAVA_PACKAGE_NAME` - name of the Java package to which all generated messages would belong
 
@@ -42,7 +44,7 @@ msgmonster
 Generate messages defined in actionlib_msgs package:
 
 ``` bash
-msgmonster myros.actionlib_msgs actionlib_msgs /tmp/actionlib_msgs
+msgmonster ros1 myros.actionlib_msgs actionlib_msgs /tmp/actionlib_msgs
 ```
 
 # Links

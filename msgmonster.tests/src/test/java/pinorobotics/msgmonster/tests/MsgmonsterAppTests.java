@@ -54,13 +54,15 @@ public class MsgmonsterAppTests {
         msgmonsterApp =
                 new MsgmonsterApp(
                         new CommandLineInterface(System.in, baos, baos),
-                        new RosMsgCommandMock(Paths.get("").resolve("samples")));
+                        rosVersion -> new RosMsgCommandMock(Paths.get("").resolve("samples")));
     }
 
     @Test
     public void test_happy() throws Exception {
         msgmonsterApp.run(
-                new String[] {"id.jrosmessages.test_msgs", "test_msgs", outputFolder.toString()});
+                new String[] {
+                    "ros1", "id.jrosmessages.test_msgs", "test_msgs", outputFolder.toString()
+                });
         assertFolderEquals(Paths.get("").resolve("samples/expected"), outputFolder);
     }
 

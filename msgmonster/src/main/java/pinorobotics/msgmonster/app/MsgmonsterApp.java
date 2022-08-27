@@ -46,27 +46,31 @@ public class MsgmonsterApp {
     private Formatter formatter = new Formatter();
     private Map<String, String> substitution = new HashMap<>();
     private Substitutor substitutor = new Substitutor();
+    private RosVersion rosVersion;
     private Path packageName;
     private RosMsgCommand rosmsg;
+    private RosMsgCommandFactory rosCommandFactory;
 
     private static void usage() {
         resourceUtils.readResourceAsStream("README.md").forEach(System.out::println);
     }
 
-    public MsgmonsterApp(CommandLineInterface cli, RosMsgCommand rosmsg) {
+    public MsgmonsterApp(CommandLineInterface cli, RosMsgCommandFactory rosCommandFactory) {
         this.cli = cli;
-        this.rosmsg = rosmsg;
+        this.rosCommandFactory = rosCommandFactory;
     }
 
     public void run(String[] args) throws Exception {
-        if (args.length < 3) {
+        if (args.length < 4) {
             usage();
             return;
         }
-        packageName = Paths.get(args[0]);
-        outputFolder = Paths.get(args[2]);
+        rosVersion = RosVersion.valueOf(args[0]);
+        rosmsg = rosCommandFactory.create(rosVersion);
+        packageName = Paths.get(args[1]);
+        outputFolder = Paths.get(args[3]);
         outputFolder.toFile().mkdirs();
-        Path input = Paths.get(args[1]);
+        Path input = Paths.get(args[2]);
         if (!rosmsg.isPackage(input)) {
             generateJavaClass(input);
         } else {
@@ -78,7 +82,14 @@ public class MsgmonsterApp {
 
     public static void main(String[] args) throws Exception {
         try {
-            new MsgmonsterApp(new CommandLineInterface(), new RosMsgCommand()).run(args);
+            new MsgmonsterApp(
+                            new CommandLineInterface(),
+                            rosVersion ->
+                                    switch (rosVersion) {
+                                        case ros1 -> new Ros1MsgCommand();
+                                        case ros2 -> new Ros2MsgCommand();
+                                    })
+                    .run(args);
         } catch (ArgumentParsingException e) {
             usage();
         }
@@ -97,7 +108,7 @@ public class MsgmonsterApp {
         PicoWriter topWriter = new PicoWriter();
         generateHeader(topWriter, definition.getName());
         substitution.put("${msgName}", definition.getName());
-        substitution.put("${md5sum}", rosmsg.calcMd5Sum(msgFile));
+        rosmsg.calcMd5Sum(msgFile).ifPresent(md5 -> substitution.put("${md5sum}", md5));
         topWriter.writeln(String.format("package %s;", packageName));
         topWriter.writeln();
         generateImports(topWriter, definition);

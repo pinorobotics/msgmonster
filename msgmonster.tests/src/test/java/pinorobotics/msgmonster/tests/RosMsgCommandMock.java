@@ -22,10 +22,11 @@ import id.xfunction.function.Unchecked;
 import id.xfunction.nio.file.XPaths;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.stream.Stream;
 import pinorobotics.msgmonster.app.RosMsgCommand;
 
-public class RosMsgCommandMock extends RosMsgCommand {
+public class RosMsgCommandMock implements RosMsgCommand {
 
     private Path folder;
 
@@ -47,8 +48,8 @@ public class RosMsgCommandMock extends RosMsgCommand {
     }
 
     @Override
-    public String calcMd5Sum(Path msgFile) {
-        return Unchecked.get(() -> XUtils.md5Sum(msgFile.toString()));
+    public Optional<String> calcMd5Sum(Path msgFile) {
+        return Optional.of(Unchecked.get(() -> XUtils.md5Sum(msgFile.toString())));
     }
 
     @Override
@@ -56,6 +57,7 @@ public class RosMsgCommandMock extends RosMsgCommand {
         return Unchecked.get(() -> Files.lines(folder.resolve(msgFile.toString() + ".msg")));
     }
 
+    @Override
     public boolean isPackage(Path input) {
         return true;
     }

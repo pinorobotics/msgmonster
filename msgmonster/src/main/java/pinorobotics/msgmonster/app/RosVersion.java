@@ -17,18 +17,10 @@
  */
 package pinorobotics.msgmonster.app;
 
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-public interface RosMsgCommand {
-    boolean isPackage(Path input);
-
-    Stream<Path> listMessageFiles(Path rosPackage);
-
-    default Optional<String> calcMd5Sum(Path msgFile) {
-        return Optional.empty();
-    }
-
-    Stream<String> lines(Path msgFile);
+/**
+ * @author lambdaprime intid@protonmail.com
+ */
+public enum RosVersion {
+    ros1,
+    ros2
 }
