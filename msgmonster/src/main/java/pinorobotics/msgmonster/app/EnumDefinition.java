@@ -15,15 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Authors:
- * - aeon_flux <aeon_flux@eclipso.ch>
- */
 package pinorobotics.msgmonster.app;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author aeon_flux aeon_flux@eclipso.ch
+ */
 public class EnumDefinition {
 
     private List<Field> fields = new ArrayList<>();
@@ -31,7 +30,7 @@ public class EnumDefinition {
     public void addField(String type, String name, String value, String comment) {
         fields.add(new Field(name, type, value, comment));
     }
-    
+
     public String toString() {
         var buf = new StringBuilder();
         for (int i = 0; i < fields.size(); i++) {

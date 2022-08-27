@@ -1,12 +1,13 @@
 plugins {
+    id 'com.diffplug.spotless'
     id 'java'
 }
 
-apply plugin : 'eclipse'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
+eclipse.classpath.file {
+    // instruct eclipse plugin to put everything to module path
+    whenMerged {
+        entries.findAll { it.kind == 'lib' }.each { it.entryAttributes['module'] = 'true' }
+    }
 }
 
 dependencies {
@@ -16,9 +17,6 @@ dependencies {
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.4.2')
     testRuntimeOnly("org.junit.platform:junit-platform-commons:1.7.0")
 }
-
-sourceCompatibility = '11'
-targetCompatibility = '11'
 
 String testDir = "$buildDir/${projectName}"
 String testSrcDir = "$projectDir/src/test"
@@ -30,14 +28,16 @@ task myTestCopy(type: Copy) {
     into "$buildDir"
 }
 
-java {
-    modularity.inferModulePath = true
-}
-
 test {
     useJUnitPlatform()
+    testLogging {
+        events "started", "failed"
+    }
 }
 
 myTestCopy.dependsOn project(':msgmonster').createRelease
 compileTestJava.dependsOn myTestCopy
 jar.dependsOn myTestCopy
+
+// run spotless and format code before the build
+testClasses.dependsOn spotlessApply

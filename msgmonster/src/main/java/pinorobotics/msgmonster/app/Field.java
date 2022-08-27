@@ -15,30 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Authors:
- * - aeon_flux <aeon_flux@eclipso.ch>
- */
 package pinorobotics.msgmonster.app;
 
 import java.util.Map;
 
+/**
+ * @author aeon_flux aeon_flux@eclipso.ch
+ */
 public class Field {
-    private static final Map<String, String> PRIMITIVES_TYPE_MAP = Map.of(
-            "float64", "double",
-            "float32", "float",
-            "uint32", "int",
-            "uint8", "byte",
-            "byte", "byte",
-            "bool", "boolean",
-            "int8", "byte");
-    private static final Map<String, String> BASIC_TYPE_MAP = Map.of(
-            "time", "Time",
-            "duration", "Duration");
-    private static final Map<String, String> STDMSG_TYPE_MAP = Map.of(
-            "Header", "HeaderMessage",
-            "string", "StringMessage",
-            "int32", "Int32Message");
+    private static final Map<String, String> PRIMITIVES_TYPE_MAP =
+            Map.of(
+                    "float64", "double",
+                    "float32", "float",
+                    "uint32", "int",
+                    "uint8", "byte",
+                    "byte", "byte",
+                    "bool", "boolean",
+                    "int8", "byte");
+    private static final Map<String, String> BASIC_TYPE_MAP =
+            Map.of(
+                    "time", "Time",
+                    "duration", "Duration");
+    private static final Map<String, String> STDMSG_TYPE_MAP =
+            Map.of(
+                    "Header", "HeaderMessage",
+                    "string", "StringMessage",
+                    "int32", "Int32Message");
     private Formatter formatter = new Formatter();
     private String name, type, comment;
     private String value;
@@ -63,15 +65,14 @@ public class Field {
     public String getComment() {
         return comment;
     }
-    
+
     public String getValue() {
         return value;
     }
-    
+
     @Override
     public String toString() {
-        return String.format("%s <%s> [%s] {%s}\n", name, type,
-                value, comment);
+        return String.format("%s <%s> [%s] {%s}\n", name, type, value, comment);
     }
 
     public boolean hasArrayType() {
@@ -89,7 +90,7 @@ public class Field {
     public String getJavaType() {
         return getJavaType(type);
     }
-    
+
     private String getJavaType(String type) {
         if (hasBasicType()) {
             return BASIC_TYPE_MAP.get(type);
@@ -103,9 +104,7 @@ public class Field {
         return formatter.formatAsJavaClassName(type);
     }
 
-    /**
-     * Type which belongs to different ROS package
-     */
+    /** Type which belongs to different ROS package */
     public boolean hasForeignType() {
         return type.contains("/");
     }
@@ -115,14 +114,12 @@ public class Field {
     }
 
     private String getJavaFullType(String type) {
-        if (hasBasicType())
-            return "id.jrosmessages.primitives." + getJavaType();
-        if (hasStdMsgType())
-            return "id.jrosmessages.std_msgs." + getJavaType();
+        if (hasBasicType()) return "id.jrosmessages.primitives." + getJavaType();
+        if (hasStdMsgType()) return "id.jrosmessages.std_msgs." + getJavaType();
         if (hasPrimitiveType()) return getJavaType();
         return "id.jrosmessages." + type.replace("/", ".") + "Message";
     }
-    
+
     public boolean hasStdMsgType() {
         return STDMSG_TYPE_MAP.containsKey(type);
     }

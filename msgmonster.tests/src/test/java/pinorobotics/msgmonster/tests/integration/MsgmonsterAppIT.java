@@ -15,50 +15,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Authors:
- * - aeon_flux <aeon_flux@eclipso.ch>
- */
 package pinorobotics.msgmonster.tests.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import id.xfunction.AssertRunCommand;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import id.xfunction.AssertRunCommand;
-
+/**
+ * @author aeon_flux aeon_flux@eclipso.ch
+ */
 public class MsgmonsterAppIT {
 
-    private static final String COMMAND_PATH = Paths.get("")
-            .toAbsolutePath()
-            .resolve("build/msgmonster/msgmonster")
-            .toString();
+    private static final String COMMAND_PATH =
+            Paths.get("").toAbsolutePath().resolve("build/msgmonster/msgmonster").toString();
     private static Path outputFolder;
 
     @BeforeAll
     public static void setup() throws IOException {
         outputFolder = Files.createTempDirectory("msgmonster");
     }
-    
+
     @ParameterizedTest
     @CsvSource("std_msgs/String, StringMessage.java")
     public void test_happy(String msgFile, String expectedFile) throws Exception {
-        new AssertRunCommand(COMMAND_PATH, "id.jrosmessages.test_msgs",
-                msgFile, outputFolder.toString())
+        new AssertRunCommand(
+                        COMMAND_PATH, "id.jrosmessages.test_msgs", msgFile, outputFolder.toString())
                 .withReturnCode(0)
                 .withOutputConsumer(System.out::println)
                 .run();
-        var expected = Files.readString(Paths.get("")
-                .resolve(Paths.get("samples", expectedFile)));
+        var expected = Files.readString(Paths.get("").resolve(Paths.get("samples", expectedFile)));
         var actual = Files.readString(outputFolder.resolve(expectedFile));
         assertEquals(expected, actual);
     }
-
 }

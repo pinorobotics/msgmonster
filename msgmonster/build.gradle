@@ -1,9 +1,15 @@
 plugins {
     id 'java'
+    id 'com.diffplug.spotless'
 }
 
-repositories {
-    mavenCentral()
+apply plugin : 'eclipse'
+
+eclipse.classpath.file {
+    // instruct eclipse plugin to put everything to module path
+    whenMerged {
+        entries.findAll { it.kind == 'lib' }.each { it.entryAttributes['module'] = 'true' }
+    }
 }
 
 dependencies {
@@ -13,18 +19,11 @@ dependencies {
     apiElements fileTree(include: ['*.jar'], dir: 'libs')
 }
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
-
 jar { 
     manifest { 
         attributes 'Implementation-Version': "${rootProject.version}",
                    'Main-Class': 'id.msgmonster.app.MsgmonsterApp'
     }
-}
-
-java {
-    modularity.inferModulePath = true
 }
 
 def packageDir = "$buildDir/package/${projectName}"
@@ -65,3 +64,6 @@ createRelease.dependsOn createPackage
 assemble.dependsOn createRelease
 clean.dependsOn cleanRelease
 processResources.dependsOn copyReadme
+
+// run spotless and format code before the build
+classes.dependsOn spotlessApply

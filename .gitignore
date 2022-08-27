@@ -4,3 +4,6 @@
 **/.settings/
 **/src/gen/
 **/bld/
+**/.project
+**/.classpath
+/**/release/*-SNAPSHOT.zip

@@ -15,12 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Authors:
- * - aeon_flux <aeon_flux@eclipso.ch>
- */
 package pinorobotics.msgmonster.app;
 
+import id.xfunction.ResourceUtils;
+import id.xfunction.XAsserts;
+import id.xfunction.cli.ArgumentParsingException;
+import id.xfunction.cli.CommandLineInterface;
+import id.xfunction.function.Unchecked;
+import id.xfunction.text.Substitutor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,16 +33,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-
 import org.ainslec.picocog.PicoWriter;
 
-import id.xfunction.ResourceUtils;
-import id.xfunction.XAsserts;
-import id.xfunction.cli.ArgumentParsingException;
-import id.xfunction.cli.CommandLineInterface;
-import id.xfunction.function.Unchecked;
-import id.xfunction.text.Substitutor;
-
+/**
+ * @author aeon_flux aeon_flux@eclipso.ch
+ */
 public class MsgmonsterApp {
 
     private static final ResourceUtils resourceUtils = new ResourceUtils();
@@ -53,21 +50,20 @@ public class MsgmonsterApp {
     private RosMsgCommand rosmsg;
 
     private static void usage() {
-        resourceUtils.readResourceAsStream("README.md")
-            .forEach(System.out::println);
+        resourceUtils.readResourceAsStream("README.md").forEach(System.out::println);
     }
 
     public MsgmonsterApp(CommandLineInterface cli, RosMsgCommand rosmsg) {
         this.cli = cli;
         this.rosmsg = rosmsg;
     }
-    
+
     public void run(String[] args) throws Exception {
         if (args.length < 3) {
             usage();
             return;
         }
-        packageName =  Paths.get(args[0]);
+        packageName = Paths.get(args[0]);
         outputFolder = Paths.get(args[2]);
         outputFolder.toFile().mkdirs();
         Path input = Paths.get(args[1]);
@@ -75,8 +71,8 @@ public class MsgmonsterApp {
             generateJavaClass(input);
         } else {
             rosmsg.listMessageFiles(input)
-                //.limit(1)
-                .forEach(Unchecked.wrapAccept(this::generateJavaClass));
+                    // .limit(1)
+                    .forEach(Unchecked.wrapAccept(this::generateJavaClass));
         }
     }
 
@@ -102,13 +98,11 @@ public class MsgmonsterApp {
         generateHeader(topWriter, definition.getName());
         substitution.put("${msgName}", definition.getName());
         substitution.put("${md5sum}", rosmsg.calcMd5Sum(msgFile));
-        topWriter.writeln(String.format("package %s;",
-                packageName));
+        topWriter.writeln(String.format("package %s;", packageName));
         topWriter.writeln();
         generateImports(topWriter, definition);
         generateClassHeader(topWriter, definition);
-        topWriter.writeln_r(String.format("public class %s implements Message {",
-                className));
+        topWriter.writeln_r(String.format("public class %s implements Message {", className));
         substitution.put("${className}", className);
         var memvarWriter = topWriter.createDeferredWriter();
         memvarWriter.writeln();
@@ -126,78 +120,100 @@ public class MsgmonsterApp {
     }
 
     private void generateToString(PicoWriter writer, MessageDefinition definition) {
-        resourceUtils.readResourceAsStream("toString").forEach(line -> {
-            if (!line.contains("${...}")) {
-                writer.writeln(line);
-                return;
-            }
-            var ident = line.substring(0, line.length() - line.stripLeading().length());
-            var fields = definition.getFields();
-            for (int i = 0; i < fields.size(); i++) {
-                var field = fields.get(i);
-                if (field.hasArrayType()) {
-                    writer.write(String.format("%s\"%2$s\", %2$s", ident, field.getName()));
-                } else {
-                    writer.write(String.format("%s\"%2$s\", %2$s", ident, field.getName()));
-                }
-                if (i == fields.size() - 1)
-                    writer.writeln("");
-                else
-                    writer.writeln(",");
-            }
-        });
+        resourceUtils
+                .readResourceAsStream("toString")
+                .forEach(
+                        line -> {
+                            if (!line.contains("${...}")) {
+                                writer.writeln(line);
+                                return;
+                            }
+                            var ident =
+                                    line.substring(0, line.length() - line.stripLeading().length());
+                            var fields = definition.getFields();
+                            for (int i = 0; i < fields.size(); i++) {
+                                var field = fields.get(i);
+                                if (field.hasArrayType()) {
+                                    writer.write(
+                                            String.format(
+                                                    "%s\"%2$s\", %2$s", ident, field.getName()));
+                                } else {
+                                    writer.write(
+                                            String.format(
+                                                    "%s\"%2$s\", %2$s", ident, field.getName()));
+                                }
+                                if (i == fields.size() - 1) writer.writeln("");
+                                else writer.writeln(",");
+                            }
+                        });
     }
 
     private void generateEquals(PicoWriter writer, MessageDefinition definition) {
-        resourceUtils.readResourceAsStream("equals").forEach(line -> {
-            if (!line.contains("${...}")) {
-                writer.writeln(line);
-                return;
-            }
-            var ident = line.substring(0, line.length() - line.stripLeading().length());
-            var fields = definition.getFields();
-            for (int i = 0; i < fields.size(); i++) {
-                var field = fields.get(i);
-                if (field.hasArrayType()) {
-                    writer.write(String.format("%sArrays.equals(%2$s, other.%2$s)", ident, field.getName()));
-                } else if (field.hasPrimitiveType()) {
-                    writer.write(String.format("%s%2$s == other.%2$s", ident, field.getName()));
-                } else {
-                    writer.write(String.format("%sObjects.equals(%2$s, other.%2$s)", ident, field.getName()));
-                }
-                if (i == fields.size() - 1)
-                    writer.writeln("");
-                else
-                    writer.writeln(" &&");
-            }
-        });
+        resourceUtils
+                .readResourceAsStream("equals")
+                .forEach(
+                        line -> {
+                            if (!line.contains("${...}")) {
+                                writer.writeln(line);
+                                return;
+                            }
+                            var ident =
+                                    line.substring(0, line.length() - line.stripLeading().length());
+                            var fields = definition.getFields();
+                            for (int i = 0; i < fields.size(); i++) {
+                                var field = fields.get(i);
+                                if (field.hasArrayType()) {
+                                    writer.write(
+                                            String.format(
+                                                    "%sArrays.equals(%2$s, other.%2$s)",
+                                                    ident, field.getName()));
+                                } else if (field.hasPrimitiveType()) {
+                                    writer.write(
+                                            String.format(
+                                                    "%s%2$s == other.%2$s",
+                                                    ident, field.getName()));
+                                } else {
+                                    writer.write(
+                                            String.format(
+                                                    "%sObjects.equals(%2$s, other.%2$s)",
+                                                    ident, field.getName()));
+                                }
+                                if (i == fields.size() - 1) writer.writeln("");
+                                else writer.writeln(" &&");
+                            }
+                        });
     }
 
     private void generateHashCode(PicoWriter writer, MessageDefinition definition) {
-        resourceUtils.readResourceAsStream("hash_code").forEach(line -> {
-            if (!line.contains("${...}")) {
-                writer.writeln(line);
-                return;
-            }
-            var ident = line.substring(0, line.length() - line.stripLeading().length());
-            var fields = definition.getFields();
-            for (int i = 0; i < fields.size(); i++) {
-                var field = fields.get(i);
-                if (field.hasArrayType()) {
-                    writer.write(String.format("%sArrays.hashCode(%s)", ident, field.getName()));
-                } else {
-                    writer.write(String.format("%s%s", ident, field.getName()));
-                }
-                if (i == fields.size() - 1)
-                    writer.writeln("");
-                else
-                    writer.writeln(",");
-            }
-        });
+        resourceUtils
+                .readResourceAsStream("hash_code")
+                .forEach(
+                        line -> {
+                            if (!line.contains("${...}")) {
+                                writer.writeln(line);
+                                return;
+                            }
+                            var ident =
+                                    line.substring(0, line.length() - line.stripLeading().length());
+                            var fields = definition.getFields();
+                            for (int i = 0; i < fields.size(); i++) {
+                                var field = fields.get(i);
+                                if (field.hasArrayType()) {
+                                    writer.write(
+                                            String.format(
+                                                    "%sArrays.hashCode(%s)",
+                                                    ident, field.getName()));
+                                } else {
+                                    writer.write(String.format("%s%s", ident, field.getName()));
+                                }
+                                if (i == fields.size() - 1) writer.writeln("");
+                                else writer.writeln(",");
+                            }
+                        });
     }
 
     private void generateWithMethods(PicoWriter writer, MessageDefinition definition) {
-        for (var field: definition.getFields()) {
+        for (var field : definition.getFields()) {
             var body = resourceUtils.readResource("with_method");
             Map<String, String> substitution = new HashMap<>(this.substitution);
             if (field.hasArrayType()) {
@@ -206,7 +222,8 @@ public class MsgmonsterApp {
                 substitution.put("${fieldType}", field.getJavaType());
             }
             substitution.put("${fieldName}", field.getName());
-            substitution.put("${methodName}", "with" + formatter.formatAsMethodName("_" + field.getName()));
+            substitution.put(
+                    "${methodName}", "with" + formatter.formatAsMethodName("_" + field.getName()));
             body = substitutor.substitute(body, substitution);
             writeWithIdent(writer, body);
         }
@@ -214,10 +231,10 @@ public class MsgmonsterApp {
 
     private void generateEnums(PicoWriter writer, MessageDefinition definition) {
         var body = resourceUtils.readResource("enum_field");
-        for (var enumDef: definition.getEnums()) {
+        for (var enumDef : definition.getEnums()) {
             writer.writeln_r("public enum UnknownType {");
             var memvarWriter = writer.createDeferredWriter();
-            for (var field: enumDef.getFields()) {
+            for (var field : enumDef.getFields()) {
                 writeField(memvarWriter, body, field);
             }
             writer.writeln_l("}");
@@ -233,7 +250,7 @@ public class MsgmonsterApp {
         }
         writer.writeln(" */");
     }
-    
+
     private void writeField(PicoWriter writer, String fieldTemplate, Field field) {
         Map<String, String> substitution = new HashMap<>();
         substitution.put("${fieldType}", field.getJavaType());
@@ -248,9 +265,10 @@ public class MsgmonsterApp {
     }
 
     private MessageDefinition readMessageDefinition(Path msgFile) throws IOException {
-        var lines = rosmsg.lines(msgFile)
-            .map(String::trim)
-            .collect(Collectors.toCollection(ArrayList<String>::new));
+        var lines =
+                rosmsg.lines(msgFile)
+                        .map(String::trim)
+                        .collect(Collectors.toCollection(ArrayList<String>::new));
         while (!lines.isEmpty()) {
             if (!lines.get(0).isEmpty()) break;
             lines.remove(0);
@@ -271,20 +289,21 @@ public class MsgmonsterApp {
             // separated from the rest of text with empty line
             // We decide that they does not belong to the field so we use them
             // as message definition comments
-            msgComment = lines.subList(0, pos).stream()
-                .collect(Collectors.joining("\n"));
+            msgComment = lines.subList(0, pos).stream().collect(Collectors.joining("\n"));
         } else {
             pos = 0;
         }
         if (fieldLineNums.size() > 1) {
             // if there are many fields and only one comment on the top
             // then
-            var fields = lines.subList(fieldLineNums.get(0), lines.size()).stream()
-                    .filter(s -> !s.isEmpty())
-                    .collect(Collectors.toList());
+            var fields =
+                    lines.subList(fieldLineNums.get(0), lines.size()).stream()
+                            .filter(s -> !s.isEmpty())
+                            .collect(Collectors.toList());
             if (fields.size() == fieldLineNums.size()) {
-                msgComment = lines.subList(0, fieldLineNums.get(0)).stream()
-                        .collect(Collectors.joining("\n"));
+                msgComment =
+                        lines.subList(0, fieldLineNums.get(0)).stream()
+                                .collect(Collectors.joining("\n"));
                 pos = fieldLineNums.get(0);
             }
         }
@@ -311,18 +330,17 @@ public class MsgmonsterApp {
             }
             var scanner = new Scanner(buf[0].trim());
             scanner.useDelimiter("[\\s+=]+");
-//            while (scanner.hasNext())
-//                System.out.println(scanner.next());
+            //            while (scanner.hasNext())
+            //                System.out.println(scanner.next());
             var type = scanner.next();
             var name = scanner.next();
-            var value = scanner.hasNext()? scanner.next(): "";
+            var value = scanner.hasNext() ? scanner.next() : "";
             var comment = commentBuf.toString();
             commentBuf.setLength(0);
             try {
                 var id = Integer.parseInt(value);
                 if (id == 0) {
-                    if (curEnum != null)
-                        def.addEnum(curEnum);
+                    if (curEnum != null) def.addEnum(curEnum);
                     curEnum = new EnumDefinition();
                 }
                 if (id == curEnum.getFields().size()) {
@@ -347,11 +365,11 @@ public class MsgmonsterApp {
     }
 
     private void generateClassFields(PicoWriter writer, MessageDefinition definition) {
-        for (var field: definition.getFields()) {
+        for (var field : definition.getFields()) {
             var body = "";
             if (field.hasArrayType()) {
                 body = resourceUtils.readResource("class_field_array");
-            } else if (field.hasPrimitiveType()){
+            } else if (field.hasPrimitiveType()) {
                 body = resourceUtils.readResource("class_field_primitive");
             } else {
                 body = resourceUtils.readResource("class_field");
@@ -359,20 +377,19 @@ public class MsgmonsterApp {
             writeField(writer, body, field);
         }
     }
-    
+
     /**
-     * If you send multiline text to PicoWriter with single writeln it will
-     * align only first line, the rest of lines will not be aligned which result in:
-     * 
-     *    // first line aligned
-     * // rest of lines are not
-     * 
-     * To fix that we need to send each line separately.
+     * If you send multiline text to PicoWriter with single writeln it will align only first line,
+     * the rest of lines will not be aligned which result in:
+     *
+     * <p>// first line aligned // rest of lines are not
+     *
+     * <p>To fix that we need to send each line separately.
      */
     private void writeWithIdent(PicoWriter writer, String body) {
         // iterate over chars since we need to wrint empty lines too
         var buf = new StringBuilder();
-        for (var ch: body.toCharArray()) {
+        for (var ch : body.toCharArray()) {
             if (ch != '\n') {
                 buf.append(ch);
                 continue;
@@ -395,21 +412,16 @@ public class MsgmonsterApp {
     private void generateImports(PicoWriter writer, MessageDefinition definition) {
         writer.write(resourceUtils.readResource("imports"));
         var imports = new ArrayList<String>();
-        for (var field: definition.getFields()) {
-            if (field.hasArrayType())
-                imports.add("import java.util.Arrays;");
+        for (var field : definition.getFields()) {
+            if (field.hasArrayType()) imports.add("import java.util.Arrays;");
             if (field.hasPrimitiveType()) continue;
             if (field.hasBasicType() || field.hasForeignType() || field.hasStdMsgType()) {
-                imports.add(String.format(
-                        "import %s;", field.getJavaFullType()));
+                imports.add(String.format("import %s;", field.getJavaFullType()));
             } else {
-                //throw new XRE("Type %s is unknown", field.getType());
+                // throw new XRE("Type %s is unknown", field.getType());
             }
         }
-        imports.stream()
-            .sorted()
-            .distinct()
-            .forEach(writer::writeln);
+        imports.stream().sorted().distinct().forEach(writer::writeln);
         writer.writeln();
     }
 
@@ -420,5 +432,4 @@ public class MsgmonsterApp {
         header = substitutor.substitute(header, substitution);
         writer.write(header);
     }
-    
 }

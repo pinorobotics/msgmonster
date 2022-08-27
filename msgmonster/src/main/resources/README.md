@@ -7,9 +7,9 @@
 
 # Download
 
-You can download **msgmonster** release versions from [here](https://github.com/pinorobotics/msgmonster/releases)
+Download [release versions](https://github.com/pinorobotics/msgmonster/releases)
 
-Latest prerelease version can be found [here](https://github.com/pinorobotics/msgmonster/tree/main/msgmonster/release)
+Download [latest prerelease version](https://github.com/pinorobotics/msgmonster/tree/main/msgmonster/release)
 
 # Requirements
 
@@ -44,6 +44,10 @@ Generate messages defined in actionlib_msgs package:
 ``` bash
 msgmonster myros.actionlib_msgs actionlib_msgs /tmp/actionlib_msgs
 ```
+
+# Links
+
+[Development](DEVELOPMENT.md)
 
 # Contributors
 
