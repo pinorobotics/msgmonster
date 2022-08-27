@@ -1,3 +1,2 @@
-@Streamed
 public ${fieldType}[] ${fieldName} = new ${fieldType}[0];
 

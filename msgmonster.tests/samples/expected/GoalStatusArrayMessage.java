@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
-import id.kineticstreamer.annotations.Streamed;
 import id.xfunction.XJson;
 
 import id.jrosmessages.std_msgs.HeaderMessage;
@@ -46,10 +45,8 @@ public class GoalStatusArrayMessage implements Message {
    
    static final String NAME = "test_msgs/GoalStatusArray";
 
-   @Streamed
    public HeaderMessage header = new HeaderMessage();
    
-   @Streamed
    public GoalStatusMessage[] status_list = new GoalStatusMessage[0];
    
    public GoalStatusArrayMessage withHeader(HeaderMessage header) {

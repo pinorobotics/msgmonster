@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
-import id.kineticstreamer.annotations.Streamed;
 import id.xfunction.XJson;
 
 import id.jrosmessages.std_msgs.StringMessage;
@@ -47,14 +46,12 @@ public class AllowedCollisionMatrixMessage implements Message {
    /**
     * The list of entry names in the matrix
     */
-   @Streamed
    public StringMessage[] entry_names = new StringMessage[0];
    
    /**
     * The individual entries in the allowed collision matrix
     * square, symmetric, with same order as entry_names
     */
-   @Streamed
    public AllowedCollisionEntryMessage[] entry_values = new AllowedCollisionEntryMessage[0];
    
    /**
@@ -66,10 +63,8 @@ public class AllowedCollisionMatrixMessage implements Message {
     * specified in the list below. If both n1 and n2 are found in the list
     * of defaults, the result is computed with an AND operation
     */
-   @Streamed
    public StringMessage[] default_entry_names = new StringMessage[0];
    
-   @Streamed
    public boolean[] default_entry_values = new boolean[0];
    
    public AllowedCollisionMatrixMessage withEntryNames(StringMessage... entry_names) {

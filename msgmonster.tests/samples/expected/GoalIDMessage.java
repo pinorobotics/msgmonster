@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
-import id.kineticstreamer.annotations.Streamed;
 import id.xfunction.XJson;
 
 import id.jrosmessages.primitives.Time;
@@ -49,7 +48,6 @@ public class GoalIDMessage implements Message {
     * It is used by an action server when it tries to preempt all
     * goals that were requested before a certain time
     */
-   @Streamed
    public Time stamp = new Time();
    
    /**
@@ -57,7 +55,6 @@ public class GoalIDMessage implements Message {
     * result message with specific goal requests. The id
     * specified must be unique.
     */
-   @Streamed
    public StringMessage id = new StringMessage();
    
    public GoalIDMessage withStamp(Time stamp) {

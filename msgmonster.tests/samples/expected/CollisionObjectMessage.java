@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
-import id.kineticstreamer.annotations.Streamed;
 import id.xfunction.XJson;
 
 import id.jrosmessages.geometry_msgs.PoseMessage;
@@ -78,7 +77,6 @@ public class CollisionObjectMessage implements Message {
    /**
     * A header, used for interpreting the poses
     */
-   @Streamed
    public HeaderMessage header = new HeaderMessage();
    
    /**
@@ -90,19 +88,16 @@ public class CollisionObjectMessage implements Message {
     * The object's pose relative to the header frame.
     * The shapes and subframe poses are defined relative to this pose.
     */
-   @Streamed
    public PoseMessage pose = new PoseMessage();
    
    /**
     * The id of the object (name used in MoveIt)
     */
-   @Streamed
    public StringMessage id = new StringMessage();
    
    /**
     * The object type in a database of known objects
     */
-   @Streamed
    public ObjectTypeMessage type = new ObjectTypeMessage();
    
    /**
@@ -110,28 +105,22 @@ public class CollisionObjectMessage implements Message {
     * Their poses are with respect to the object's pose
     * Solid geometric primitives
     */
-   @Streamed
    public SolidPrimitiveMessage[] primitives = new SolidPrimitiveMessage[0];
    
-   @Streamed
    public PoseMessage[] primitive_poses = new PoseMessage[0];
    
    /**
     * Meshes
     */
-   @Streamed
    public MeshMessage[] meshes = new MeshMessage[0];
    
-   @Streamed
    public PoseMessage[] mesh_poses = new PoseMessage[0];
    
    /**
     * Bounding planes (equation is specified, but the plane can be oriented using an additional pose)
     */
-   @Streamed
    public PlaneMessage[] planes = new PlaneMessage[0];
    
-   @Streamed
    public PoseMessage[] plane_poses = new PoseMessage[0];
    
    /**
@@ -141,16 +130,13 @@ public class CollisionObjectMessage implements Message {
     * "screwdriver/tip" for planning.
     * The length of the subframe_names and subframe_poses has to be identical.
     */
-   @Streamed
    public StringMessage[] subframe_names = new StringMessage[0];
    
-   @Streamed
    public PoseMessage[] subframe_poses = new PoseMessage[0];
    
    /**
     * Operation to be performed
     */
-   @Streamed
    public byte operation;
    
    public CollisionObjectMessage withHeader(HeaderMessage header) {

@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
-import id.kineticstreamer.annotations.Streamed;
 import id.xfunction.XJson;
 
 import java.util.Arrays;
@@ -46,7 +45,6 @@ public class AllowedCollisionEntryMessage implements Message {
    /**
     * whether or not collision checking is enabled
     */
-   @Streamed
    public boolean[] enabled = new boolean[0];
    
    public AllowedCollisionEntryMessage withEnabled(boolean... enabled) {

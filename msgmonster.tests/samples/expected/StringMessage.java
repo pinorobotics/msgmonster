@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
-import id.kineticstreamer.annotations.Streamed;
 import id.xfunction.XJson;
 
 import id.jrosmessages.std_msgs.StringMessage;
@@ -43,7 +42,6 @@ public class StringMessage implements Message {
    
    static final String NAME = "test_msgs/String";
 
-   @Streamed
    public StringMessage data = new StringMessage();
    
    public StringMessage withData(StringMessage data) {

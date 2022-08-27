@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
-import id.kineticstreamer.annotations.Streamed;
 import id.xfunction.XJson;
 
 import id.jrosmessages.std_msgs.StringMessage;
@@ -103,17 +102,14 @@ public class GoalStatusMessage implements Message {
       
    }
    
-   @Streamed
    public GoalIDMessage goal_id = new GoalIDMessage();
    
-   @Streamed
    public byte status;
    
    /**
     * sent over the wire by an action server
     * Allow for the user to associate a string with GoalStatus for debugging
     */
-   @Streamed
    public StringMessage text = new StringMessage();
    
    public GoalStatusMessage withGoalId(GoalIDMessage goal_id) {
