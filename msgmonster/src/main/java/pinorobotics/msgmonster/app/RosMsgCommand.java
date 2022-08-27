@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface RosMsgCommand {
+
     boolean isPackage(Path input);
 
     Stream<Path> listMessageFiles(Path rosPackage);

@@ -416,7 +416,7 @@ public class MsgmonsterApp {
         var comment = "Definition for " + definition.getName();
         comment += "\n" + definition.getComment();
         generateJavadocComment(writer, comment);
-        var header = resourceUtils.readResource("class_header");
+        var header = resourceUtils.readResource("class_header_" + rosVersion);
         writer.write(header);
     }
 

@@ -41,8 +41,7 @@ import id.jrosmessages.std_msgs.StringMessage;
  * # However if you would like to continue using this please use the equivalent in example_msgs.
  */
 @MessageMetadata(
-    type = StringMessage.NAME,
-    md5sum = "${md5sum}")
+    name = StringMessage.NAME)
 public class StringMessage implements Message {
    
    static final String NAME = "msg/String";

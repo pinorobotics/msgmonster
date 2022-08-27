@@ -1,0 +1,3 @@
+@MessageMetadata(
+    name = ${className}.NAME)
+

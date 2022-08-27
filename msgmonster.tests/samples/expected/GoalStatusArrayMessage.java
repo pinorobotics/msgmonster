@@ -40,7 +40,7 @@ import java.util.Arrays;
  * # by an action server
  */
 @MessageMetadata(
-    type = GoalStatusArrayMessage.NAME,
+    name = GoalStatusArrayMessage.NAME,
     md5sum = "36d61c7054a071e6c0b3d668d1382f95")
 public class GoalStatusArrayMessage implements Message {
    

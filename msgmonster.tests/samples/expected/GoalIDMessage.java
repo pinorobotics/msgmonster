@@ -38,7 +38,7 @@ import id.jrosmessages.std_msgs.StringMessage;
  * Definition for test_msgs/GoalID
  */
 @MessageMetadata(
-    type = GoalIDMessage.NAME,
+    name = GoalIDMessage.NAME,
     md5sum = "240a3309d52227ee0745a03a208f9de9")
 public class GoalIDMessage implements Message {
    

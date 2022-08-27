@@ -37,7 +37,7 @@ import java.util.Arrays;
  * Definition for test_msgs/AllowedCollisionEntry
  */
 @MessageMetadata(
-    type = AllowedCollisionEntryMessage.NAME,
+    name = AllowedCollisionEntryMessage.NAME,
     md5sum = "17ec56b810bbff82fc5397be928800de")
 public class AllowedCollisionEntryMessage implements Message {
    
