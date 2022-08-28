@@ -41,11 +41,19 @@ To see this help:
 ``` bash
 msgmonster
 ```
-Generate messages defined in actionlib_msgs package:
+Generate messages defined in actionlib_msgs package (ROS1):
 
 ``` bash
 msgmonster ros1 myros.actionlib_msgs actionlib_msgs /tmp/actionlib_msgs
 ```
+
+Generate message for sensor_msgs/Image (ROS2):
+
+``` bash
+msgmonster ros2 myros.actionlib_msgs sensor_msgs/msg/Image /tmp/actionlib_msgs
+```
+
+Notice that ROS2 requires 3 parts in MESSAGE_NAME ("sensor_msgs", "msg", "Image") instead of 2 as in ROS1.
 
 # Links
 
