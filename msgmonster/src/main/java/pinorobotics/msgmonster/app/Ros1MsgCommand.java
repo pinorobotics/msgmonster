@@ -31,6 +31,7 @@ public class Ros1MsgCommand implements RosMsgCommand {
     public boolean isPackage(Path input) {
         return new XExec("rosmsg packages")
                 .run()
+                .stderrThrow()
                 .stdoutAsStream()
                 .filter(Predicate.isEqual(input.toString()))
                 .findFirst()
@@ -41,6 +42,7 @@ public class Ros1MsgCommand implements RosMsgCommand {
     public Stream<Path> listMessageFiles(Path rosPackage) {
         return new XExec("rosmsg package " + rosPackage)
                 .run()
+                .stderrThrow()
                 .stdoutAsStream()
                 .map(msg -> Paths.get(msg));
     }
@@ -57,6 +59,6 @@ public class Ros1MsgCommand implements RosMsgCommand {
 
     @Override
     public Stream<String> lines(Path msgFile) {
-        return new XExec("rosmsg show -r " + msgFile).run().stdoutAsStream();
+        return new XExec("rosmsg show -r " + msgFile).run().stderrThrow().stdoutAsStream();
     }
 }

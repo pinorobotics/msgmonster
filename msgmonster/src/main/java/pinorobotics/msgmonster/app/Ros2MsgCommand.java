@@ -29,6 +29,7 @@ public class Ros2MsgCommand implements RosMsgCommand {
     public boolean isPackage(Path input) {
         return new XExec("ros2 interface packages")
                 .run()
+                .stderrThrow()
                 .stdoutAsStream()
                 .filter(Predicate.isEqual(input.toString()))
                 .findFirst()
@@ -39,12 +40,13 @@ public class Ros2MsgCommand implements RosMsgCommand {
     public Stream<Path> listMessageFiles(Path rosPackage) {
         return new XExec("ros2 interface package " + rosPackage)
                 .run()
+                .stderrThrow()
                 .stdoutAsStream()
                 .map(msg -> Paths.get(msg));
     }
 
     @Override
     public Stream<String> lines(Path msgFile) {
-        return new XExec("ros2 interface show " + msgFile).run().stdoutAsStream();
+        return new XExec("ros2 interface show " + msgFile).run().stderrThrow().stdoutAsStream();
     }
 }

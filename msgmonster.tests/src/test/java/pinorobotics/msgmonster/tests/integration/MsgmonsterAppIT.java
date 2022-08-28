@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import pinorobotics.msgmonster.app.RosVersion;
@@ -39,6 +40,7 @@ public class MsgmonsterAppIT {
     private static final String COMMAND_PATH =
             Paths.get("").toAbsolutePath().resolve("build/msgmonster/msgmonster").toString();
     private static Path outputFolder;
+    private static RosVersion rosVersion = findRosVersion();
 
     @BeforeAll
     public static void setup() throws IOException {
@@ -48,7 +50,6 @@ public class MsgmonsterAppIT {
     private record TestCase(RosVersion rosVersion, String msgFile, String expectedFile) {}
 
     static Stream<TestCase> dataProvider() {
-        var rosVersion = findRosVersion();
         return Stream.of(
                 new TestCase(
                         rosVersion,
@@ -78,6 +79,19 @@ public class MsgmonsterAppIT {
                                                 testCase.expectedFile)));
         var actual = Files.readString(outputFolder.resolve(testCase.expectedFile));
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_msg_not_found() throws Exception {
+        new AssertRunCommand(
+                        COMMAND_PATH,
+                        rosVersion.toString(),
+                        "id.jrosmessages.test_msgs",
+                        "std_msgs/HttpClient",
+                        "/tmp")
+                .withWildcardMatching()
+                .assertOutputFromResource("test_msg_not_found." + rosVersion)
+                .run();
     }
 
     private static String generateMsgFile(RosVersion rosVersion, String rosPackage, String name) {

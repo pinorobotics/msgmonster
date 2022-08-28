@@ -1,0 +1,3 @@
+Processing file std_msgs/HttpClient
+Exception in thread "main" java.lang.RuntimeException: Invalid name 'std_msgs/HttpClient'. Expected three parts separated by '/'
+*
