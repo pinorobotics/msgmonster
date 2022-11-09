@@ -17,14 +17,14 @@
  */
 package pinorobotics.msgmonster.tests.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import id.xfunction.AssertRunCommand;
 import id.xfunction.lang.XExec;
+import id.xfunctiontests.XAsserts;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,21 +40,24 @@ public class MsgmonsterAppIT {
     private static final String COMMAND_PATH =
             Paths.get("").toAbsolutePath().resolve("build/msgmonster/msgmonster").toString();
     private static Path outputFolder;
-    private static RosVersion rosVersion = findRosVersion();
+    private static final RosVersion ROS_VERSION = findRosVersion();
+    private static final Path SAMPLES_PATH = Paths.get("samples", ROS_VERSION.toString());
 
     @BeforeAll
     public static void setup() throws IOException {
         outputFolder = Files.createTempDirectory("msgmonster");
     }
 
-    private record TestCase(RosVersion rosVersion, String msgFile, String expectedFile) {}
+    private record TestCase(String msgName, Path expectedPath) {}
 
     static Stream<TestCase> dataProvider() {
         return Stream.of(
                 new TestCase(
-                        rosVersion,
-                        generateMsgFile(rosVersion, "std_msgs", "String"),
-                        "StringMessage.java"));
+                        generateMsgFile("std_msgs", Optional.of("String")),
+                        SAMPLES_PATH.resolve("StringMessage.java")),
+                new TestCase(
+                        generateMsgFile("tf2_msgs", Optional.empty()),
+                        SAMPLES_PATH.resolve("tf2_msgs")));
     }
 
     @ParameterizedTest
@@ -62,40 +65,36 @@ public class MsgmonsterAppIT {
     public void test_happy(TestCase testCase) throws Exception {
         new AssertRunCommand(
                         COMMAND_PATH,
-                        testCase.rosVersion.toString(),
+                        ROS_VERSION.toString(),
                         "id.jrosmessages.test_msgs",
-                        testCase.msgFile,
+                        testCase.msgName,
                         outputFolder.toString())
                 .assertReturnCode(0)
                 .withOutputConsumer(System.out::println)
                 .run();
-        var expected =
-                Files.readString(
-                        Paths.get("")
-                                .resolve(
-                                        Paths.get(
-                                                "samples",
-                                                testCase.rosVersion.toString(),
-                                                testCase.expectedFile)));
-        var actual = Files.readString(outputFolder.resolve(testCase.expectedFile));
-        assertEquals(expected, actual);
+        var outputSource = outputFolder;
+        if (testCase.expectedPath.toFile().isFile())
+            outputSource = outputFolder.resolve(testCase.expectedPath.getFileName());
+        XAsserts.assertContentEquals(testCase.expectedPath, outputSource);
     }
 
     @Test
     public void test_msg_not_found() throws Exception {
         new AssertRunCommand(
                         COMMAND_PATH,
-                        rosVersion.toString(),
+                        ROS_VERSION.toString(),
                         "id.jrosmessages.test_msgs",
                         "std_msgs/HttpClient",
                         "/tmp")
                 .withWildcardMatching()
-                .assertOutputFromResource("test_msg_not_found." + rosVersion)
+                .assertOutputFromResource("test_msg_not_found." + ROS_VERSION)
                 .run();
     }
 
-    private static String generateMsgFile(RosVersion rosVersion, String rosPackage, String name) {
-        return rosPackage + (rosVersion == RosVersion.ros2 ? "/msg/" : "/") + name;
+    private static String generateMsgFile(String rosPackage, Optional<String> name) {
+        var res = rosPackage;
+        if (name.isPresent()) res += (ROS_VERSION == RosVersion.ros2 ? "/msg/" : "/") + name.get();
+        return res;
     }
 
     private static RosVersion findRosVersion() {

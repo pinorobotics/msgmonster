@@ -42,11 +42,16 @@ public class Ros2MsgCommand implements RosMsgCommand {
                 .run()
                 .stderrThrow()
                 .stdoutAsStream()
+                .filter(s -> s.startsWith(rosPackage + "/msg"))
                 .map(msg -> Paths.get(msg));
     }
 
     @Override
     public Stream<String> lines(Path msgFile) {
-        return new XExec("ros2 interface show " + msgFile).run().stderrThrow().stdoutAsStream();
+        return new XExec("ros2 interface show " + msgFile)
+                .run()
+                .stderrThrow()
+                .stdoutAsStream()
+                .filter(s -> !s.startsWith("\t"));
     }
 }

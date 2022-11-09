@@ -13,7 +13,7 @@ Download [latest prerelease version](https://github.com/pinorobotics/msgmonster/
 
 # Requirements
 
-- Java 11
+- Java 17
 - rosmsg command
 
 # Usage

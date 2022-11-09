@@ -70,6 +70,7 @@ public class MsgmonsterApp {
         packageName = Paths.get(args[1]);
         outputFolder = Paths.get(args[3]);
         outputFolder.toFile().mkdirs();
+        cli.print("Output folder " + outputFolder);
         Path input = Paths.get(args[2]);
         if (!rosmsg.isPackage(input)) {
             generateJavaClass(input);
@@ -272,7 +273,13 @@ public class MsgmonsterApp {
     }
 
     private Path readMessageName(Path msgFile) {
-        return msgFile.getParent().getFileName().resolve(msgFile.getFileName());
+        return switch (rosVersion) {
+            case ros2 -> msgFile.getParent()
+                    .getParent()
+                    .getFileName()
+                    .resolve(msgFile.getFileName());
+            default -> msgFile.getParent().getFileName().resolve(msgFile.getFileName());
+        };
     }
 
     private MessageDefinition readMessageDefinition(Path msgFile) throws IOException {
