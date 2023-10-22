@@ -1,32 +1,36 @@
 plugins {
-    id 'java'
-    id 'com.diffplug.spotless' version '6.7.2'
+  id 'java'
+  id 'com.diffplug.spotless' version '6.21.0'
 }
 
 allprojects {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-    }
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'eclipse'
-    sourceCompatibility = '17'
-    targetCompatibility = '17'
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
 
-    // setup spotless config for all subprojects
-    def spotlessConfig = {
-      spotless {
-        java {
-          importOrder()
-          removeUnusedImports()
+  sourceCompatibility = '17'
+  targetCompatibility = '17'
+  tasks.withType(JavaCompile) {
+    options.release = 17
+  }
 
-          // Use Android style which has 4 whitespaces instead 2 by default
-          googleJavaFormat().aosp().reflowLongStrings()
+  // setup spotless config for all subprojects
+  def spotlessConfig = {
+    spotless {
+      java {
+        importOrder()
+        removeUnusedImports()
 
-          licenseHeader '''/*
+        // Use Android style which has 4 whitespaces instead 2 by default
+        googleJavaFormat().aosp().reflowLongStrings()
+
+        licenseHeader '''/*
  * Copyright $YEAR msgmonster project
  * 
  * Website: https://github.com/pinorobotics/msgmonster
@@ -44,19 +48,20 @@ subprojects {
  * limitations under the License.
  */
 '''
-        }
       }
     }
+  }
 
-    pluginManager.withPlugin("com.diffplug.spotless", spotlessConfig);
+  pluginManager.withPlugin("com.diffplug.spotless", spotlessConfig);
 }
 
 ext {
-    releaseFileName = "${projectName}-v${version}.zip"
+  releaseFileName = "${projectName}-v${version}.zip"
 }
 
 // gradlew requires execution of gradle-wrapper.jar which trustworthy needs to
 // be checked everytime when it is updated (otherwise it do not seems secure)
 // To avoid using it we rely on manual version check
-if ("$gradle.gradleVersion" != "7.5")
-   throw new RuntimeException("Running gradle version $gradle.gradleVersion, required 7.5");
+def requiredGradleVersion = "8.3"
+if ("$gradle.gradleVersion" != "$requiredGradleVersion")
+  throw new RuntimeException("Running gradle version $gradle.gradleVersion, required $requiredGradleVersion");

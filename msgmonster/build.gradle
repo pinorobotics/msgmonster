@@ -1,31 +1,40 @@
+// include xfunction for updateVersion
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "io.github.lambdaprime:id.xfunction:14.0"
+  }
+}
+
 plugins {
-    id 'java'
-    id 'com.diffplug.spotless'
+  id 'com.diffplug.spotless'
 }
 
 apply plugin : 'eclipse'
 
 eclipse.classpath.file {
-    // instruct eclipse plugin to put everything to module path
-    whenMerged {
-        entries.findAll { it.kind == 'lib' }.each { it.entryAttributes['module'] = 'true' }
-    }
+  // instruct eclipse plugin to put everything to module path
+  whenMerged {
+    entries.findAll { it.kind == 'lib' }.each { it.entryAttributes['module'] = 'true' }
+  }
 }
 
 dependencies {
-    implementation 'io.github.lambdaprime:id.xfunction:19.0-SNAPSHOT'
-    implementation 'org.ainslec:picocog:1.0.7'
+  implementation 'io.github.lambdaprime:id.xfunction:19.0'
+  implementation 'org.ainslec:picocog:1.0.7'
+}
 
-    // transitively export following dependency to tests project
-    apiElements 'io.github.lambdaprime:id.xfunction:19.0-SNAPSHOT'
-    apiElements 'org.ainslec:picocog:1.0.7'
+configurations {
+  customConfig.extendsFrom implementation
 }
 
 jar { 
-    manifest { 
-        attributes 'Implementation-Version': "${rootProject.version}",
-                   'Main-Class': 'id.msgmonster.app.MsgmonsterApp'
-    }
+  manifest { 
+    attributes 'Implementation-Version': "${rootProject.version}",
+      'Main-Class': 'id.msgmonster.app.MsgmonsterApp'
+  }
 }
 
 def packageDir = "$buildDir/package/${projectName}"
@@ -33,22 +42,27 @@ def packageDir = "$buildDir/package/${projectName}"
 ext.artifacts = fileTree(include: ['*'], dir: "$packageDir/libs")
 
 task createRelease(type: Zip) {
-    archiveFileName = "$releaseFileName"
-    destinationDirectory = file("$projectDir/release")
-    from file("$packageDir/..")
+  archiveFileName = "$releaseFileName"
+  destinationDirectory = file("$projectDir/release")
+  from file("$packageDir/..")
 }
 
 task copyLibs(type: Copy) {
-    from configurations.runtimeClasspath
-    from "$projectDir/libs"
-    from jar.archiveFile
-    into "${packageDir}/libs"
+  from configurations.customConfig 
+  from jar.archiveFile
+  into "${packageDir}/libs"
 }
 
 task copyReadme(type: Copy) {
-    from("${project.rootDir}/README.md")
-    into("$projectDir/src/main/resources")
+  from("../README.md")
+  into("$buildDir/resources/main")
+  rename ("README.md", "README-${projectName}.md")
 }
+
+// overwrite template README which comes from resources folder
+jar.dependsOn copyReadme
+
+javadoc.enabled = false
 
 task createPackage(type: Copy, dependsOn: copyLibs) {
     from "${project.rootDir}/README.md"
@@ -58,15 +72,13 @@ task createPackage(type: Copy, dependsOn: copyLibs) {
 }
 
 task cleanRelease(type: Delete) {
-    delete "$packageDir"
-    delete "$projectDir/release"
+  delete "$packageDir"
+  delete "$projectDir/release/*-SNAPSHOT.zip"
 }
 
-compileJava.dependsOn copyReadme
 createRelease.dependsOn createPackage
 assemble.dependsOn createRelease
 clean.dependsOn cleanRelease
-processResources.dependsOn copyReadme
 
 // run spotless and format code before the build
 classes.dependsOn spotlessApply

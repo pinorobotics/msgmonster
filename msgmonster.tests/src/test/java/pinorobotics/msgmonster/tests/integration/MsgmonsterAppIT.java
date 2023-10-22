@@ -17,8 +17,8 @@
  */
 package pinorobotics.msgmonster.tests.integration;
 
-import id.xfunction.AssertRunCommand;
 import id.xfunction.lang.XExec;
+import id.xfunctiontests.AssertRunCommand;
 import id.xfunctiontests.XAsserts;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -99,7 +99,7 @@ public class MsgmonsterAppIT {
 
     private static RosVersion findRosVersion() {
         try {
-            return new XExec("ros2").run().await() != 0 ? RosVersion.ros1 : RosVersion.ros2;
+            return new XExec("ros2").start().await() != 0 ? RosVersion.ros1 : RosVersion.ros2;
         } catch (Exception e) {
             if (e.getCause() instanceof IOException) return RosVersion.ros1;
             throw e;
