@@ -23,6 +23,7 @@ import java.util.Map;
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class Field {
+    /** Map from ROS type to Java type */
     private static final Map<String, String> PRIMITIVES_TYPE_MAP =
             Map.of(
                     "float64", "double",
@@ -30,8 +31,10 @@ public class Field {
                     "uint32", "int",
                     "uint8", "byte",
                     "byte", "byte",
+                    "char", "byte",
                     "bool", "boolean",
                     "int8", "byte");
+
     private static final Map<String, String> BASIC_TYPE_MAP =
             Map.of(
                     "time", "Time",

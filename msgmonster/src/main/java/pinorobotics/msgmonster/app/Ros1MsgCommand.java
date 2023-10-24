@@ -30,7 +30,7 @@ public class Ros1MsgCommand implements RosMsgCommand {
     @Override
     public boolean isPackage(Path input) {
         return new XExec("rosmsg packages")
-                .run()
+                .start()
                 .stderrThrow()
                 .stdoutAsStream()
                 .filter(Predicate.isEqual(input.toString()))
@@ -41,7 +41,7 @@ public class Ros1MsgCommand implements RosMsgCommand {
     @Override
     public Stream<Path> listMessageFiles(Path rosPackage) {
         return new XExec("rosmsg package " + rosPackage)
-                .run()
+                .start()
                 .stderrThrow()
                 .stdoutAsStream()
                 .map(msg -> Paths.get(msg));
@@ -50,7 +50,7 @@ public class Ros1MsgCommand implements RosMsgCommand {
     @Override
     public Optional<String> calcMd5Sum(Path msgFile) {
         var cmd = "rosmsg md5 " + msgFile;
-        var proc = new XExec(cmd).run();
+        var proc = new XExec(cmd).start();
         if (proc.await() != 0) throw new XRE("md5sum calc error: " + proc.stderr());
         String md5sum = proc.stdout();
         if (md5sum.isEmpty()) throw new XRE("Command `%s` returned empty MD5", cmd);
@@ -59,6 +59,6 @@ public class Ros1MsgCommand implements RosMsgCommand {
 
     @Override
     public Stream<String> lines(Path msgFile) {
-        return new XExec("rosmsg show -r " + msgFile).run().stderrThrow().stdoutAsStream();
+        return new XExec("rosmsg show -r " + msgFile).start().stderrThrow().stdoutAsStream();
     }
 }

@@ -22,7 +22,7 @@ eclipse.classpath.file {
 }
 
 dependencies {
-  implementation 'io.github.lambdaprime:id.xfunction:19.0'
+  implementation 'io.github.lambdaprime:id.xfunction:20.0'
   implementation 'org.ainslec:picocog:1.0.7'
 }
 

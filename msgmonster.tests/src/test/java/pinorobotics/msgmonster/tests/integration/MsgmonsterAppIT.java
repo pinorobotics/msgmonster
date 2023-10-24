@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,13 +53,22 @@ public class MsgmonsterAppIT {
     private record TestCase(String msgName, Path expectedPath) {}
 
     static Stream<TestCase> dataProvider() {
-        return Stream.of(
-                new TestCase(
-                        generateMsgFile("std_msgs", Optional.of("String")),
-                        SAMPLES_PATH.resolve("StringMessage.java")),
-                new TestCase(
-                        generateMsgFile("tf2_msgs", Optional.empty()),
-                        SAMPLES_PATH.resolve("tf2_msgs")));
+        var testCases = new ArrayList<TestCase>();
+        testCases.addAll(
+                List.of(
+                        new TestCase(
+                                generateMsgFilePath("std_msgs", Optional.of("String")),
+                                SAMPLES_PATH.resolve("StringMessage.java")),
+                        new TestCase(
+                                generateMsgFilePath("tf2_msgs", Optional.empty()),
+                                SAMPLES_PATH.resolve("tf2_msgs"))));
+        if (ROS_VERSION == RosVersion.ros2) {
+            testCases.add(
+                    new TestCase(
+                            generateMsgFilePath("example_interfaces", Optional.of("Char")),
+                            SAMPLES_PATH.resolve("CharMessage.java")));
+        }
+        return testCases.stream();
     }
 
     @ParameterizedTest
@@ -91,7 +102,7 @@ public class MsgmonsterAppIT {
                 .run();
     }
 
-    private static String generateMsgFile(String rosPackage, Optional<String> name) {
+    private static String generateMsgFilePath(String rosPackage, Optional<String> name) {
         var res = rosPackage;
         if (name.isPresent()) res += (ROS_VERSION == RosVersion.ros2 ? "/msg/" : "/") + name.get();
         return res;

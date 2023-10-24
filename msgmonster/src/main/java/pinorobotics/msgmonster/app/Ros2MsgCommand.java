@@ -28,7 +28,7 @@ public class Ros2MsgCommand implements RosMsgCommand {
     @Override
     public boolean isPackage(Path input) {
         return new XExec("ros2 interface packages")
-                .run()
+                .start()
                 .stderrThrow()
                 .stdoutAsStream()
                 .filter(Predicate.isEqual(input.toString()))
@@ -39,7 +39,7 @@ public class Ros2MsgCommand implements RosMsgCommand {
     @Override
     public Stream<Path> listMessageFiles(Path rosPackage) {
         return new XExec("ros2 interface package " + rosPackage)
-                .run()
+                .start()
                 .stderrThrow()
                 .stdoutAsStream()
                 .filter(s -> s.startsWith(rosPackage + "/msg"))
@@ -49,7 +49,7 @@ public class Ros2MsgCommand implements RosMsgCommand {
     @Override
     public Stream<String> lines(Path msgFile) {
         return new XExec("ros2 interface show " + msgFile)
-                .run()
+                .start()
                 .stderrThrow()
                 .stdoutAsStream()
                 .filter(s -> !s.startsWith("\t"));
