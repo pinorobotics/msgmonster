@@ -52,7 +52,7 @@ public class MsgmonsterApp {
     private RosMsgCommandFactory rosCommandFactory;
 
     private static void usage() {
-        resourceUtils.readResourceAsStream("README.md").forEach(System.out::println);
+        resourceUtils.readResourceAsStream("README-msgmonster.md").forEach(System.out::println);
     }
 
     public MsgmonsterApp(CommandLineInterface cli, RosMsgCommandFactory rosCommandFactory) {
