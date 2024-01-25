@@ -35,8 +35,11 @@ import java.util.Arrays;
 
 /**
  * Definition for test_msgs/GoalStatusArray
- * Stores the statuses for goals that are currently being tracked
- * # by an action server
+ * 
+ * <p>Stores the statuses for goals that are currently being tracked
+ * by an action server
+ * 
+ * by an action server
  */
 @MessageMetadata(
     name = GoalStatusArrayMessage.NAME,

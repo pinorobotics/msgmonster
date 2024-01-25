@@ -300,14 +300,14 @@ public class MsgmonsterApp {
         }
         Preconditions.isTrue(!fieldLineNums.isEmpty(), "No fields in " + msgFile);
         var pos = lines.indexOf("");
-        var msgComment = "";
+        var msgCommentLines = new ArrayList<String>();
         if (pos < 0) pos = 0;
         if (pos < fieldLineNums.get(0)) {
             // looks like there are comments on the top of the file which are
             // separated from the rest of text with empty line
             // We decide that they does not belong to the field so we use them
             // as message definition comments
-            msgComment = lines.subList(0, pos).stream().collect(Collectors.joining("\n"));
+            lines.subList(0, pos).stream().forEach(msgCommentLines::add);
         } else {
             pos = 0;
         }
@@ -319,32 +319,34 @@ public class MsgmonsterApp {
                             .filter(s -> !s.isEmpty())
                             .collect(Collectors.toList());
             if (fields.size() == fieldLineNums.size()) {
-                msgComment =
-                        lines.subList(0, fieldLineNums.get(0)).stream()
-                                .collect(Collectors.joining("\n"));
+                lines.subList(0, fieldLineNums.get(0)).stream().forEach(msgCommentLines::add);
                 pos = fieldLineNums.get(0);
             }
         }
-        msgComment = cleanComment(msgComment);
         var curFieldNum = 0;
         var commentBuf = new StringBuilder();
-        var def = new MessageDefinition(readMessageName(msgFile), msgComment);
+        var def =
+                new MessageDefinition(
+                        readMessageName(msgFile),
+                        msgCommentLines.stream()
+                                .map(this::cleanCommentLine)
+                                .collect(Collectors.joining("\n")));
         EnumDefinition curEnum = null;
         for (int i = pos; i < lines.size(); i++) {
             String line = lines.get(i);
             if (line.isEmpty()) continue;
             if (curFieldNum == fieldLineNums.size()) {
-                addComment(commentBuf, line);
+                addCommentLine(commentBuf, line);
                 continue;
             }
             if (i < fieldLineNums.get(curFieldNum)) {
-                addComment(commentBuf, line);
+                addCommentLine(commentBuf, line);
                 continue;
             }
             curFieldNum++;
             var buf = line.split("#");
             if (buf.length == 2) {
-                addComment(commentBuf, buf[1]);
+                addCommentLine(commentBuf, buf[1]);
             }
             var scanner = new Scanner(buf[0].trim());
             scanner.useDelimiter("[\\s+=]+");
@@ -374,11 +376,11 @@ public class MsgmonsterApp {
         return def;
     }
 
-    private void addComment(StringBuilder commentBuf, String line) {
-        commentBuf.append(cleanComment(line) + "\n");
+    private void addCommentLine(StringBuilder commentBuf, String line) {
+        commentBuf.append(cleanCommentLine(line) + "\n");
     }
 
-    private String cleanComment(String comment) {
+    private String cleanCommentLine(String comment) {
         return comment.replaceAll("^#\\s*", "").trim();
     }
 
@@ -421,7 +423,7 @@ public class MsgmonsterApp {
 
     private void generateClassHeader(PicoWriter writer, MessageDefinition definition) {
         var comment = "Definition for " + definition.getName();
-        comment += "\n" + definition.getComment();
+        if (!definition.getComment().isBlank()) comment += "\n\n<p>" + definition.getComment();
         generateJavadocComment(writer, comment);
         var header = resourceUtils.readResource("class_header_" + rosVersion);
         writer.write(header);
