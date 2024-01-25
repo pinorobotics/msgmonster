@@ -17,7 +17,6 @@
  */
 package pinorobotics.msgmonster.app;
 
-import id.xfunction.Preconditions;
 import id.xfunction.ResourceUtils;
 import id.xfunction.cli.ArgumentParsingException;
 import id.xfunction.cli.CommandLineInterface;
@@ -132,6 +131,7 @@ public class MsgmonsterApp {
     }
 
     private void generateToString(PicoWriter writer, MessageDefinition definition) {
+        if (definition.getFields().isEmpty()) return;
         resourceUtils
                 .readResourceAsStream("toString")
                 .forEach(
@@ -161,6 +161,7 @@ public class MsgmonsterApp {
     }
 
     private void generateEquals(PicoWriter writer, MessageDefinition definition) {
+        if (definition.getFields().isEmpty()) return;
         resourceUtils
                 .readResourceAsStream("equals")
                 .forEach(
@@ -197,6 +198,7 @@ public class MsgmonsterApp {
     }
 
     private void generateHashCode(PicoWriter writer, MessageDefinition definition) {
+        if (definition.getFields().isEmpty()) return;
         resourceUtils
                 .readResourceAsStream("hash_code")
                 .forEach(
@@ -298,7 +300,9 @@ public class MsgmonsterApp {
             if (line.trim().startsWith("#")) continue;
             fieldLineNums.add(i);
         }
-        Preconditions.isTrue(!fieldLineNums.isEmpty(), "No fields in " + msgFile);
+        if (fieldLineNums.isEmpty()) {
+            return new MessageDefinition(readMessageName(msgFile));
+        }
         var pos = lines.indexOf("");
         var msgCommentLines = new ArrayList<String>();
         if (pos < 0) pos = 0;

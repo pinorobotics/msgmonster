@@ -36,6 +36,10 @@ public class MessageDefinition {
         this.comment = comment;
     }
 
+    public MessageDefinition(Path msgName) {
+        this(msgName, "");
+    }
+
     public void addField(String type, String name, String value, String comment) {
         fields.add(new Field(name, type, value, comment));
     }
@@ -48,6 +52,7 @@ public class MessageDefinition {
         return comment;
     }
 
+    @Override
     public String toString() {
         var buf = new StringBuilder();
         buf.append(comment + "\n");
