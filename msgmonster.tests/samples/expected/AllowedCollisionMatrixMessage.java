@@ -28,7 +28,9 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
+import id.jrosmessages.Array;
 import id.xfunction.XJson;
+import id.xfunction.Preconditions;
 
 import id.jrosmessages.std_msgs.StringMessage;
 import java.util.Arrays;
@@ -46,6 +48,7 @@ public class AllowedCollisionMatrixMessage implements Message {
    /**
     * The list of entry names in the matrix
     */
+   @Array(size = 17)
    public StringMessage[] entry_names = new StringMessage[0];
    
    /**
@@ -68,6 +71,7 @@ public class AllowedCollisionMatrixMessage implements Message {
    public boolean[] default_entry_values = new boolean[0];
    
    public AllowedCollisionMatrixMessage withEntryNames(StringMessage... entry_names) {
+       Preconditions.equals(17, entry_names.length);
        this.entry_names = entry_names;
        return this;
    }

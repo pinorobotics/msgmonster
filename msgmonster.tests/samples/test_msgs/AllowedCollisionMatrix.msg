@@ -1,5 +1,5 @@
 # The list of entry names in the matrix
-string[] entry_names
+string[17] entry_names
 
 # The individual entries in the allowed collision matrix
 # square, symmetric, with same order as entry_names

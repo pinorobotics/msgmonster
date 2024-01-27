@@ -232,6 +232,10 @@ public class MsgmonsterApp {
             Map<String, String> substitution = new HashMap<>(this.substitution);
             if (field.hasArrayType()) {
                 substitution.put("${fieldType}", field.getJavaType() + "...");
+                if (field.getArraySize() > 0) {
+                    substitution.put("${arraySize}", "" + field.getArraySize());
+                    body = resourceUtils.readResource("with_method_for_fixed_size_array");
+                }
             } else {
                 substitution.put("${fieldType}", field.getJavaType());
             }
@@ -269,6 +273,7 @@ public class MsgmonsterApp {
         Map<String, String> substitution = new HashMap<>();
         substitution.put("${fieldType}", field.getJavaType());
         substitution.put("${fieldName}", field.getName());
+        substitution.put("${arraySize}", "" + field.getArraySize());
         fieldTemplate = substitutor.substitute(fieldTemplate, substitution);
         if (!field.getComment().isEmpty()) generateJavadocComment(writer, field.getComment());
         writeWithIdent(writer, fieldTemplate);
@@ -392,7 +397,11 @@ public class MsgmonsterApp {
         for (var field : definition.getFields()) {
             var body = "";
             if (field.hasArrayType()) {
-                body = resourceUtils.readResource("class_field_array");
+                body =
+                        resourceUtils.readResource(
+                                field.getArraySize() > 0
+                                        ? "class_field_fixed_size_array"
+                                        : "class_field_array");
             } else if (field.hasPrimitiveType()) {
                 body = resourceUtils.readResource("class_field_primitive");
             } else {

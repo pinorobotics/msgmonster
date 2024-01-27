@@ -29,7 +29,9 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
+import id.jrosmessages.Array;
 import id.xfunction.XJson;
+import id.xfunction.Preconditions;
 
 /**
  * Definition for test_msgs/MessageWithNoFields

@@ -57,6 +57,6 @@ Notice that ROS2 requires 3 parts in MESSAGE_NAME ("sensor_msgs", "msg", "Image"
 
 [Development](DEVELOPMENT.md)
 
-# Contributors
+# Contacts
 
 aeon_flux <aeon_flux@eclipso.ch>

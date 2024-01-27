@@ -47,14 +47,22 @@ public class Field {
     private Formatter formatter = new Formatter();
     private String name, type, comment;
     private String value;
+    private int arraySize;
     private boolean isArray;
 
-    public Field(String name, String type, String value, String comment) {
+    public Field(String name, String rosType, String value, String comment) {
         this.name = name;
-        this.type = type.replaceAll("(.*)\\[\\d*\\]", "$1");
+        this.type = rosType.replaceAll("(.*)\\[\\d*\\]", "$1");
         this.value = value;
         this.comment = comment;
-        isArray = type.contains("[");
+        isArray = rosType.contains("[");
+        if (isArray) arraySize = readArraySize(rosType);
+    }
+
+    private int readArraySize(String rosType) {
+        var sizeStr = rosType.replaceAll(".*\\[(\\d*)\\]", "$1").replaceAll("\\s*", "");
+        if (sizeStr.isBlank()) return 0;
+        return Integer.parseInt(sizeStr);
     }
 
     public String getName() {
@@ -125,5 +133,9 @@ public class Field {
 
     public boolean hasStdMsgType() {
         return STDMSG_TYPE_MAP.containsKey(type);
+    }
+
+    public int getArraySize() {
+        return arraySize;
     }
 }

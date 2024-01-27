@@ -62,12 +62,12 @@ public class MsgmonsterAppIT {
                         new TestCase(
                                 generateMsgFilePath("tf2_msgs", Optional.empty()),
                                 SAMPLES_PATH.resolve("tf2_msgs"))));
-        if (ROS_VERSION == RosVersion.ros2) {
-            testCases.add(
-                    new TestCase(
-                            generateMsgFilePath("example_interfaces", Optional.of("Char")),
-                            SAMPLES_PATH.resolve("CharMessage.java")));
-        }
+        testCases.add(
+                new TestCase(
+                        generateMsgFilePath(
+                                ROS_VERSION == RosVersion.ros2 ? "example_interfaces" : "std_msgs",
+                                Optional.of("Char")),
+                        SAMPLES_PATH.resolve("CharMessage.java")));
         return testCases.stream();
     }
 

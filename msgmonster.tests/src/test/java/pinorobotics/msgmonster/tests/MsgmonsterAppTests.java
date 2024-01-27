@@ -52,6 +52,10 @@ public class MsgmonsterAppTests {
                         rosVersion -> new RosMsgCommandMock(Paths.get("samples")));
     }
 
+    /**
+     * ROS version agnostic test. Instead of executing ROS commands it relies on {@link
+     * RosMsgCommandMock}
+     */
     @Test
     public void test_happy() throws Exception {
         msgmonsterApp.run(

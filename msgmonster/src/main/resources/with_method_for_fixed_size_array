@@ -1,0 +1,6 @@
+public ${className} ${methodName}(${fieldType} ${fieldName}) {
+    Preconditions.equals(${arraySize}, ${fieldName}.length);
+    this.${fieldName} = ${fieldName};
+    return this;
+}
+

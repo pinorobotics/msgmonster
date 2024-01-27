@@ -28,7 +28,9 @@ import java.util.Objects;
 
 import id.jrosmessages.Message;
 import id.jrosmessages.MessageMetadata;
+import id.jrosmessages.Array;
 import id.xfunction.XJson;
+import id.xfunction.Preconditions;
 
 import id.jrosmessages.geometry_msgs.PoseMessage;
 import id.jrosmessages.object_recognition_msgs.ObjectTypeMessage;
