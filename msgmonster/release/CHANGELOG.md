@@ -1,3 +1,11 @@
+# Version 3
+
+- Issue lambdaprime/jros2client#9 Adding support for fixed size arrays
+- Fixing PreconditionException for msg files with no fields
+- Fixing bug when '#' was removed only from the first line of the Java class level comment
+
+[msgmonster-v3.0.zip](https://github.com/pinorobotics/msgmonster/raw/main/msgmonster/release/msgmonster-v3.0.zip)
+
 # Version 2
 
 - Issue lambdaprime/jros2client#3 Map ROS char type to Java byte
