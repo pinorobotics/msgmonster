@@ -31,6 +31,7 @@ public class Field {
                     "uint32", "int",
                     "uint8", "byte",
                     "byte", "byte",
+                    "int64", "long",
                     "char", "byte",
                     "bool", "boolean",
                     "int8", "byte");
