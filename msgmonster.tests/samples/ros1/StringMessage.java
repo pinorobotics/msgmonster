@@ -39,7 +39,8 @@ import id.jrosmessages.std_msgs.StringMessage;
  */
 @MessageMetadata(
     name = StringMessage.NAME,
-    md5sum = "992ce8a1687cec8c8bd883ec73ca41d1")
+    md5sum = "992ce8a1687cec8c8bd883ec73ca41d1"
+)
 public class StringMessage implements Message {
    
    static final String NAME = "std_msgs/String";

@@ -43,7 +43,8 @@ import id.jrosmessages.std_msgs.StringMessage;
  * However if you would like to continue using this please use the equivalent in example_msgs.
  */
 @MessageMetadata(
-    name = StringMessage.NAME)
+    name = StringMessage.NAME
+)
 public class StringMessage implements Message {
    
    static final String NAME = "std_msgs/String";

@@ -18,6 +18,7 @@
 package pinorobotics.msgmonster.app;
 
 import id.xfunction.ResourceUtils;
+import id.xfunction.XUtils;
 import id.xfunction.cli.ArgumentParsingException;
 import id.xfunction.cli.CommandLineInterface;
 import id.xfunction.function.Unchecked;
@@ -29,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -112,7 +114,8 @@ public class MsgmonsterApp {
         topWriter.writeln(String.format("package %s;", packageName));
         topWriter.writeln();
         generateImports(topWriter, definition);
-        generateClassHeader(topWriter, definition);
+        generateJavadocComment(topWriter, definition);
+        generateMessageMetadata(topWriter, definition);
         topWriter.writeln_r(String.format("public class %s implements Message {", className));
         substitution.put("${className}", className);
         var memvarWriter = topWriter.createDeferredWriter();
@@ -223,6 +226,45 @@ public class MsgmonsterApp {
                                 if (i == fields.size() - 1) writer.writeln("");
                                 else writer.writeln(",");
                             }
+                        });
+    }
+
+    private void generateMessageMetadata(PicoWriter writer, MessageDefinition definition) {
+        var metadataMap = new LinkedHashMap<String, String>();
+        metadataMap.put("name", "${className}.NAME");
+        if (definition.getFields().size() > 1) {
+            metadataMap.put(
+                    "fields",
+                    "{ %s }"
+                            .formatted(
+                                    definition.getFields().stream()
+                                            .map(Field::getName)
+                                            .map(XUtils::quote)
+                                            .collect(Collectors.joining(", "))));
+        }
+        if (rosVersion == RosVersion.ros1) {
+            metadataMap.put("md5sum", XUtils.quote("${md5sum}"));
+        }
+        resourceUtils
+                .readResourceAsStream("class_message_metadata")
+                .forEach(
+                        line -> {
+                            if (!line.contains("${...}")) {
+                                writer.writeln(line);
+                                return;
+                            }
+                            var ident =
+                                    line.substring(0, line.length() - line.stripLeading().length());
+                            writer.writeln(
+                                    metadataMap.entrySet().stream()
+                                            .map(
+                                                    e ->
+                                                            String.format(
+                                                                    "%s%s = %s",
+                                                                    ident,
+                                                                    e.getKey(),
+                                                                    e.getValue()))
+                                            .collect(Collectors.joining(",\n")));
                         });
     }
 
@@ -434,12 +476,10 @@ public class MsgmonsterApp {
         else writer.writeln();
     }
 
-    private void generateClassHeader(PicoWriter writer, MessageDefinition definition) {
+    private void generateJavadocComment(PicoWriter writer, MessageDefinition definition) {
         var comment = "Definition for " + definition.getName();
         if (!definition.getComment().isBlank()) comment += "\n\n<p>" + definition.getComment();
         generateJavadocComment(writer, comment);
-        var header = resourceUtils.readResource("class_header_" + rosVersion);
-        writer.write(header);
     }
 
     private void generateImports(PicoWriter writer, MessageDefinition definition) {

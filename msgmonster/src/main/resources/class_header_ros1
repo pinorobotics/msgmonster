@@ -1,4 +1,0 @@
-@MessageMetadata(
-    name = ${className}.NAME,
-    md5sum = "${md5sum}")
-

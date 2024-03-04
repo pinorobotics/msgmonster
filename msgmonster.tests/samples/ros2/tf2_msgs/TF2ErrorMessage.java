@@ -38,7 +38,9 @@ import id.jrosmessages.std_msgs.StringMessage;
  * Definition for tf2_msgs/TF2Error
  */
 @MessageMetadata(
-    name = TF2ErrorMessage.NAME)
+    name = TF2ErrorMessage.NAME,
+    fields = { "error", "error_string" }
+)
 public class TF2ErrorMessage implements Message {
    
    static final String NAME = "tf2_msgs/TF2Error";

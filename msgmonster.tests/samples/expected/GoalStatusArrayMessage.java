@@ -45,7 +45,9 @@ import java.util.Arrays;
  */
 @MessageMetadata(
     name = GoalStatusArrayMessage.NAME,
-    md5sum = "36d61c7054a071e6c0b3d668d1382f95")
+    fields = { "header", "status_list" },
+    md5sum = "36d61c7054a071e6c0b3d668d1382f95"
+)
 public class GoalStatusArrayMessage implements Message {
    
    static final String NAME = "test_msgs/GoalStatusArray";

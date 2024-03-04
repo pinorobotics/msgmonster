@@ -39,7 +39,9 @@ import id.jrosmessages.std_msgs.StringMessage;
  */
 @MessageMetadata(
     name = TF2ErrorMessage.NAME,
-    md5sum = "bc6848fd6fd750c92e38575618a4917d")
+    fields = { "error", "error_string" },
+    md5sum = "bc6848fd6fd750c92e38575618a4917d"
+)
 public class TF2ErrorMessage implements Message {
    
    static final String NAME = "tf2_msgs/TF2Error";

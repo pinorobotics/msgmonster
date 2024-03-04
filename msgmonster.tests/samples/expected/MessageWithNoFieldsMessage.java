@@ -38,7 +38,8 @@ import id.xfunction.Preconditions;
  */
 @MessageMetadata(
     name = MessageWithNoFieldsMessage.NAME,
-    md5sum = "777b982ce96637d0848a328890f00c4e")
+    md5sum = "777b982ce96637d0848a328890f00c4e"
+)
 public class MessageWithNoFieldsMessage implements Message {
    
    static final String NAME = "test_msgs/MessageWithNoFields";

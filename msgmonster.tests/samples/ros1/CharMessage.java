@@ -38,7 +38,8 @@ import id.xfunction.Preconditions;
  */
 @MessageMetadata(
     name = CharMessage.NAME,
-    md5sum = "1bf77f25acecdedba0e224b162199717")
+    md5sum = "1bf77f25acecdedba0e224b162199717"
+)
 public class CharMessage implements Message {
    
    static final String NAME = "std_msgs/Char";

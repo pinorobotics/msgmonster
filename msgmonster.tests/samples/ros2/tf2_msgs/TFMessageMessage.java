@@ -39,7 +39,8 @@ import java.util.Arrays;
  * Definition for tf2_msgs/TFMessage
  */
 @MessageMetadata(
-    name = TFMessageMessage.NAME)
+    name = TFMessageMessage.NAME
+)
 public class TFMessageMessage implements Message {
    
    static final String NAME = "tf2_msgs/TFMessage";

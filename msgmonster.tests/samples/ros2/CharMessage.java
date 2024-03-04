@@ -37,7 +37,8 @@ import id.xfunction.Preconditions;
  * Definition for example_interfaces/Char
  */
 @MessageMetadata(
-    name = CharMessage.NAME)
+    name = CharMessage.NAME
+)
 public class CharMessage implements Message {
    
    static final String NAME = "example_interfaces/Char";

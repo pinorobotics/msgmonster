@@ -46,7 +46,9 @@ import java.util.Arrays;
  */
 @MessageMetadata(
     name = CollisionObjectMessage.NAME,
-    md5sum = "c5c6b7e6ac4834c0d55e2d6699b32509")
+    fields = { "header", "pose", "id", "type", "primitives", "primitive_poses", "meshes", "mesh_poses", "planes", "plane_poses", "subframe_names", "subframe_poses", "operation" },
+    md5sum = "c5c6b7e6ac4834c0d55e2d6699b32509"
+)
 public class CollisionObjectMessage implements Message {
    
    static final String NAME = "test_msgs/CollisionObject";

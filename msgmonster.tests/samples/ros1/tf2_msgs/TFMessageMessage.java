@@ -40,7 +40,8 @@ import java.util.Arrays;
  */
 @MessageMetadata(
     name = TFMessageMessage.NAME,
-    md5sum = "94810edda583a504dfda3829e70d7eec")
+    md5sum = "94810edda583a504dfda3829e70d7eec"
+)
 public class TFMessageMessage implements Message {
    
    static final String NAME = "tf2_msgs/TFMessage";
