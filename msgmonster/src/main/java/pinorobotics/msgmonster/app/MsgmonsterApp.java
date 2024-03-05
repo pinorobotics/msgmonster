@@ -78,7 +78,7 @@ public class MsgmonsterApp {
         } else {
             rosmsg.listMessageFiles(input)
                     // .limit(1)
-                    .forEach(Unchecked.wrapAccept(this::generateJavaClass));
+                    .forEach(Unchecked.wrapAccept(this::generateJavaClassSafe));
         }
     }
 
@@ -94,6 +94,15 @@ public class MsgmonsterApp {
                     .run(args);
         } catch (ArgumentParsingException e) {
             usage();
+        }
+    }
+
+    private void generateJavaClassSafe(Path msgFile) {
+        try {
+            generateJavaClass(msgFile);
+        } catch (Exception e) {
+            System.err.println("Error generating class for " + msgFile);
+            e.printStackTrace();
         }
     }
 
