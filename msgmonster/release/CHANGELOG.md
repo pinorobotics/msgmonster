@@ -1,3 +1,11 @@
+# Version 4
+
+- Ignore msg files for which generation fails
+- Adding support for int64
+- Adding generation support for 'fields' parameter
+
+[msgmonster-v4.0.zip](https://github.com/pinorobotics/msgmonster/raw/main/msgmonster/release/msgmonster-v4.0.zip)
+
 # Version 3
 
 - Issue lambdaprime/jros2client#9 Adding support for fixed size arrays
