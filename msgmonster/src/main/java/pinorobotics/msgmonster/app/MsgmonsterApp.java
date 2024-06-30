@@ -439,7 +439,11 @@ public class MsgmonsterApp {
     }
 
     private String cleanCommentLine(String comment) {
-        return comment.replaceAll("^#\\s*", "").trim();
+        return comment.replaceAll("^#\\s*", "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .trim();
     }
 
     private void generateClassFields(PicoWriter writer, MessageDefinition definition) {

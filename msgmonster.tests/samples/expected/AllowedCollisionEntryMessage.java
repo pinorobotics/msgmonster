@@ -47,6 +47,7 @@ public class AllowedCollisionEntryMessage implements Message {
 
    /**
     * whether or not collision checking is enabled
+    * if a &lt; b &amp;&amp; a &gt; c
     */
    public boolean[] enabled = new boolean[0];
    
