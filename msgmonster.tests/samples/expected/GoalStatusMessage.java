@@ -106,7 +106,7 @@ public class GoalStatusMessage implements Message {
       
    }
    
-   public GoalIDMessage goal_id = new GoalIDMessage();
+   public GoalIdMessage goal_id = new GoalIdMessage();
    
    public byte status;
    
@@ -116,7 +116,7 @@ public class GoalStatusMessage implements Message {
     */
    public StringMessage text = new StringMessage();
    
-   public GoalStatusMessage withGoalId(GoalIDMessage goal_id) {
+   public GoalStatusMessage withGoalId(GoalIdMessage goal_id) {
        this.goal_id = goal_id;
        return this;
    }

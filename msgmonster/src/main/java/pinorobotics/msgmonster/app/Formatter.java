@@ -34,7 +34,9 @@ public class Formatter {
             if (w.isEmpty()) continue;
             buf.append(Character.toTitleCase(w.charAt(0)));
             if (w.length() > 1) {
-                buf.append(w.substring(1));
+                var rest = w.substring(1);
+                rest = rest.replaceAll("ID$", "Id");
+                buf.append(rest);
             }
         }
         return buf.toString();

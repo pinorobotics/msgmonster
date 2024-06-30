@@ -39,11 +39,11 @@ import id.jrosmessages.std_msgs.StringMessage;
  * Definition for test_msgs/GoalID
  */
 @MessageMetadata(
-    name = GoalIDMessage.NAME,
+    name = GoalIdMessage.NAME,
     fields = { "stamp", "id" },
     md5sum = "240a3309d52227ee0745a03a208f9de9"
 )
-public class GoalIDMessage implements Message {
+public class GoalIdMessage implements Message {
    
    static final String NAME = "test_msgs/GoalID";
 
@@ -61,12 +61,12 @@ public class GoalIDMessage implements Message {
     */
    public StringMessage id = new StringMessage();
    
-   public GoalIDMessage withStamp(Time stamp) {
+   public GoalIdMessage withStamp(Time stamp) {
        this.stamp = stamp;
        return this;
    }
    
-   public GoalIDMessage withId(StringMessage id) {
+   public GoalIdMessage withId(StringMessage id) {
        this.id = id;
        return this;
    }
@@ -81,7 +81,7 @@ public class GoalIDMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (GoalIDMessage) obj;
+       var other = (GoalIdMessage) obj;
        return
            Objects.equals(stamp, other.stamp) &&
            Objects.equals(id, other.id)
