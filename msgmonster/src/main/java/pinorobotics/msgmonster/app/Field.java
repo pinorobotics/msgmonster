@@ -29,6 +29,7 @@ public class Field {
                     "float64", "double",
                     "float32", "float",
                     "uint32", "int",
+                    "uint16", "short",
                     "uint8", "byte",
                     "byte", "byte",
                     "int64", "long",
