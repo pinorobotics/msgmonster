@@ -1,8 +1,16 @@
-Intended for developers and not users.
+# Build
 
-# Use Eclipse
+Building  module locally and making changes to it (this is optional and not intended for users).
 
-- Build eclipse projects:
+## With Gradle
+
+``` bash
+gradle clean build
+```
+
+## With Eclipse
+
+- Build Eclipse projects:
 
 ``` bash
 gradle eclipse

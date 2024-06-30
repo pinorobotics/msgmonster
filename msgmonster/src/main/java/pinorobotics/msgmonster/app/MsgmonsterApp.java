@@ -332,10 +332,8 @@ public class MsgmonsterApp {
 
     private Path readMessageName(Path msgFile) {
         return switch (rosVersion) {
-            case ros2 -> msgFile.getParent()
-                    .getParent()
-                    .getFileName()
-                    .resolve(msgFile.getFileName());
+            case ros2 ->
+                    msgFile.getParent().getParent().getFileName().resolve(msgFile.getFileName());
             default -> msgFile.getParent().getFileName().resolve(msgFile.getFileName());
         };
     }
