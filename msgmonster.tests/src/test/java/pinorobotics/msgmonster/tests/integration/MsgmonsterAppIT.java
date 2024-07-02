@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import pinorobotics.msgmonster.app.RosVersion;
+import pinorobotics.msgmonster.ros.RosVersion;
 
 /**
  * @author aeon_flux aeon_flux@eclipso.ch

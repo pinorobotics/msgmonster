@@ -15,12 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pinorobotics.msgmonster.app;
+package pinorobotics.msgmonster.ros;
 
-/**
- * @author lambdaprime intid@protonmail.com
- */
-public enum RosVersion {
-    ros1,
-    ros2
+import java.nio.file.Path;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+public interface RosMsgCommand {
+
+    boolean isPackage(Path input);
+
+    Stream<Path> listMsgFiles(Path rosPackage);
+
+    default Optional<String> calcMd5Sum(Path msgFile) {
+        return Optional.empty();
+    }
+
+    Stream<String> lines(Path msgFile);
+
+    RosVersion getRosVersion();
 }

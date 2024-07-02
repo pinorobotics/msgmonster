@@ -1,4 +1,5 @@
 Output folder /tmp
 Processing file std_msgs/HttpClient
-Exception in thread "main" java.lang.RuntimeException: Unable to load msg [std_msgs/HttpClient]: Cannot locate message [HttpClient] in package [std_msgs] with paths [['/opt/ros/noetic/share/std_msgs/msg']]
+Error generating class for std_msgs/HttpClient
+java.lang.RuntimeException: Invalid name 'std_msgs/HttpClient'. Expected three parts separated by '/'
 *

@@ -24,18 +24,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
-import pinorobotics.msgmonster.app.RosMsgCommand;
+import pinorobotics.msgmonster.ros.RosMsgCommand;
+import pinorobotics.msgmonster.ros.RosVersion;
 
 public class RosMsgCommandMock implements RosMsgCommand {
 
     private Path folder;
+    private RosVersion rosVersion;
 
-    public RosMsgCommandMock(Path folder) {
+    public RosMsgCommandMock(RosVersion rosVersion, Path folder) {
+        this.rosVersion = rosVersion;
         this.folder = folder;
     }
 
     @Override
-    public Stream<Path> listMessageFiles(Path rosPackage) {
+    public Stream<Path> listMsgFiles(Path rosPackage) {
         return Unchecked.get(
                         () ->
                                 Files.list(folder.resolve(rosPackage))
@@ -60,5 +63,10 @@ public class RosMsgCommandMock implements RosMsgCommand {
     @Override
     public boolean isPackage(Path input) {
         return true;
+    }
+
+    @Override
+    public RosVersion getRosVersion() {
+        return rosVersion;
     }
 }

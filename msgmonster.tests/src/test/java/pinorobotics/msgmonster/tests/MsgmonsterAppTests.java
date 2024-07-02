@@ -49,7 +49,7 @@ public class MsgmonsterAppTests {
         msgmonsterApp =
                 new MsgmonsterApp(
                         new CommandLineInterface(System.in, baos, baos),
-                        rosVersion -> new RosMsgCommandMock(Paths.get("samples")));
+                        rosVersion -> new RosMsgCommandMock(rosVersion, Paths.get("samples")));
     }
 
     /**

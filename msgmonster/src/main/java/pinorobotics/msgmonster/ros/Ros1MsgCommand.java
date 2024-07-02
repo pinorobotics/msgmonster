@@ -15,19 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pinorobotics.msgmonster.app;
+package pinorobotics.msgmonster.ros;
 
 import id.xfunction.lang.XExec;
+import id.xfunction.lang.XRE;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class Ros2MsgCommand implements RosMsgCommand {
+public class Ros1MsgCommand implements RosMsgCommand {
 
     @Override
     public boolean isPackage(Path input) {
-        return new XExec("ros2 interface packages")
+        return new XExec("rosmsg packages")
                 .start()
                 .stderrThrow()
                 .stdoutAsStream()
@@ -37,21 +39,31 @@ public class Ros2MsgCommand implements RosMsgCommand {
     }
 
     @Override
-    public Stream<Path> listMessageFiles(Path rosPackage) {
-        return new XExec("ros2 interface package " + rosPackage)
+    public Stream<Path> listMsgFiles(Path rosPackage) {
+        return new XExec("rosmsg package " + rosPackage)
                 .start()
                 .stderrThrow()
                 .stdoutAsStream()
-                .filter(s -> s.startsWith(rosPackage + "/msg"))
                 .map(msg -> Paths.get(msg));
     }
 
     @Override
+    public Optional<String> calcMd5Sum(Path msgFile) {
+        var cmd = "rosmsg md5 " + msgFile;
+        var proc = new XExec(cmd).start();
+        if (proc.await() != 0) throw new XRE("md5sum calc error: " + proc.stderr());
+        String md5sum = proc.stdout();
+        if (md5sum.isEmpty()) throw new XRE("Command `%s` returned empty MD5", cmd);
+        return Optional.of(md5sum);
+    }
+
+    @Override
     public Stream<String> lines(Path msgFile) {
-        return new XExec("ros2 interface show " + msgFile)
-                .start()
-                .stderrThrow()
-                .stdoutAsStream()
-                .filter(s -> !s.startsWith("\t"));
+        return new XExec("rosmsg show -r " + msgFile).start().stderrThrow().stdoutAsStream();
+    }
+
+    @Override
+    public RosVersion getRosVersion() {
+        return RosVersion.ros1;
     }
 }

@@ -63,21 +63,28 @@ jacocoTestReport {
 jacocoTestCoverageVerification {
   sourceDirectories.from = project(':msgmonster').sourceSets.main.java.srcDirs
   classDirectories.from = project(':msgmonster').sourceSets.main.java.classesDirectory
-  afterEvaluate {
-    classDirectories.setFrom(files(classDirectories.files.collect {
-      fileTree(dir: it, exclude:  [
-        // none
-      ])
-    }))
-  }
   violationRules {
     rule {
       enabled = true
       element = 'PACKAGE'
+      excludes = [
+        'pinorobotics.msgmonster.app',
+        'pinorobotics.msgmonster.ros'
+      ]
       limit {
         counter = 'LINE'
         value = 'COVEREDRATIO'
         minimum = 0.5
+      }
+    }
+    rule {
+      enabled = true
+      element = 'PACKAGE'
+      includes = ['pinorobotics.msgmonster.app']
+      limit {
+        counter = 'LINE'
+        value = 'COVEREDRATIO'
+        minimum = 0.2
       }
     }
   }

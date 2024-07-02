@@ -15,9 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pinorobotics.msgmonster.app;
+package pinorobotics.msgmonster.ros;
 
-@FunctionalInterface
-public interface RosMsgCommandFactory {
-    RosMsgCommand create(RosVersion rosVersion);
+/**
+ * @author lambdaprime intid@protonmail.com
+ */
+public enum RosVersion {
+    ros1,
+    ros2
 }

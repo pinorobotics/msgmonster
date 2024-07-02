@@ -1,4 +1,5 @@
 Output folder /tmp
 Processing file std_msgs/HttpClient
-Exception in thread "main" java.lang.RuntimeException: Invalid name 'std_msgs/HttpClient'. Expected three parts separated by '/'
+Error generating class for std_msgs/HttpClient
+java.lang.RuntimeException: Invalid name 'std_msgs/HttpClient'. Expected three parts separated by '/'
 *

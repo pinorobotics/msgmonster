@@ -23,4 +23,6 @@ module msgmonster {
     requires org.ainslec.picocog;
 
     exports pinorobotics.msgmonster.app;
+    exports pinorobotics.msgmonster.ros to
+            msgmonster.tests;
 }
