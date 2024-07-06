@@ -1,5 +1,5 @@
-Output folder /tmp
-Processing file std_msgs/HttpClient
-Error generating class for std_msgs/HttpClient
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Output folder /tmp
+* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file std_msgs/HttpClient
+* [SEVERE ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Error generating class for std_msgs/HttpClient
 java.lang.RuntimeException: Invalid name 'std_msgs/HttpClient'. Expected three parts separated by '/'
 *

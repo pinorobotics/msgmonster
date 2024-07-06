@@ -19,8 +19,8 @@ package pinorobotics.msgmonster.app;
 
 import id.xfunction.ResourceUtils;
 import id.xfunction.cli.ArgumentParsingException;
-import id.xfunction.cli.CommandLineInterface;
 import id.xfunction.function.Unchecked;
+import id.xfunction.logging.XLogger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import pinorobotics.msgmonster.generator.JRosMessageGenerator;
@@ -33,17 +33,15 @@ import pinorobotics.msgmonster.ros.RosVersion;
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class MsgmonsterApp {
-
+    private static final XLogger LOGGER = XLogger.getLogger(MsgmonsterApp.class);
     private static final ResourceUtils resourceUtils = new ResourceUtils();
-    private CommandLineInterface cli;
     private RosMsgCommandFactory rosCommandFactory;
 
     private static void usage() {
         resourceUtils.readResourceAsStream("README-msgmonster.md").forEach(System.out::println);
     }
 
-    public MsgmonsterApp(CommandLineInterface cli, RosMsgCommandFactory rosCommandFactory) {
-        this.cli = cli;
+    public MsgmonsterApp(RosMsgCommandFactory rosCommandFactory) {
         this.rosCommandFactory = rosCommandFactory;
     }
 
@@ -52,14 +50,15 @@ public class MsgmonsterApp {
             usage();
             return;
         }
+        XLogger.load("logging-msgmonster.properties");
         var rosVersion = RosVersion.valueOf(args[0]);
         var rosmsg = rosCommandFactory.create(rosVersion);
         var packageName = Paths.get(args[1]);
         var outputFolder = Paths.get(args[3]);
         outputFolder.toFile().mkdirs();
-        cli.print("Output folder " + outputFolder);
+        LOGGER.info("Output folder {0}", outputFolder);
         Path input = Paths.get(args[2]);
-        var messageGenerator = new JRosMessageGenerator(cli, rosmsg, outputFolder, packageName);
+        var messageGenerator = new JRosMessageGenerator(rosmsg, outputFolder, packageName);
         if (!rosmsg.isPackage(input)) {
             messageGenerator.generateJavaClass(input);
         } else {
@@ -72,7 +71,6 @@ public class MsgmonsterApp {
     public static void main(String[] args) throws Exception {
         try {
             new MsgmonsterApp(
-                            new CommandLineInterface(),
                             rosVersion ->
                                     switch (rosVersion) {
                                         case ros1 -> new Ros1MsgCommand();

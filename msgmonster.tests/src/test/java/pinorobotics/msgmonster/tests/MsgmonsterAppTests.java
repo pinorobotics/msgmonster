@@ -17,9 +17,8 @@
  */
 package pinorobotics.msgmonster.tests;
 
-import id.xfunction.cli.CommandLineInterface;
+import id.xfunction.logging.XLogger;
 import id.xfunctiontests.XAsserts;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +34,6 @@ import pinorobotics.msgmonster.app.MsgmonsterApp;
 public class MsgmonsterAppTests {
 
     private static Path outputFolder;
-    private static ByteArrayOutputStream baos;
     private static MsgmonsterApp msgmonsterApp;
 
     @BeforeAll
@@ -45,10 +43,9 @@ public class MsgmonsterAppTests {
 
     @BeforeEach
     public void setup() {
-        baos = new ByteArrayOutputStream();
+        XLogger.load("msgmonster-test.properties");
         msgmonsterApp =
                 new MsgmonsterApp(
-                        new CommandLineInterface(System.in, baos, baos),
                         rosVersion -> new RosMsgCommandMock(rosVersion, Paths.get("samples")));
     }
 

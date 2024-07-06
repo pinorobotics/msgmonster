@@ -19,7 +19,7 @@ package pinorobotics.msgmonster.generator;
 
 import id.xfunction.ResourceUtils;
 import id.xfunction.XUtils;
-import id.xfunction.cli.CommandLineInterface;
+import id.xfunction.logging.XLogger;
 import id.xfunction.text.Substitutor;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,19 +39,16 @@ import pinorobotics.msgmonster.ros.RosVersion;
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class JRosMessageGenerator {
-
+    private static final XLogger LOGGER = XLogger.getLogger(JRosMessageGenerator.class);
     private static final ResourceUtils resourceUtils = new ResourceUtils();
     private Formatter formatter = new Formatter();
     private Map<String, String> substitution = new HashMap<>();
     private Substitutor substitutor = new Substitutor();
-    private CommandLineInterface cli;
     private RosMsgCommand rosmsg;
     private Path outputFolder;
     private Path packageName;
 
-    public JRosMessageGenerator(
-            CommandLineInterface cli, RosMsgCommand rosmsg, Path outputFolder, Path packageName) {
-        this.cli = cli;
+    public JRosMessageGenerator(RosMsgCommand rosmsg, Path outputFolder, Path packageName) {
         this.rosmsg = rosmsg;
         this.outputFolder = outputFolder;
         this.packageName = packageName;
@@ -61,18 +58,17 @@ public class JRosMessageGenerator {
         try {
             generateJavaInternal(msgFile);
         } catch (Exception e) {
-            System.err.println("Error generating class for " + msgFile);
-            e.printStackTrace();
+            LOGGER.severe("Error generating class for " + msgFile, e);
         }
     }
 
     private void generateJavaInternal(Path msgFile) throws IOException {
         substitution.clear();
-        cli.print("Processing file " + msgFile);
+        LOGGER.info("Processing file " + msgFile);
         String className = formatter.format(msgFile);
         Path outFile = outputFolder.resolve(className + ".java");
         if (outFile.toFile().exists()) {
-            cli.print("Message file already exist - ignoring");
+            LOGGER.warning("Message file already exist - ignoring");
             return;
         }
         var definition = readMessageDefinition(msgFile);
