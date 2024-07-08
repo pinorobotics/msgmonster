@@ -18,14 +18,15 @@
 package pinorobotics.msgmonster.tests;
 
 import id.xfunction.logging.XLogger;
+import id.xfunction.nio.file.XFiles;
 import id.xfunctiontests.XAsserts;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import pinorobotics.msgmonster.app.MsgmonsterApp;
 
 /**
@@ -36,29 +37,29 @@ public class MsgmonsterAppTests {
     private static Path outputFolder;
     private static MsgmonsterApp msgmonsterApp;
 
-    @BeforeAll
-    public static void setupAll() throws IOException {
-        outputFolder = Files.createTempDirectory("msgmonster");
-    }
-
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         XLogger.load("msgmonster-test.properties");
+        outputFolder = Files.createTempDirectory("msgmonster");
         msgmonsterApp =
                 new MsgmonsterApp(
                         rosVersion -> new RosMsgCommandMock(rosVersion, Paths.get("samples")));
     }
 
     /**
-     * ROS version agnostic test. Instead of executing ROS commands it relies on {@link
+     * Not an integration test. Instead of executing ROS commands it relies on {@link
      * RosMsgCommandMock}
      */
-    @Test
-    public void test_happy() throws Exception {
+    @ParameterizedTest
+    @CsvSource({"ros1, samples/expected"})
+    public void test_happy(String rosVersion, String expectedPath) throws Exception {
         msgmonsterApp.run(
                 new String[] {
-                    "ros1", "id.jrosmessages.test_msgs", "test_msgs", outputFolder.toString()
+                    rosVersion, "id.jrosmessages.test_msgs", "test_msgs", outputFolder.toString()
                 });
-        XAsserts.assertContentEquals(Paths.get("samples/expected"), outputFolder);
+        XAsserts.assertContentEquals(Paths.get(expectedPath), outputFolder);
+        XAsserts.assertMatches(
+                Files.readString(Paths.get("samples/test_happy")),
+                Files.readString(XFiles.TEMP_FOLDER.orElseThrow().resolve("msgmonster-test.log")));
     }
 }

@@ -50,7 +50,6 @@ public class MsgmonsterApp {
             usage();
             return;
         }
-        XLogger.load("logging-msgmonster.properties");
         var rosVersion = RosVersion.valueOf(args[0]);
         var rosmsg = rosCommandFactory.create(rosVersion);
         var packageName = Paths.get(args[1]);
@@ -70,6 +69,7 @@ public class MsgmonsterApp {
 
     public static void main(String[] args) throws Exception {
         try {
+            XLogger.load("logging-msgmonster.properties");
             new MsgmonsterApp(
                             rosVersion ->
                                     switch (rosVersion) {
