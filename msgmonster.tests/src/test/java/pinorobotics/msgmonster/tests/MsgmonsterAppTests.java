@@ -34,6 +34,8 @@ import pinorobotics.msgmonster.app.MsgmonsterApp;
  */
 public class MsgmonsterAppTests {
 
+    private static final Path SAMPLES =
+            Paths.get("samples").resolve(MsgmonsterAppTests.class.getSimpleName());
     private static Path outputFolder;
     private static MsgmonsterApp msgmonsterApp;
 
@@ -41,9 +43,7 @@ public class MsgmonsterAppTests {
     public void setup() throws IOException {
         XLogger.load("msgmonster-test.properties");
         outputFolder = Files.createTempDirectory("msgmonster");
-        msgmonsterApp =
-                new MsgmonsterApp(
-                        rosVersion -> new RosMsgCommandMock(rosVersion, Paths.get("samples")));
+        msgmonsterApp = new MsgmonsterApp(rosVersion -> new RosMsgCommandMock(rosVersion, SAMPLES));
     }
 
     /**
@@ -51,15 +51,16 @@ public class MsgmonsterAppTests {
      * RosMsgCommandMock}
      */
     @ParameterizedTest
-    @CsvSource({"ros1, samples/expected"})
-    public void test_happy(String rosVersion, String expectedPath) throws Exception {
+    @CsvSource({"ros1"})
+    public void test_happy(String rosVersion) throws Exception {
+        var expectedPath = SAMPLES.resolve("expected").resolve(rosVersion);
         msgmonsterApp.run(
                 new String[] {
                     rosVersion, "id.jrosmessages.test_msgs", "test_msgs", outputFolder.toString()
                 });
-        XAsserts.assertContentEquals(Paths.get(expectedPath), outputFolder);
+        XAsserts.assertContentEquals(expectedPath.resolve("gen"), outputFolder);
         XAsserts.assertMatches(
-                Files.readString(Paths.get("samples/test_happy")),
+                Files.readString(expectedPath.resolve("test_happy")),
                 Files.readString(XFiles.TEMP_FOLDER.orElseThrow().resolve("msgmonster-test.log")));
     }
 }
