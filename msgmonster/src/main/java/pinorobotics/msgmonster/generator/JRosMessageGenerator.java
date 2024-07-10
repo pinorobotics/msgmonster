@@ -17,7 +17,6 @@
  */
 package pinorobotics.msgmonster.generator;
 
-import id.xfunction.ResourceUtils;
 import id.xfunction.XUtils;
 import id.xfunction.logging.XLogger;
 import id.xfunction.text.Substitutor;
@@ -40,10 +39,10 @@ import pinorobotics.msgmonster.ros.RosVersion;
  */
 public class JRosMessageGenerator {
     private static final XLogger LOGGER = XLogger.getLogger(JRosMessageGenerator.class);
-    private static final ResourceUtils resourceUtils = new ResourceUtils();
     private Formatter formatter = new Formatter();
     private Map<String, String> substitution = new HashMap<>();
     private Substitutor substitutor = new Substitutor();
+    private GeneratorUtils utils = new GeneratorUtils();
     private RosMsgCommand rosmsg;
     private Path outputFolder;
     private Path packageName;
@@ -73,7 +72,7 @@ public class JRosMessageGenerator {
         }
         var definition = readMessageDefinition(msgFile);
         PicoWriter topWriter = new PicoWriter();
-        generateHeader(topWriter, definition.getName());
+        utils.generateHeader(topWriter, definition.getName());
         substitution.put("${msgName}", definition.getName());
         rosmsg.calcMd5Sum(msgFile).ifPresent(md5 -> substitution.put("${md5sum}", md5));
         topWriter.writeln(String.format("package %s;", packageName));
@@ -85,7 +84,7 @@ public class JRosMessageGenerator {
         substitution.put("${className}", className);
         var memvarWriter = topWriter.createDeferredWriter();
         memvarWriter.writeln();
-        memvarWriter.writeln(resourceUtils.readResource("class_fields_header"));
+        memvarWriter.writeln(utils.readResource("class_fields_header"));
         generateEnums(memvarWriter, definition);
         generateClassFields(memvarWriter, definition);
         generateWithMethods(memvarWriter, definition);
@@ -100,8 +99,7 @@ public class JRosMessageGenerator {
 
     private void generateToString(PicoWriter writer, MessageDefinition definition) {
         if (definition.getFields().isEmpty()) return;
-        resourceUtils
-                .readResourceAsStream("toString")
+        utils.readResourceAsStream("toString")
                 .forEach(
                         line -> {
                             if (!line.contains("${...}")) {
@@ -130,8 +128,7 @@ public class JRosMessageGenerator {
 
     private void generateEquals(PicoWriter writer, MessageDefinition definition) {
         if (definition.getFields().isEmpty()) return;
-        resourceUtils
-                .readResourceAsStream("equals")
+        utils.readResourceAsStream("equals")
                 .forEach(
                         line -> {
                             if (!line.contains("${...}")) {
@@ -167,8 +164,7 @@ public class JRosMessageGenerator {
 
     private void generateHashCode(PicoWriter writer, MessageDefinition definition) {
         if (definition.getFields().isEmpty()) return;
-        resourceUtils
-                .readResourceAsStream("hash_code")
+        utils.readResourceAsStream("hash_code")
                 .forEach(
                         line -> {
                             if (!line.contains("${...}")) {
@@ -210,8 +206,7 @@ public class JRosMessageGenerator {
         if (rosmsg.getRosVersion() == RosVersion.ros1) {
             metadataMap.put("md5sum", XUtils.quote("${md5sum}"));
         }
-        resourceUtils
-                .readResourceAsStream("class_message_metadata")
+        utils.readResourceAsStream("class_message_metadata")
                 .forEach(
                         line -> {
                             if (!line.contains("${...}")) {
@@ -235,13 +230,13 @@ public class JRosMessageGenerator {
 
     private void generateWithMethods(PicoWriter writer, MessageDefinition definition) {
         for (var field : definition.getFields()) {
-            var body = resourceUtils.readResource("with_method");
+            var body = utils.readResource("with_method");
             Map<String, String> substitution = new HashMap<>(this.substitution);
             if (field.hasArrayType()) {
                 substitution.put("${fieldType}", field.getJavaType() + "...");
                 if (field.getArraySize() > 0) {
                     substitution.put("${arraySize}", "" + field.getArraySize());
-                    body = resourceUtils.readResource("with_method_for_fixed_size_array");
+                    body = utils.readResource("with_method_for_fixed_size_array");
                 }
             } else {
                 substitution.put("${fieldType}", field.getJavaType());
@@ -255,7 +250,7 @@ public class JRosMessageGenerator {
     }
 
     private void generateEnums(PicoWriter writer, MessageDefinition definition) {
-        var body = resourceUtils.readResource("enum_field");
+        var body = utils.readResource("enum_field");
         for (var enumDef : definition.getEnums()) {
             writer.writeln_r("public enum UnknownType {");
             var memvarWriter = writer.createDeferredWriter();
@@ -267,22 +262,13 @@ public class JRosMessageGenerator {
         }
     }
 
-    private void generateJavadocComment(PicoWriter writer, String comment) {
-        writer.writeln("/**");
-        var scanner = new Scanner(comment);
-        while (scanner.hasNext()) {
-            writer.writeln(" * " + scanner.nextLine());
-        }
-        writer.writeln(" */");
-    }
-
     private void writeField(PicoWriter writer, String fieldTemplate, Field field) {
         Map<String, String> substitution = new HashMap<>();
         substitution.put("${fieldType}", field.getJavaType());
         substitution.put("${fieldName}", field.getName());
         substitution.put("${arraySize}", "" + field.getArraySize());
         fieldTemplate = substitutor.substitute(fieldTemplate, substitution);
-        if (!field.getComment().isEmpty()) generateJavadocComment(writer, field.getComment());
+        if (!field.getComment().isEmpty()) utils.generateJavadocComment(writer, field.getComment());
         writeWithIdent(writer, fieldTemplate);
     }
 
@@ -299,10 +285,7 @@ public class JRosMessageGenerator {
                 rosmsg.lines(msgFile)
                         .map(String::trim)
                         .collect(Collectors.toCollection(ArrayList<String>::new));
-        while (!lines.isEmpty()) {
-            if (!lines.get(0).isEmpty()) break;
-            lines.remove(0);
-        }
+        utils.removeLeadingBlankLines(lines);
         var fieldLineNums = new ArrayList<Integer>();
         for (int i = 0; i < lines.size(); i++) {
             var line = lines.get(i);
@@ -407,14 +390,14 @@ public class JRosMessageGenerator {
             var body = "";
             if (field.hasArrayType()) {
                 body =
-                        resourceUtils.readResource(
+                        utils.readResource(
                                 field.getArraySize() > 0
                                         ? "class_field_fixed_size_array"
                                         : "class_field_array");
             } else if (field.hasPrimitiveType()) {
-                body = resourceUtils.readResource("class_field_primitive");
+                body = utils.readResource("class_field_primitive");
             } else {
-                body = resourceUtils.readResource("class_field");
+                body = utils.readResource("class_field");
             }
             writeField(writer, body, field);
         }
@@ -446,11 +429,11 @@ public class JRosMessageGenerator {
     private void generateJavadocComment(PicoWriter writer, MessageDefinition definition) {
         var comment = "Definition for " + definition.getName();
         if (!definition.getComment().isBlank()) comment += "\n\n<p>" + definition.getComment();
-        generateJavadocComment(writer, comment);
+        utils.generateJavadocComment(writer, comment);
     }
 
     private void generateImports(PicoWriter writer, MessageDefinition definition) {
-        writer.write(resourceUtils.readResource("imports"));
+        writer.write(utils.readResource("imports"));
         var imports = new ArrayList<String>();
         for (var field : definition.getFields()) {
             if (field.hasArrayType()) imports.add("import java.util.Arrays;");
@@ -463,13 +446,5 @@ public class JRosMessageGenerator {
         }
         imports.stream().sorted().distinct().forEach(writer::writeln);
         writer.writeln();
-    }
-
-    private void generateHeader(PicoWriter writer, String msgName) {
-        var header = resourceUtils.readResource("header");
-        Map<String, String> substitution = new HashMap<>();
-        substitution.put("${msgName}", msgName);
-        header = substitutor.substitute(header, substitution);
-        writer.write(header);
     }
 }
