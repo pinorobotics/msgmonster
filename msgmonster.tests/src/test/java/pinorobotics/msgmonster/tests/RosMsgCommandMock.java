@@ -17,7 +17,7 @@
  */
 package pinorobotics.msgmonster.tests;
 
-import id.xfunction.XUtils;
+import id.xfunction.Checksum;
 import id.xfunction.function.Unchecked;
 import id.xfunction.nio.file.XPaths;
 import java.nio.file.Files;
@@ -52,7 +52,7 @@ public class RosMsgCommandMock implements RosMsgCommand {
 
     @Override
     public Optional<String> calcMd5Sum(Path msgFile) {
-        return Optional.of(Unchecked.get(() -> XUtils.md5Sum(msgFile.toString())));
+        return Optional.of(Unchecked.get(() -> Checksum.md5(msgFile.toString())));
     }
 
     @Override

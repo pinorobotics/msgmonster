@@ -11,8 +11,9 @@ eclipse.classpath.file {
 }
 
 dependencies {
-  testImplementation project(':msgmonster')
+  implementation project(':msgmonster')
   testImplementation 'io.github.lambdaprime:id.xfunctiontests:1.0'
+  implementation 'io.github.lambdaprime:id.xfunction:25.0'
 
   def junitVersion = "5.8.1"
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
