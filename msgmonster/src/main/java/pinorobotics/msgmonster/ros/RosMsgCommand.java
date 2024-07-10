@@ -23,8 +23,6 @@ import java.util.stream.Stream;
 
 public interface RosMsgCommand {
 
-    boolean isPackage(Path input);
-
     Stream<Path> listMsgFiles(Path rosPackage);
 
     default Optional<String> calcMd5Sum(Path msgFile) {

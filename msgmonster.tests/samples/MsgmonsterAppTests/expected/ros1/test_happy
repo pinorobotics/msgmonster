@@ -1,16 +1,16 @@
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Output folder /tmp/*
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/LaserScan
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/TestDifferentFields
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/AllowedCollisionMatrix
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/String
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/AllowedCollisionEntry
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/GoalStatus
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/MessageWithNoFields
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/GoalStatusArray
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/CollisionObject
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/Invalid
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/LaserScan
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/TestDifferentFields
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/AllowedCollisionMatrix
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/String
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/AllowedCollisionEntry
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/GoalStatus
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/MessageWithNoFields
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/GoalStatusArray
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/CollisionObject
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/Invalid
 * [SEVERE ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Error generating class for test_msgs/Invalid
 java.util.NoSuchElementException
 *
-* [INFO   ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Processing file test_msgs/GoalID
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file test_msgs/GoalID
 *

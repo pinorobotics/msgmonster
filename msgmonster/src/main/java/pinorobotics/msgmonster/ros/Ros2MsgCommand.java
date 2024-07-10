@@ -25,8 +25,7 @@ import java.util.stream.Stream;
 
 public class Ros2MsgCommand implements RosMsgCommand {
 
-    @Override
-    public boolean isPackage(Path input) {
+    private boolean isPackage(Path input) {
         return new XExec("ros2 interface packages")
                 .start()
                 .stderrThrow()
@@ -38,12 +37,16 @@ public class Ros2MsgCommand implements RosMsgCommand {
 
     @Override
     public Stream<Path> listMsgFiles(Path rosPackage) {
-        return new XExec("ros2 interface package " + rosPackage)
-                .start()
-                .stderrThrow()
-                .stdoutAsStream()
-                .filter(s -> s.startsWith(rosPackage + "/msg"))
-                .map(msg -> Paths.get(msg));
+        if (isPackage(rosPackage)) {
+            return new XExec("ros2 interface package " + rosPackage)
+                    .start()
+                    .stderrThrow()
+                    .stdoutAsStream()
+                    .filter(s -> s.startsWith(rosPackage + "/msg"))
+                    .map(msg -> Paths.get(msg));
+        } else {
+            return Stream.of(rosPackage);
+        }
     }
 
     @Override

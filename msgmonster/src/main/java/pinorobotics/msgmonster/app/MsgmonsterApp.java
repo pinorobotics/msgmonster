@@ -19,9 +19,7 @@ package pinorobotics.msgmonster.app;
 
 import id.xfunction.ResourceUtils;
 import id.xfunction.cli.ArgumentParsingException;
-import id.xfunction.function.Unchecked;
 import id.xfunction.logging.XLogger;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import pinorobotics.msgmonster.generator.JRosMessageGenerator;
 import pinorobotics.msgmonster.ros.Ros1MsgCommand;
@@ -56,15 +54,14 @@ public class MsgmonsterApp {
         var outputFolder = Paths.get(args[3]);
         outputFolder.toFile().mkdirs();
         LOGGER.info("Output folder {0}", outputFolder);
-        Path input = Paths.get(args[2]);
+        var input = Paths.get(args[2]);
         var messageGenerator = new JRosMessageGenerator(rosmsg, outputFolder, packageName);
-        if (!rosmsg.isPackage(input)) {
-            messageGenerator.generateJavaClass(input);
-        } else {
-            rosmsg.listMsgFiles(input)
-                    // .limit(1)
-                    .forEach(Unchecked.wrapAccept(messageGenerator::generateJavaClass));
-        }
+        var rosFiles = rosmsg.listMsgFiles(input);
+        rosFiles.forEach(
+                rosFile -> {
+                    LOGGER.info("Processing file {0}", rosFile);
+                    messageGenerator.generateJavaClass(rosFile);
+                });
     }
 
     public static void main(String[] args) throws Exception {

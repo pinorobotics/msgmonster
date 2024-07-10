@@ -63,7 +63,6 @@ public class JRosMessageGenerator {
 
     private void generateJavaInternal(Path msgFile) throws IOException {
         substitution.clear();
-        LOGGER.info("Processing file " + msgFile);
         String className = formatter.format(msgFile);
         Path outFile = outputFolder.resolve(className + ".java");
         if (outFile.toFile().exists()) {

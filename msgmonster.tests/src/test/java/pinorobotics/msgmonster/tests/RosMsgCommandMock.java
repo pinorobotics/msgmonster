@@ -61,11 +61,6 @@ public class RosMsgCommandMock implements RosMsgCommand {
     }
 
     @Override
-    public boolean isPackage(Path input) {
-        return true;
-    }
-
-    @Override
     public RosVersion getRosVersion() {
         return rosVersion;
     }
