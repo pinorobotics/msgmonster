@@ -18,13 +18,46 @@
 package pinorobotics.msgmonster.generator;
 
 import java.nio.file.Path;
+import pinorobotics.msgmonster.ros.RosFile;
+import pinorobotics.msgmonster.ros.RosVersion;
 
+/**
+ * @author aeon_flux aeon_flux@eclipso.ch
+ */
 public class Formatter {
 
-    /** Formats message file name actionlib_msgs/GoalID to its Java class */
-    public String format(Path msgFile) {
-        return String.format(
-                "%sMessage", camelCase(msgFile.getFileName().toString().replaceAll(".msg", "")));
+    /**
+     * Formats ROS file to its Java class name.
+     *
+     * <p>For example: "test_msgs/CollisionObject" to "CollisionObjectMessage"
+     */
+    public String formatAsJavaClassName(RosFile rosFile) {
+        return switch (rosFile.type()) {
+            default ->
+                    String.format("%sMessage", camelCase(rosFile.name().getFileName().toString()));
+        };
+    }
+
+    /** Formats field type name (as defined inside ROS message file) into its Java class name */
+    public String formatAsJavaClassName(String fieldType) {
+        return camelCase(fieldType) + "Message";
+    }
+
+    public String formatAsMethodName(String fieldType) {
+        return camelCase(fieldType);
+    }
+
+    public String formatAsMessageName(RosVersion rosVersion, Path msgFile) {
+        var relativePath =
+                switch (rosVersion) {
+                    case ros2 ->
+                            msgFile.getParent()
+                                    .getParent()
+                                    .getFileName()
+                                    .resolve(msgFile.getFileName());
+                    default -> msgFile.getParent().getFileName().resolve(msgFile.getFileName());
+                };
+        return relativePath.toString().replace(".msg", "");
     }
 
     private String camelCase(String text) {
@@ -40,14 +73,5 @@ public class Formatter {
             }
         }
         return buf.toString();
-    }
-
-    /** Formats field type name as defined in ROS message file into its Java class name */
-    public String formatAsJavaClassName(String fieldType) {
-        return camelCase(fieldType) + "Message";
-    }
-
-    public String formatAsMethodName(String fieldType) {
-        return camelCase(fieldType);
     }
 }

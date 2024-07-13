@@ -17,7 +17,6 @@
  */
 package pinorobotics.msgmonster.generator;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +30,12 @@ public class MessageDefinition {
     private String comment;
     private String msgName;
 
-    public MessageDefinition(Path msgName, String comment) {
-        this.msgName = msgName.toString().replace(".msg", "");
+    public MessageDefinition(String msgName, String comment) {
+        this.msgName = msgName;
         this.comment = comment;
     }
 
-    public MessageDefinition(Path msgName) {
+    public MessageDefinition(String msgName) {
         this(msgName, "");
     }
 

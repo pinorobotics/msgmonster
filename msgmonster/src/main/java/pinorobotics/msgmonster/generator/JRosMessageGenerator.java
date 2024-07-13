@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import org.ainslec.picocog.PicoWriter;
+import pinorobotics.msgmonster.ros.RosFile;
 import pinorobotics.msgmonster.ros.RosMsgCommand;
 import pinorobotics.msgmonster.ros.RosVersion;
 
@@ -53,23 +54,24 @@ public class JRosMessageGenerator {
         this.packageName = packageName;
     }
 
-    public void generateJavaClass(Path msgFile) {
+    public void generateJavaClass(RosFile rosFile) {
         try {
-            generateJavaInternal(msgFile);
+            generateJavaInternal(rosFile);
         } catch (Exception e) {
-            LOGGER.severe("Error generating class for " + msgFile, e);
+            LOGGER.severe("Error generating class for " + rosFile, e);
         }
     }
 
-    private void generateJavaInternal(Path msgFile) throws IOException {
+    private void generateJavaInternal(RosFile rosFile) throws IOException {
         substitution.clear();
-        String className = formatter.format(msgFile);
+        String className = formatter.formatAsJavaClassName(rosFile);
         Path outFile = outputFolder.resolve(className + ".java");
         if (outFile.toFile().exists()) {
             LOGGER.warning("Message file already exist - ignoring");
             return;
         }
-        var definition = readMessageDefinition(msgFile);
+        var msgFile = rosFile.name();
+        var definition = readMessageDefinition(rosFile);
         PicoWriter topWriter = new PicoWriter();
         utils.generateHeader(topWriter, definition.getName());
         substitution.put("${msgName}", definition.getName());
@@ -271,15 +273,7 @@ public class JRosMessageGenerator {
         writeWithIdent(writer, fieldTemplate);
     }
 
-    private Path readMessageName(Path msgFile) {
-        return switch (rosmsg.getRosVersion()) {
-            case ros2 ->
-                    msgFile.getParent().getParent().getFileName().resolve(msgFile.getFileName());
-            default -> msgFile.getParent().getFileName().resolve(msgFile.getFileName());
-        };
-    }
-
-    private MessageDefinition readMessageDefinition(Path msgFile) throws IOException {
+    private MessageDefinition readMessageDefinition(RosFile msgFile) throws IOException {
         var lines =
                 rosmsg.lines(msgFile)
                         .map(String::trim)
@@ -292,8 +286,9 @@ public class JRosMessageGenerator {
             if (line.trim().startsWith("#")) continue;
             fieldLineNums.add(i);
         }
+        var msgName = formatter.formatAsMessageName(rosmsg.getRosVersion(), msgFile.name());
         if (fieldLineNums.isEmpty()) {
-            return new MessageDefinition(readMessageName(msgFile));
+            return new MessageDefinition(msgName);
         }
         var pos = lines.indexOf("");
         var msgCommentLines = new ArrayList<String>();
@@ -323,7 +318,7 @@ public class JRosMessageGenerator {
         var commentBuf = new StringBuilder();
         var def =
                 new MessageDefinition(
-                        readMessageName(msgFile),
+                        msgName,
                         msgCommentLines.stream()
                                 .map(this::cleanCommentLine)
                                 .collect(Collectors.joining("\n")));
@@ -346,8 +341,6 @@ public class JRosMessageGenerator {
             }
             var scanner = new Scanner(buf[0].trim());
             scanner.useDelimiter("[\\s+=]+");
-            //            while (scanner.hasNext())
-            //                System.out.println(scanner.next());
             var type = scanner.next();
             var name = scanner.next();
             var value = scanner.hasNext() ? scanner.next() : "";

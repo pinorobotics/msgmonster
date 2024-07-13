@@ -56,11 +56,14 @@ public class MsgmonsterApp {
         LOGGER.info("Output folder {0}", outputFolder);
         var input = Paths.get(args[2]);
         var messageGenerator = new JRosMessageGenerator(rosmsg, outputFolder, packageName);
-        var rosFiles = rosmsg.listMsgFiles(input);
+        var rosFiles = rosmsg.listFiles(input);
         rosFiles.forEach(
                 rosFile -> {
                     LOGGER.info("Processing file {0}", rosFile);
-                    messageGenerator.generateJavaClass(rosFile);
+                    switch (rosFile.type()) {
+                        case MESSAGE -> messageGenerator.generateJavaClass(rosFile);
+                        default -> LOGGER.warning("ROS file type not supported: {0}", rosFile);
+                    }
                 });
     }
 

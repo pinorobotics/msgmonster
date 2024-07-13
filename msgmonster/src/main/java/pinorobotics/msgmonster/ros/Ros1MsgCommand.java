@@ -25,6 +25,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+/**
+ * @author aeon_flux aeon_flux@eclipso.ch
+ */
 public class Ros1MsgCommand implements RosMsgCommand {
 
     private boolean isPackage(Path input) {
@@ -38,15 +41,18 @@ public class Ros1MsgCommand implements RosMsgCommand {
     }
 
     @Override
-    public Stream<Path> listMsgFiles(Path rosPackage) {
-        if (isPackage(rosPackage)) {
-            return new XExec("rosmsg package " + rosPackage)
+    public Stream<RosFile> listFiles(Path rosPath) {
+        if (isPackage(rosPath)) {
+            return new XExec("rosmsg package " + rosPath)
                     .start()
                     .stderrThrow()
                     .stdoutAsStream()
-                    .map(msg -> Paths.get(msg));
+                    .map(msg -> Paths.get(msg))
+                    .map(RosFile::create)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get);
         } else {
-            return Stream.of(rosPackage);
+            return RosFile.create(rosPath).stream();
         }
     }
 
@@ -61,8 +67,8 @@ public class Ros1MsgCommand implements RosMsgCommand {
     }
 
     @Override
-    public Stream<String> lines(Path msgFile) {
-        return new XExec("rosmsg show -r " + msgFile).start().stderrThrow().stdoutAsStream();
+    public Stream<String> lines(RosFile msgFile) {
+        return new XExec("rosmsg show -r " + msgFile.name()).start().stderrThrow().stdoutAsStream();
     }
 
     @Override

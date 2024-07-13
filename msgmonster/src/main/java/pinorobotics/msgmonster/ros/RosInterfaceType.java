@@ -17,28 +17,16 @@
  */
 package pinorobotics.msgmonster.ros;
 
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 /**
+ * ROS applications typically communicate through interfaces of one of three types: messages,
+ * services and actions.
+ *
  * @author aeon_flux aeon_flux@eclipso.ch
+ * @see <a href="https://docs.ros.org/en/galactic/Concepts/About-ROS-Interfaces.html">About ROS
+ *     Interfaces</a>
  */
-public interface RosMsgCommand {
-
-    /**
-     * @param rosPath can be ROS package name (ex. tf2_msgs) or path to particular type inside it
-     *     (ex. std_msgs/msg/String).
-     * @return when path points to ROS package it returns all ROS files inside it. When path points
-     *     to ROS type then ROS file for such type if returned
-     */
-    Stream<RosFile> listFiles(Path rosPath);
-
-    default Optional<String> calcMd5Sum(Path msgFile) {
-        return Optional.empty();
-    }
-
-    Stream<String> lines(RosFile rosFile);
-
-    RosVersion getRosVersion();
+public enum RosInterfaceType {
+    MESSAGE,
+    SERVICE,
+    ACTION
 }

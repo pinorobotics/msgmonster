@@ -20,9 +20,13 @@ package pinorobotics.msgmonster.ros;
 import id.xfunction.lang.XExec;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+/**
+ * @author aeon_flux aeon_flux@eclipso.ch
+ */
 public class Ros2MsgCommand implements RosMsgCommand {
 
     private boolean isPackage(Path input) {
@@ -36,22 +40,24 @@ public class Ros2MsgCommand implements RosMsgCommand {
     }
 
     @Override
-    public Stream<Path> listMsgFiles(Path rosPackage) {
-        if (isPackage(rosPackage)) {
-            return new XExec("ros2 interface package " + rosPackage)
+    public Stream<RosFile> listFiles(Path rosPath) {
+        if (isPackage(rosPath)) {
+            return new XExec("ros2 interface package " + rosPath)
                     .start()
                     .stderrThrow()
                     .stdoutAsStream()
-                    .filter(s -> s.startsWith(rosPackage + "/msg"))
-                    .map(msg -> Paths.get(msg));
+                    .map(msg -> Paths.get(msg))
+                    .map(RosFile::create)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get);
         } else {
-            return Stream.of(rosPackage);
+            return RosFile.create(rosPath).stream();
         }
     }
 
     @Override
-    public Stream<String> lines(Path msgFile) {
-        return new XExec("ros2 interface show " + msgFile)
+    public Stream<String> lines(RosFile msgFile) {
+        return new XExec("ros2 interface show " + msgFile.name())
                 .start()
                 .stderrThrow()
                 .stdoutAsStream()

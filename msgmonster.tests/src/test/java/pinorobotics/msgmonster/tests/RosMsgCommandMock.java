@@ -24,9 +24,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
+import pinorobotics.msgmonster.ros.RosFile;
+import pinorobotics.msgmonster.ros.RosInterfaceType;
 import pinorobotics.msgmonster.ros.RosMsgCommand;
 import pinorobotics.msgmonster.ros.RosVersion;
 
+/**
+ * @author aeon_flux aeon_flux@eclipso.ch
+ */
 public class RosMsgCommandMock implements RosMsgCommand {
 
     private Path folder;
@@ -38,30 +43,50 @@ public class RosMsgCommandMock implements RosMsgCommand {
     }
 
     @Override
-    public Stream<Path> listMsgFiles(Path rosPackage) {
-        return Unchecked.get(
-                        () ->
-                                Files.list(folder.resolve(rosPackage))
-                                        .map(
-                                                p ->
-                                                        XPaths.splitFileName(
-                                                                p.getFileName().toString())[0]))
-                .map(msgName -> rosPackage.resolve(msgName))
-                .peek(System.out::println);
-    }
-
-    @Override
     public Optional<String> calcMd5Sum(Path msgFile) {
         return Optional.of(Unchecked.get(() -> Checksum.md5(msgFile.toString())));
     }
 
     @Override
-    public Stream<String> lines(Path msgFile) {
-        return Unchecked.get(() -> Files.lines(folder.resolve(msgFile.toString() + ".msg")));
+    public Stream<String> lines(RosFile msgFile) {
+        return Unchecked.get(() -> Files.lines(toFilePath(msgFile)));
     }
 
     @Override
     public RosVersion getRosVersion() {
         return rosVersion;
+    }
+
+    @Override
+    public Stream<RosFile> listFiles(Path rosPackage) {
+        return Unchecked.get(() -> Files.list(folder.resolve(rosPackage)).map(Path::getFileName))
+                .map(msgName -> rosPackage.resolve(msgName))
+                .peek(System.out::println)
+                .map(this::fromFilePath);
+    }
+
+    private Path toFilePath(RosFile msgFile) {
+        var path = msgFile.name();
+        if (path.getNameCount() == 3)
+            path = path.getParent().getParent().resolve(path.getFileName());
+        path =
+                switch (msgFile.type()) {
+                    default -> folder.resolve(path + ".msg");
+                };
+        return path;
+    }
+
+    private RosFile fromFilePath(Path filePath) {
+        var tokens = XPaths.splitFileName(filePath.getFileName().toString());
+        var rosName =
+                switch (rosVersion) {
+                    case ros2 -> filePath.resolveSibling(tokens[1]).resolve(tokens[0]);
+                    default -> filePath.resolveSibling(tokens[0]);
+                };
+        var type =
+                switch (tokens[1]) {
+                    default -> RosInterfaceType.MESSAGE;
+                };
+        return new RosFile(rosName, type);
     }
 }
