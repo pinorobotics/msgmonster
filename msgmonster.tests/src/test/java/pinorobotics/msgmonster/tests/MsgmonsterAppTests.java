@@ -51,7 +51,7 @@ public class MsgmonsterAppTests {
      * RosMsgCommandMock}
      */
     @ParameterizedTest
-    @CsvSource({"ros1"})
+    @CsvSource({"ros1", "ros2"})
     public void test_happy(String rosVersion) throws Exception {
         var expectedPath = SAMPLES.resolve("expected").resolve(rosVersion);
         msgmonsterApp.run(
