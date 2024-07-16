@@ -32,12 +32,12 @@ import id.jrosmessages.Array;
 import id.xfunction.XJson;
 import id.xfunction.Preconditions;
 
+import id.jros1messages.std_msgs.HeaderMessage;
 import id.jrosmessages.geometry_msgs.PoseMessage;
 import id.jrosmessages.object_recognition_msgs.ObjectTypeMessage;
 import id.jrosmessages.shape_msgs.MeshMessage;
 import id.jrosmessages.shape_msgs.PlaneMessage;
 import id.jrosmessages.shape_msgs.SolidPrimitiveMessage;
-import id.jrosmessages.std_msgs.HeaderMessage;
 import id.jrosmessages.std_msgs.StringMessage;
 import java.util.Arrays;
 
@@ -46,7 +46,7 @@ import java.util.Arrays;
  */
 @MessageMetadata(
     name = CollisionObjectMessage.NAME,
-    fields = { "header", "pose", "id", "type", "primitives", "primitive_poses", "meshes", "mesh_poses", "planes", "plane_poses", "subframe_names", "subframe_poses", "operation" },
+    fields = { "header1", "header2", "pose", "id", "type", "primitives", "primitive_poses", "meshes", "mesh_poses", "planes", "plane_poses", "subframe_names", "subframe_poses", "operation" },
     md5sum = "c5c6b7e6ac4834c0d55e2d6699b32509"
 )
 public class CollisionObjectMessage implements Message {
@@ -81,7 +81,9 @@ public class CollisionObjectMessage implements Message {
    /**
     * A header, used for interpreting the poses
     */
-   public HeaderMessage header = new HeaderMessage();
+   public HeaderMessage header1 = new HeaderMessage();
+   
+   public HeaderMessage header2 = new HeaderMessage();
    
    /**
     * DISCLAIMER: This field is not in use yet and all other poses
@@ -143,8 +145,13 @@ public class CollisionObjectMessage implements Message {
     */
    public byte operation;
    
-   public CollisionObjectMessage withHeader(HeaderMessage header) {
-       this.header = header;
+   public CollisionObjectMessage withHeader1(HeaderMessage header1) {
+       this.header1 = header1;
+       return this;
+   }
+   
+   public CollisionObjectMessage withHeader2(HeaderMessage header2) {
+       this.header2 = header2;
        return this;
    }
    
@@ -211,7 +218,8 @@ public class CollisionObjectMessage implements Message {
    @Override
    public int hashCode() {
        return Objects.hash(
-           header,
+           header1,
+           header2,
            pose,
            id,
            type,
@@ -231,7 +239,8 @@ public class CollisionObjectMessage implements Message {
    public boolean equals(Object obj) {
        var other = (CollisionObjectMessage) obj;
        return
-           Objects.equals(header, other.header) &&
+           Objects.equals(header1, other.header1) &&
+           Objects.equals(header2, other.header2) &&
            Objects.equals(pose, other.pose) &&
            Objects.equals(id, other.id) &&
            Objects.equals(type, other.type) &&
@@ -250,7 +259,8 @@ public class CollisionObjectMessage implements Message {
    @Override
    public String toString() {
        return XJson.asString(
-           "header", header,
+           "header1", header1,
+           "header2", header2,
            "pose", pose,
            "id", id,
            "type", type,

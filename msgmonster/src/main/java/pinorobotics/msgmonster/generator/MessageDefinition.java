@@ -19,6 +19,7 @@ package pinorobotics.msgmonster.generator;
 
 import java.util.ArrayList;
 import java.util.List;
+import pinorobotics.msgmonster.ros.RosVersion;
 
 /**
  * @author aeon_flux aeon_flux@eclipso.ch
@@ -29,18 +30,20 @@ public class MessageDefinition {
     private List<EnumDefinition> enums = new ArrayList<>();
     private String comment;
     private String msgName;
+    private RosVersion rosVersion;
 
-    public MessageDefinition(String msgName, String comment) {
+    public MessageDefinition(RosVersion rosVersion, String msgName, String comment) {
+        this.rosVersion = rosVersion;
         this.msgName = msgName;
         this.comment = comment;
     }
 
-    public MessageDefinition(String msgName) {
-        this(msgName, "");
+    public MessageDefinition(RosVersion rosVersion, String msgName) {
+        this(rosVersion, msgName, "");
     }
 
     public void addField(String type, String name, String value, String comment) {
-        fields.add(new Field(name, type, value, comment));
+        fields.add(new Field(rosVersion, name, type, value, comment));
     }
 
     public void addEnum(EnumDefinition enumDef) {

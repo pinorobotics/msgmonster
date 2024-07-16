@@ -32,7 +32,7 @@ import id.jrosmessages.Array;
 import id.xfunction.XJson;
 import id.xfunction.Preconditions;
 
-import id.jrosmessages.std_msgs.HeaderMessage;
+import id.jros2messages.std_msgs.HeaderMessage;
 import java.util.Arrays;
 
 /**

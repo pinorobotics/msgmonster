@@ -288,7 +288,7 @@ public class JRosMessageGenerator {
         }
         var msgName = formatter.formatAsMessageName(rosmsg.getRosVersion(), msgFile.name());
         if (fieldLineNums.isEmpty()) {
-            return new MessageDefinition(msgName);
+            return new MessageDefinition(rosmsg.getRosVersion(), msgName);
         }
         var pos = lines.indexOf("");
         var msgCommentLines = new ArrayList<String>();
@@ -318,6 +318,7 @@ public class JRosMessageGenerator {
         var commentBuf = new StringBuilder();
         var def =
                 new MessageDefinition(
+                        rosmsg.getRosVersion(),
                         msgName,
                         msgCommentLines.stream()
                                 .map(this::cleanCommentLine)
@@ -350,7 +351,7 @@ public class JRosMessageGenerator {
                 var id = Integer.parseInt(value);
                 if (id == 0) {
                     if (curEnum != null) def.addEnum(curEnum);
-                    curEnum = new EnumDefinition();
+                    curEnum = new EnumDefinition(rosmsg.getRosVersion());
                 }
                 if (id == curEnum.getFields().size()) {
                     curEnum.addField(type, name, value, comment);

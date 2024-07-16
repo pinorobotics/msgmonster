@@ -18,6 +18,8 @@
 package pinorobotics.msgmonster.generator;
 
 import java.util.Map;
+import java.util.Set;
+import pinorobotics.msgmonster.ros.RosVersion;
 
 /**
  * @author aeon_flux aeon_flux@eclipso.ch
@@ -44,15 +46,21 @@ public class Field {
     private static final Map<String, String> STDMSG_TYPE_MAP =
             Map.of(
                     "Header", "HeaderMessage",
+                    "std_msgs/Header", "HeaderMessage",
                     "string", "StringMessage",
                     "int32", "Int32Message");
+    private static final Set<String> STDMSG_VERSION_BASED_TYPES =
+            Set.of("Header", "std_msgs/Header");
     private Formatter formatter = new Formatter();
     private String name, type, comment;
     private String value;
     private int arraySize;
     private boolean isArray;
 
-    public Field(String name, String rosType, String value, String comment) {
+    private RosVersion rosVersion;
+
+    public Field(RosVersion rosVersion, String name, String rosType, String value, String comment) {
+        this.rosVersion = rosVersion;
         this.name = name;
         this.type = rosType.replaceAll("(.*)\\[\\d*\\]", "$1");
         this.value = value;
@@ -101,10 +109,6 @@ public class Field {
     }
 
     public String getJavaType() {
-        return getJavaType(type);
-    }
-
-    private String getJavaType(String type) {
         if (hasBasicType()) {
             return BASIC_TYPE_MAP.get(type);
         } else if (hasPrimitiveType()) {
@@ -123,12 +127,13 @@ public class Field {
     }
 
     public String getJavaFullType() {
-        return getJavaFullType(type);
-    }
-
-    private String getJavaFullType(String type) {
         if (hasBasicType()) return "id.jrosmessages.primitives." + getJavaType();
-        if (hasStdMsgType()) return "id.jrosmessages.std_msgs." + getJavaType();
+        if (hasStdMsgType()) {
+            var packageName = "id.jrosmessages.std_msgs.";
+            if (STDMSG_VERSION_BASED_TYPES.contains(type))
+                packageName = "id.j%smessages.std_msgs.".formatted(rosVersion);
+            return packageName + getJavaType();
+        }
         if (hasPrimitiveType()) return getJavaType();
         return "id.jrosmessages." + type.replace("/", ".") + "Message";
     }
