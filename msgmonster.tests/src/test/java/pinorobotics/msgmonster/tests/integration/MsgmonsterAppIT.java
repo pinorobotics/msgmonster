@@ -90,7 +90,7 @@ public class MsgmonsterAppIT {
     }
 
     @Test
-    public void test_msg_not_found() throws Exception {
+    public void test_invalid_msg_name() throws Exception {
         new AssertRunCommand(
                         COMMAND_PATH,
                         ROS_VERSION.toString(),
@@ -98,7 +98,20 @@ public class MsgmonsterAppIT {
                         "std_msgs/HttpClient",
                         "/tmp")
                 .withWildcardMatching()
-                .assertOutputFromResource("test_msg_not_found." + ROS_VERSION)
+                .assertOutputFromResource("test_invalid_msg_name." + ROS_VERSION)
+                .run();
+    }
+
+    @Test
+    public void test_package_not_found() throws Exception {
+        new AssertRunCommand(
+                        COMMAND_PATH,
+                        ROS_VERSION.toString(),
+                        "id.jrosmessages.test_msgs",
+                        "stdwqwqw_msgs",
+                        "/tmp")
+                .withWildcardMatching()
+                .assertOutputFromResource("test_pkg_not_found." + ROS_VERSION)
                 .run();
     }
 

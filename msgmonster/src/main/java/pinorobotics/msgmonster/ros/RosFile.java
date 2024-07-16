@@ -18,6 +18,7 @@
 package pinorobotics.msgmonster.ros;
 
 import id.xfunction.Preconditions;
+import id.xfunction.logging.XLogger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -29,6 +30,8 @@ import java.util.Optional;
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public record RosFile(Path name, RosInterfaceType type) {
+    private static final XLogger LOGGER = XLogger.getLogger(RosFile.class);
+
     public RosFile {
         Preconditions.isTrue(
                 name.getNameCount() < 4, "ROS file name cannot have more than 3 parts");
@@ -44,12 +47,17 @@ public record RosFile(Path name, RosInterfaceType type) {
     public static Optional<RosFile> create(Path rosFileName) {
         var rosFile = findType(rosFileName).map(type -> new RosFile(rosFileName, type));
         if (rosFile.isEmpty()) {
-            System.err.println("Type of ROS file is not supported: " + rosFileName);
+            LOGGER.severe("Type of ROS file is not supported: {0}", rosFileName);
         }
         return rosFile;
     }
 
     public static Optional<RosInterfaceType> findType(Path msgFile) {
+        Preconditions.equals(
+                3,
+                msgFile.getNameCount(),
+                "Invalid name '%s'. Expected three parts separated by '/'",
+                msgFile);
         return Optional.ofNullable(
                 switch (msgFile.getName(1).toString()) {
                     case "msg" -> RosInterfaceType.MESSAGE;

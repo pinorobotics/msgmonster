@@ -21,7 +21,6 @@ import id.xfunction.lang.XExec;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -30,13 +29,7 @@ import java.util.stream.Stream;
 public class Ros2MsgCommand implements RosMsgCommand {
 
     private boolean isPackage(Path input) {
-        return new XExec("ros2 interface packages")
-                .start()
-                .stderrThrow()
-                .stdoutAsStream()
-                .filter(Predicate.isEqual(input.toString()))
-                .findFirst()
-                .isPresent();
+        return input.getNameCount() == 1;
     }
 
     @Override

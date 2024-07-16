@@ -1,0 +1,3 @@
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Output folder /tmp
+Exception in thread "main" java.lang.RuntimeException: Unknown package 'stdwqwqw_msgs'
+*
