@@ -5,6 +5,7 @@
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/String, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/AllowedCollisionEntry, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/GoalStatus, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/srv/AddTwoInts, type=SERVICE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/MessageWithNoFields, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/GoalStatusArray, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/CollisionObject, type=MESSAGE]

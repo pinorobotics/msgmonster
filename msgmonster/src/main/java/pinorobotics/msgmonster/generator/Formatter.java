@@ -33,6 +33,14 @@ public class Formatter {
      */
     public String formatAsJavaClassName(RosFile rosFile) {
         return switch (rosFile.type()) {
+            case SERVICE ->
+                    String.format(
+                            "%sServiceDefinition",
+                            camelCase(
+                                    rosFile.name()
+                                            .getFileName()
+                                            .toString()
+                                            .replaceAll(".srv", "")));
             default ->
                     String.format("%sMessage", camelCase(rosFile.name().getFileName().toString()));
         };

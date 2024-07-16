@@ -1,0 +1,13 @@
+public class ${serviceName}ServiceDefinition
+        implements ServiceDefinition<${serviceName}RequestMessage, ${serviceName}ResponseMessage> {
+
+    @Override
+    public Class<${serviceName}RequestMessage> getServiceRequestMessage() {
+        return ${serviceName}RequestMessage.class;
+    }
+
+    @Override
+    public Class<${serviceName}ResponseMessage> getServiceResponseMessage() {
+        return ${serviceName}ResponseMessage.class;
+    }
+}

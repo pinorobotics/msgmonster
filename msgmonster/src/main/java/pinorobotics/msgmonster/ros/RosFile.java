@@ -61,6 +61,7 @@ public record RosFile(Path name, RosInterfaceType type) {
         return Optional.ofNullable(
                 switch (msgFile.getName(1).toString()) {
                     case "msg" -> RosInterfaceType.MESSAGE;
+                    case "srv" -> RosInterfaceType.SERVICE;
                     default -> null;
                 });
     }

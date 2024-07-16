@@ -71,6 +71,7 @@ public class RosMsgCommandMock implements RosMsgCommand {
             path = path.getParent().getParent().resolve(path.getFileName());
         path =
                 switch (msgFile.type()) {
+                    case SERVICE -> folder.resolve(path + ".srv");
                     default -> folder.resolve(path + ".msg");
                 };
         return path;
@@ -85,6 +86,7 @@ public class RosMsgCommandMock implements RosMsgCommand {
                 };
         var type =
                 switch (tokens[1]) {
+                    case "srv" -> RosInterfaceType.SERVICE;
                     default -> RosInterfaceType.MESSAGE;
                 };
         return new RosFile(rosName, type);
