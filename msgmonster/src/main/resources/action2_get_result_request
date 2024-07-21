@@ -38,7 +38,7 @@ public class ${actionName}ActionGetResultRequestMessage implements Action2GetRes
 
     static final String NAME = "${msgName}";
 
-    public Action2GoalIdMessage goal_id;
+    public Action2GoalIdMessage goal_id = new Action2GoalIdMessage();
 
     @Override
     public ${actionName}ActionGetResultRequestMessage withGoalId(Action2GoalIdMessage goal_id) {

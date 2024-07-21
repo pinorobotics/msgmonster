@@ -41,9 +41,9 @@ public class FibonacciActionGoalMessage implements Action2GoalMessage<FibonacciG
 
     static final String NAME = "test_msgs/FibonacciActionGoal";
 
-    public Action2GoalIdMessage goal_id;
+    public Action2GoalIdMessage goal_id = new Action2GoalIdMessage();
 
-    public FibonacciGoalMessage goal;
+    public FibonacciGoalMessage goal = new FibonacciGoalMessage();
 
     @Override
     public FibonacciActionGoalMessage withGoalId(Action2GoalIdMessage goal_id) {

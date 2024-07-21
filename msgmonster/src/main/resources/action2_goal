@@ -41,9 +41,9 @@ public class ${actionName}ActionGoalMessage implements Action2GoalMessage<${acti
 
     static final String NAME = "${msgName}ActionGoal";
 
-    public Action2GoalIdMessage goal_id;
+    public Action2GoalIdMessage goal_id = new Action2GoalIdMessage();
 
-    public ${actionName}GoalMessage goal;
+    public ${actionName}GoalMessage goal = new ${actionName}GoalMessage();
 
     @Override
     public ${actionName}ActionGoalMessage withGoalId(Action2GoalIdMessage goal_id) {

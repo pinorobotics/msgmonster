@@ -43,7 +43,17 @@ public class ${actionName}ActionResultMessage implements Action2ResultMessage<${
 
     public byte status;
 
-    public ${actionName}ResultMessage result;
+    public ${actionName}ResultMessage result = new ${actionName}ResultMessage();
+
+    public ${actionName}ActionResultMessage withStatus(byte status) {
+        this.status = status;
+        return this;
+    }
+
+    public ${actionName}ActionResultMessage withResult(${actionName}ResultMessage result) {
+        this.result = result;
+        return this;
+    }
 
     @Override
     public int hashCode() {

@@ -38,7 +38,7 @@ public class FibonacciActionGetResultRequestMessage implements Action2GetResultR
 
     static final String NAME = "test_msgs/Fibonacci";
 
-    public Action2GoalIdMessage goal_id;
+    public Action2GoalIdMessage goal_id = new Action2GoalIdMessage();
 
     @Override
     public FibonacciActionGetResultRequestMessage withGoalId(Action2GoalIdMessage goal_id) {

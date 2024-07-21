@@ -43,7 +43,17 @@ public class FibonacciActionResultMessage implements Action2ResultMessage<Fibona
 
     public byte status;
 
-    public FibonacciResultMessage result;
+    public FibonacciResultMessage result = new FibonacciResultMessage();
+
+    public FibonacciActionResultMessage withStatus(byte status) {
+        this.status = status;
+        return this;
+    }
+
+    public FibonacciActionResultMessage withResult(FibonacciResultMessage result) {
+        this.result = result;
+        return this;
+    }
 
     @Override
     public int hashCode() {
