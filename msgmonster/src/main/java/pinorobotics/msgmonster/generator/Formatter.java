@@ -41,6 +41,14 @@ public class Formatter {
                                             .getFileName()
                                             .toString()
                                             .replaceAll(".srv", "")));
+            case ACTION ->
+                    String.format(
+                            "%sActionDefinition",
+                            camelCase(
+                                    rosFile.name()
+                                            .getFileName()
+                                            .toString()
+                                            .replaceAll(".action", "")));
             default ->
                     String.format("%sMessage", camelCase(rosFile.name().getFileName().toString()));
         };

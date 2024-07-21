@@ -21,6 +21,7 @@ import id.xfunction.ResourceUtils;
 import id.xfunction.cli.ArgumentParsingException;
 import id.xfunction.logging.XLogger;
 import java.nio.file.Paths;
+import pinorobotics.msgmonster.generator.JRosActionGenerator;
 import pinorobotics.msgmonster.generator.JRosMessageGenerator;
 import pinorobotics.msgmonster.generator.JRosServiceGenerator;
 import pinorobotics.msgmonster.ros.Ros1MsgCommand;
@@ -58,6 +59,7 @@ public class MsgmonsterApp {
         var input = Paths.get(args[2]);
         var messageGenerator = new JRosMessageGenerator(rosmsg, outputFolder, packageName);
         var serviceGenerator = new JRosServiceGenerator(rosmsg, outputFolder, packageName);
+        var actionGenerator = new JRosActionGenerator(rosmsg, outputFolder, packageName);
         var rosFiles = rosmsg.listFiles(input);
         rosFiles.forEach(
                 rosFile -> {
@@ -65,6 +67,7 @@ public class MsgmonsterApp {
                     switch (rosFile.type()) {
                         case MESSAGE -> messageGenerator.generateJavaClass(rosFile);
                         case SERVICE -> serviceGenerator.generateJavaClass(rosFile);
+                        case ACTION -> actionGenerator.generateJavaClass(rosFile);
                         default -> LOGGER.warning("ROS file type not supported: {0}", rosFile);
                     }
                 });

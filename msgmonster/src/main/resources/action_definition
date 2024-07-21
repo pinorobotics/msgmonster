@@ -1,0 +1,18 @@
+public class ${actionName}ActionDefinition
+        implements Action${rosVersion}Definition<${actionName}GoalMessage, ${actionName}ResultMessage> {
+
+    @Override
+    public Class<? extends Action${rosVersion}GoalMessage<${actionName}GoalMessage>> getActionGoalMessage() {
+        return ${actionName}ActionGoalMessage.class;
+    }
+
+    @Override
+    public Class<? extends Action${rosVersion}ResultMessage<${actionName}ResultMessage>> getActionResultMessage() {
+        return ${actionName}ActionResultMessage.class;
+    }
+
+    @Override
+    public Class<? extends Action${rosVersion}GetResultRequestMessage> getActionResultRequestMessage() {
+        return ${actionName}ActionGetResultRequestMessage.class;
+    }
+}

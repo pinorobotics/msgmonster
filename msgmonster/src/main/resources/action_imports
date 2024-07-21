@@ -1,0 +1,6 @@
+import pinorobotics.jros${rosVersion}actionlib.actionlib_msgs.Action${rosVersion}Definition;
+import pinorobotics.jros${rosVersion}actionlib.actionlib_msgs.Action${rosVersion}GetResultRequestMessage;
+import pinorobotics.jros${rosVersion}actionlib.actionlib_msgs.Action${rosVersion}GoalMessage;
+import pinorobotics.jros${rosVersion}actionlib.actionlib_msgs.Action${rosVersion}ResultMessage;
+
+

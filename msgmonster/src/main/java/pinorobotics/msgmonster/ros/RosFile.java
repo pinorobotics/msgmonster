@@ -62,6 +62,7 @@ public record RosFile(Path name, RosInterfaceType type) {
                 switch (msgFile.getName(1).toString()) {
                     case "msg" -> RosInterfaceType.MESSAGE;
                     case "srv" -> RosInterfaceType.SERVICE;
+                    case "action" -> RosInterfaceType.ACTION;
                     default -> null;
                 });
     }
