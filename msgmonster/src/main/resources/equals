@@ -1,8 +1,9 @@
 @Override
 public boolean equals(Object obj) {
-    var other = (${className}) obj;
-    return
-        ${...}
-    ;
+    if (obj instanceof ${className} other)
+        return
+            ${...}
+        ;
+    return false;
 }
 

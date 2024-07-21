@@ -64,8 +64,9 @@ public class ${actionName}ActionGoalMessage implements Action2GoalMessage<${acti
 
     @Override
     public boolean equals(Object obj) {
-        var other = (${actionName}ActionGoalMessage) obj;
-        return Objects.equals(goal_id, other.goal_id) && Objects.equals(goal, other.goal);
+        if (obj instanceof ${actionName}ActionGoalMessage other)
+            return Objects.equals(goal_id, other.goal_id) && Objects.equals(goal, other.goal);
+        return false;
     }
 
     @Override

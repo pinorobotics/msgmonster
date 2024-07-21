@@ -52,8 +52,9 @@ public class FibonacciActionResultMessage implements Action2ResultMessage<Fibona
 
     @Override
     public boolean equals(Object obj) {
-        var other = (FibonacciActionResultMessage) obj;
-        return Objects.equals(status, other.status) && Objects.equals(result, other.result);
+        if (obj instanceof FibonacciActionResultMessage other)
+            return Objects.equals(status, other.status) && Objects.equals(result, other.result);
+        return false;
     }
 
     @Override

@@ -61,10 +61,11 @@ public class TFMessageMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (TFMessageMessage) obj;
-       return
-           Arrays.equals(transforms, other.transforms)
-       ;
+       if (obj instanceof TFMessageMessage other)
+           return
+               Arrays.equals(transforms, other.transforms)
+           ;
+       return false;
    }
    
    @Override

@@ -141,12 +141,13 @@ public class GoalStatusMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (GoalStatusMessage) obj;
-       return
-           Objects.equals(goal_id, other.goal_id) &&
-           status == other.status &&
-           Objects.equals(text, other.text)
-       ;
+       if (obj instanceof GoalStatusMessage other)
+           return
+               Objects.equals(goal_id, other.goal_id) &&
+               status == other.status &&
+               Objects.equals(text, other.text)
+           ;
+       return false;
    }
    
    @Override

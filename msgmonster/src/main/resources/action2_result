@@ -52,8 +52,9 @@ public class ${actionName}ActionResultMessage implements Action2ResultMessage<${
 
     @Override
     public boolean equals(Object obj) {
-        var other = (${actionName}ActionResultMessage) obj;
-        return Objects.equals(status, other.status) && Objects.equals(result, other.result);
+        if (obj instanceof ${actionName}ActionResultMessage other)
+            return Objects.equals(status, other.status) && Objects.equals(result, other.result);
+        return false;
     }
 
     @Override

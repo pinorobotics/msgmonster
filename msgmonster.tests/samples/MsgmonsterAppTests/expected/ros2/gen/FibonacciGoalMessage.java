@@ -60,10 +60,11 @@ public class FibonacciGoalMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (FibonacciGoalMessage) obj;
-       return
-           Objects.equals(order, other.order)
-       ;
+       if (obj instanceof FibonacciGoalMessage other)
+           return
+               Objects.equals(order, other.order)
+           ;
+       return false;
    }
    
    @Override

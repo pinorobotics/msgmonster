@@ -76,11 +76,12 @@ public class GoalStatusArrayMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (GoalStatusArrayMessage) obj;
-       return
-           Objects.equals(header, other.header) &&
-           Arrays.equals(status_list, other.status_list)
-       ;
+       if (obj instanceof GoalStatusArrayMessage other)
+           return
+               Objects.equals(header, other.header) &&
+               Arrays.equals(status_list, other.status_list)
+           ;
+       return false;
    }
    
    @Override

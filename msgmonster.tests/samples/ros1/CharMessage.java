@@ -60,10 +60,11 @@ public class CharMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (CharMessage) obj;
-       return
-           data == other.data
-       ;
+       if (obj instanceof CharMessage other)
+           return
+               data == other.data
+           ;
+       return false;
    }
    
    @Override

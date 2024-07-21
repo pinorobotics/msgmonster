@@ -65,10 +65,11 @@ public class StringMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (StringMessage) obj;
-       return
-           Objects.equals(data, other.data)
-       ;
+       if (obj instanceof StringMessage other)
+           return
+               Objects.equals(data, other.data)
+           ;
+       return false;
    }
    
    @Override

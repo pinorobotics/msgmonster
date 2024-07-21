@@ -68,11 +68,12 @@ public class AddTwoIntsRequestMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (AddTwoIntsRequestMessage) obj;
-       return
-           a == other.a &&
-           b == other.b
-       ;
+       if (obj instanceof AddTwoIntsRequestMessage other)
+           return
+               a == other.a &&
+               b == other.b
+           ;
+       return false;
    }
    
    @Override

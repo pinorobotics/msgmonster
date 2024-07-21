@@ -237,23 +237,24 @@ public class CollisionObjectMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (CollisionObjectMessage) obj;
-       return
-           Objects.equals(header1, other.header1) &&
-           Objects.equals(header2, other.header2) &&
-           Objects.equals(pose, other.pose) &&
-           Objects.equals(id, other.id) &&
-           Objects.equals(type, other.type) &&
-           Arrays.equals(primitives, other.primitives) &&
-           Arrays.equals(primitive_poses, other.primitive_poses) &&
-           Arrays.equals(meshes, other.meshes) &&
-           Arrays.equals(mesh_poses, other.mesh_poses) &&
-           Arrays.equals(planes, other.planes) &&
-           Arrays.equals(plane_poses, other.plane_poses) &&
-           Arrays.equals(subframe_names, other.subframe_names) &&
-           Arrays.equals(subframe_poses, other.subframe_poses) &&
-           operation == other.operation
-       ;
+       if (obj instanceof CollisionObjectMessage other)
+           return
+               Objects.equals(header1, other.header1) &&
+               Objects.equals(header2, other.header2) &&
+               Objects.equals(pose, other.pose) &&
+               Objects.equals(id, other.id) &&
+               Objects.equals(type, other.type) &&
+               Arrays.equals(primitives, other.primitives) &&
+               Arrays.equals(primitive_poses, other.primitive_poses) &&
+               Arrays.equals(meshes, other.meshes) &&
+               Arrays.equals(mesh_poses, other.mesh_poses) &&
+               Arrays.equals(planes, other.planes) &&
+               Arrays.equals(plane_poses, other.plane_poses) &&
+               Arrays.equals(subframe_names, other.subframe_names) &&
+               Arrays.equals(subframe_poses, other.subframe_poses) &&
+               operation == other.operation
+           ;
+       return false;
    }
    
    @Override

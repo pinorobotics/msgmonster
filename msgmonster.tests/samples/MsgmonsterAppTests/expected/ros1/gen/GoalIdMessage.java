@@ -81,11 +81,12 @@ public class GoalIdMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (GoalIdMessage) obj;
-       return
-           Objects.equals(stamp, other.stamp) &&
-           Objects.equals(id, other.id)
-       ;
+       if (obj instanceof GoalIdMessage other)
+           return
+               Objects.equals(stamp, other.stamp) &&
+               Objects.equals(id, other.id)
+           ;
+       return false;
    }
    
    @Override

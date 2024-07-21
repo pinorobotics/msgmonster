@@ -61,10 +61,11 @@ public class FibonacciResultMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (FibonacciResultMessage) obj;
-       return
-           Arrays.equals(sequence, other.sequence)
-       ;
+       if (obj instanceof FibonacciResultMessage other)
+           return
+               Arrays.equals(sequence, other.sequence)
+           ;
+       return false;
    }
    
    @Override

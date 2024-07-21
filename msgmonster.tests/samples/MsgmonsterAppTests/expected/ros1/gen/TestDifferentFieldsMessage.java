@@ -75,11 +75,12 @@ public class TestDifferentFieldsMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       var other = (TestDifferentFieldsMessage) obj;
-       return
-           id == other.id &&
-           score == other.score
-       ;
+       if (obj instanceof TestDifferentFieldsMessage other)
+           return
+               id == other.id &&
+               score == other.score
+           ;
+       return false;
    }
    
    @Override

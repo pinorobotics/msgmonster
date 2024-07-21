@@ -64,8 +64,9 @@ public class FibonacciActionGoalMessage implements Action2GoalMessage<FibonacciG
 
     @Override
     public boolean equals(Object obj) {
-        var other = (FibonacciActionGoalMessage) obj;
-        return Objects.equals(goal_id, other.goal_id) && Objects.equals(goal, other.goal);
+        if (obj instanceof FibonacciActionGoalMessage other)
+            return Objects.equals(goal_id, other.goal_id) && Objects.equals(goal, other.goal);
+        return false;
     }
 
     @Override
