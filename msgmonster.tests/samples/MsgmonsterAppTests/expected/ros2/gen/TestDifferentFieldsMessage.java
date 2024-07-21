@@ -24,7 +24,6 @@
 
 package id.jrosmessages.test_msgs;
 
-
 import java.util.Objects;
 
 import id.jrosmessages.Message;
@@ -33,12 +32,15 @@ import id.jrosmessages.Array;
 import id.xfunction.XJson;
 import id.xfunction.Preconditions;
 
+import id.jros2messages.std_msgs.HeaderMessage;
+import id.jrosmessages.primitives.Duration;
+
 /**
  * Definition for test_msgs/TestDifferentFields
  */
 @MessageMetadata(
     name = TestDifferentFieldsMessage.NAME,
-    fields = { "id", "score" }
+    fields = { "id", "score", "header1", "header2", "timeout1", "timeout2" }
 )
 public class TestDifferentFieldsMessage implements Message {
    
@@ -54,6 +56,17 @@ public class TestDifferentFieldsMessage implements Message {
     */
    public double score;
    
+   /**
+    * Test primitive types
+    */
+   public HeaderMessage header1 = new HeaderMessage();
+   
+   public HeaderMessage header2 = new HeaderMessage();
+   
+   public Duration timeout1 = new Duration();
+   
+   public Duration timeout2 = new Duration();
+   
    public TestDifferentFieldsMessage withId(long id) {
        this.id = id;
        return this;
@@ -64,11 +77,35 @@ public class TestDifferentFieldsMessage implements Message {
        return this;
    }
    
+   public TestDifferentFieldsMessage withHeader1(HeaderMessage header1) {
+       this.header1 = header1;
+       return this;
+   }
+   
+   public TestDifferentFieldsMessage withHeader2(HeaderMessage header2) {
+       this.header2 = header2;
+       return this;
+   }
+   
+   public TestDifferentFieldsMessage withTimeout1(Duration timeout1) {
+       this.timeout1 = timeout1;
+       return this;
+   }
+   
+   public TestDifferentFieldsMessage withTimeout2(Duration timeout2) {
+       this.timeout2 = timeout2;
+       return this;
+   }
+   
    @Override
    public int hashCode() {
        return Objects.hash(
            id,
-           score
+           score,
+           header1,
+           header2,
+           timeout1,
+           timeout2
        );
    }
    
@@ -77,7 +114,11 @@ public class TestDifferentFieldsMessage implements Message {
        if (obj instanceof TestDifferentFieldsMessage other)
            return
                id == other.id &&
-               score == other.score
+               score == other.score &&
+               Objects.equals(header1, other.header1) &&
+               Objects.equals(header2, other.header2) &&
+               Objects.equals(timeout1, other.timeout1) &&
+               Objects.equals(timeout2, other.timeout2)
            ;
        return false;
    }
@@ -86,7 +127,11 @@ public class TestDifferentFieldsMessage implements Message {
    public String toString() {
        return XJson.asString(
            "id", id,
-           "score", score
+           "score", score,
+           "header1", header1,
+           "header2", header2,
+           "timeout1", timeout1,
+           "timeout2", timeout2
        );
    }
    

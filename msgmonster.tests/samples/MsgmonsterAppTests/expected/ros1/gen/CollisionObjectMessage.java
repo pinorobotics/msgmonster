@@ -46,7 +46,7 @@ import java.util.Arrays;
  */
 @MessageMetadata(
     name = CollisionObjectMessage.NAME,
-    fields = { "header1", "header2", "pose", "id", "type", "primitives", "primitive_poses", "meshes", "mesh_poses", "planes", "plane_poses", "subframe_names", "subframe_poses", "operation" },
+    fields = { "header", "pose", "id", "type", "primitives", "primitive_poses", "meshes", "mesh_poses", "planes", "plane_poses", "subframe_names", "subframe_poses", "operation" },
     md5sum = "c5c6b7e6ac4834c0d55e2d6699b32509"
 )
 public class CollisionObjectMessage implements Message {
@@ -81,9 +81,7 @@ public class CollisionObjectMessage implements Message {
    /**
     * A header, used for interpreting the poses
     */
-   public HeaderMessage header1 = new HeaderMessage();
-   
-   public HeaderMessage header2 = new HeaderMessage();
+   public HeaderMessage header = new HeaderMessage();
    
    /**
     * DISCLAIMER: This field is not in use yet and all other poses
@@ -145,13 +143,8 @@ public class CollisionObjectMessage implements Message {
     */
    public byte operation;
    
-   public CollisionObjectMessage withHeader1(HeaderMessage header1) {
-       this.header1 = header1;
-       return this;
-   }
-   
-   public CollisionObjectMessage withHeader2(HeaderMessage header2) {
-       this.header2 = header2;
+   public CollisionObjectMessage withHeader(HeaderMessage header) {
+       this.header = header;
        return this;
    }
    
@@ -218,8 +211,7 @@ public class CollisionObjectMessage implements Message {
    @Override
    public int hashCode() {
        return Objects.hash(
-           header1,
-           header2,
+           header,
            pose,
            id,
            type,
@@ -239,8 +231,7 @@ public class CollisionObjectMessage implements Message {
    public boolean equals(Object obj) {
        if (obj instanceof CollisionObjectMessage other)
            return
-               Objects.equals(header1, other.header1) &&
-               Objects.equals(header2, other.header2) &&
+               Objects.equals(header, other.header) &&
                Objects.equals(pose, other.pose) &&
                Objects.equals(id, other.id) &&
                Objects.equals(type, other.type) &&
@@ -260,8 +251,7 @@ public class CollisionObjectMessage implements Message {
    @Override
    public String toString() {
        return XJson.asString(
-           "header1", header1,
-           "header2", header2,
+           "header", header,
            "pose", pose,
            "id", id,
            "type", type,

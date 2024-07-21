@@ -1,6 +1,5 @@
 # A header, used for interpreting the poses
-Header header1
-std_msgs/Header header2
+Header header
 
 # DISCLAIMER: This field is not in use yet and all other poses
 # are still interpreted in the header frame.

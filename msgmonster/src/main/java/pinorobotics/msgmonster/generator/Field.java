@@ -42,7 +42,9 @@ public class Field {
     private static final Map<String, String> BASIC_TYPE_MAP =
             Map.of(
                     "time", "Time",
-                    "duration", "Duration");
+                    "duration", "Duration",
+                    "Duration", "Duration",
+                    "builtin_interfaces/Duration", "Duration");
     private static final Map<String, String> STDMSG_TYPE_MAP =
             Map.of(
                     "Header", "HeaderMessage",
