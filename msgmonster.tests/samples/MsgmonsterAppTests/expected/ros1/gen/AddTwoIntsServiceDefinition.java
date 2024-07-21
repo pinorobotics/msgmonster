@@ -24,15 +24,6 @@
 
 package id.jrosmessages.test_msgs;
 
-
-import java.util.Objects;
-
-import id.jrosmessages.Message;
-import id.jrosmessages.MessageMetadata;
-import id.jrosmessages.Array;
-import id.xfunction.XJson;
-import id.xfunction.Preconditions;
-
 import pinorobotics.jrosservices.msgs.ServiceDefinition;
 
 /**

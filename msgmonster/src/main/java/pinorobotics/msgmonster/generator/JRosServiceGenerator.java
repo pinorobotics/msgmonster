@@ -34,6 +34,10 @@ import pinorobotics.msgmonster.ros.RosInterfaceType;
 import pinorobotics.msgmonster.ros.RosMsgCommand;
 
 /**
+ * "The --- separates the request structure (above) from the response structure (below)." (<a
+ * href="https://docs.ros.org/en/galactic/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Services/Understanding-ROS2-Services.html">Understanding
+ * services</a>)
+ *
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class JRosServiceGenerator {
@@ -73,8 +77,6 @@ public class JRosServiceGenerator {
         utils.generateHeader(
                 topWriter, formatter.formatAsMessageName(rosmsg.getRosVersion(), rosFile.name()));
         topWriter.writeln(String.format("package %s;", packageName));
-        topWriter.write(utils.readResource("imports"));
-        topWriter.writeln();
         topWriter.write(utils.readResource("service_imports"));
         topWriter.writeln();
         generateJavadocComment(topWriter, rosFile);
