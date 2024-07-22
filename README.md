@@ -1,9 +1,9 @@
-**msgmonster** - application for generating Message Java classes for [jrosclient](https://github.com/lambdaprime/jrosclient) from ROS msg files.
+**msgmonster** - application for generating Java classes for [jrosclient](https://github.com/lambdaprime/jrosclient) from ROS interface definition files (msg/srv/action).
 
 # Features
 
-- generate Java classes for single msg file or all msg files within a package
-- all comments in msg files are preserved and copied to Java classes
+- generate Java classes for single interface definition file or all files inside ROS package
+- all comments in interfaces definition files are preserved and copied to Java classes
 
 # Download
 

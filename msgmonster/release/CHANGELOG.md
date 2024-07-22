@@ -1,3 +1,32 @@
+# Version 5
+
+- Fixing tests for ROS1
+- Initialize all fields in Action classes with default values
+- Adding Duration primitive type support + move all primitive types under TestDifferentFields test
+- Fixing withGoalId return type for action message GetResultRequest
+- Fix ClassCastException for equals
+- Issue #2 Adding generation support for action files
+- Avoid generating unused imports for srv
+- Issue #2 Adding generation support for srv files
+- If package is not found then show user proper message and do not try to resolve it as a type name (which will fail anyway with misleading "Invalid name" error)
+- Adding support for ROS version specific std_msgs types
+- Enable unit test for ROS2
+- Issue #2 Adding RosFile to capture ROS definition file name and type
+- Issue #2 Exclude type of the generated class from the class header as it is already part of the classname itself. Additionally it helps to keep header generic for any non msg types.
+- Deprecate isPackage inside RosMsgCommand and let listMsgFiles to support both packages and files
+- Issue #2 Adding GeneratorUtils to keep shared logic between generation messages, services and actions
+- Updating xfunction to v25
+- Move all MsgmonsterAppTests samples to its separate folder
+- Assert test logging output
+- Integrating JUL
+- Moving message generation logic into separate package
+- Follow Java notation for "ID" (replacing GoalIDMessage to GoalIdMessage)
+- Adding support for uint16
+- Masking of HTML symbols "&", "<", ">" in Java comments
+- Updating gradle files
+
+[msgmonster-v5.0.zip](https://github.com/pinorobotics/msgmonster/raw/main/msgmonster/release/msgmonster-v5.0.zip)
+
 # Version 4
 
 - Ignore msg files for which generation fails
