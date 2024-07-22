@@ -95,7 +95,9 @@ public class MsgmonsterAppIT {
                         COMMAND_PATH,
                         ROS_VERSION.toString(),
                         "id.jrosmessages.test_msgs",
-                        "std_msgs/HttpClient",
+                        ROS_VERSION == RosVersion.ros2
+                                ? "std_msgs/HttpClient"
+                                : "std_msgs/foo/HttpClient",
                         "/tmp")
                 .withWildcardMatching()
                 .assertOutputFromResource("test_invalid_msg_name." + ROS_VERSION)

@@ -40,11 +40,11 @@ public class Ros2MsgCommand implements RosMsgCommand {
                     .stderrThrow()
                     .stdoutAsStream()
                     .map(msg -> Paths.get(msg))
-                    .map(RosFile::create)
+                    .map(fileName -> RosFile.create(RosVersion.ros2, fileName))
                     .filter(Optional::isPresent)
                     .map(Optional::get);
         } else {
-            return RosFile.create(rosPath).stream();
+            return RosFile.create(RosVersion.ros2, rosPath).stream();
         }
     }
 

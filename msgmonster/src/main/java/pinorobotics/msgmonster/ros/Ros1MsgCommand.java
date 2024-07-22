@@ -22,7 +22,6 @@ import id.xfunction.lang.XRE;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -31,13 +30,7 @@ import java.util.stream.Stream;
 public class Ros1MsgCommand implements RosMsgCommand {
 
     private boolean isPackage(Path input) {
-        return new XExec("rosmsg packages")
-                .start()
-                .stderrThrow()
-                .stdoutAsStream()
-                .filter(Predicate.isEqual(input.toString()))
-                .findFirst()
-                .isPresent();
+        return input.getNameCount() == 1;
     }
 
     @Override
@@ -48,11 +41,11 @@ public class Ros1MsgCommand implements RosMsgCommand {
                     .stderrThrow()
                     .stdoutAsStream()
                     .map(msg -> Paths.get(msg))
-                    .map(RosFile::create)
+                    .map(fileName -> RosFile.create(RosVersion.ros1, fileName))
                     .filter(Optional::isPresent)
                     .map(Optional::get);
         } else {
-            return RosFile.create(rosPath).stream();
+            return RosFile.create(RosVersion.ros1, rosPath).stream();
         }
     }
 

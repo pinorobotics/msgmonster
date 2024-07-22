@@ -1,3 +1,3 @@
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Output folder /tmp
-Exception in thread "main" id.xfunction.PreconditionException: Invalid name 'std_msgs/HttpClient'. Expected three parts separated by '/': expected value <3>, actual value <2>
+Exception in thread "main" id.xfunction.PreconditionException: Invalid name 'std_msgs/foo/HttpClient'. Expected two parts separated by '/': expected value <2>, actual value <3>
 *

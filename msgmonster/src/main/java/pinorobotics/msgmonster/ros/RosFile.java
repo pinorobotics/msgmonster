@@ -44,15 +44,20 @@ public record RosFile(Path name, RosInterfaceType type) {
         this(Paths.get(name), type);
     }
 
-    public static Optional<RosFile> create(Path rosFileName) {
-        var rosFile = findType(rosFileName).map(type -> new RosFile(rosFileName, type));
+    public static Optional<RosFile> create(RosVersion rosVersion, Path rosFileName) {
+        var rosFile =
+                (switch (rosVersion) {
+                            case ros1 -> findRos1Type(rosFileName);
+                            case ros2 -> findRos2Type(rosFileName);
+                        })
+                        .map(type -> new RosFile(rosFileName, type));
         if (rosFile.isEmpty()) {
-            LOGGER.severe("Type of ROS file is not supported: {0}", rosFileName);
+            LOGGER.severe("Could not find type of ROS file: {0}", rosFileName);
         }
         return rosFile;
     }
 
-    public static Optional<RosInterfaceType> findType(Path msgFile) {
+    private static Optional<RosInterfaceType> findRos2Type(Path msgFile) {
         Preconditions.equals(
                 3,
                 msgFile.getNameCount(),
@@ -65,6 +70,17 @@ public record RosFile(Path name, RosInterfaceType type) {
                     case "action" -> RosInterfaceType.ACTION;
                     default -> null;
                 });
+    }
+
+    private static Optional<RosInterfaceType> findRos1Type(Path msgFile) {
+        Preconditions.equals(
+                2,
+                msgFile.getNameCount(),
+                "Invalid name '%s'. Expected two parts separated by '/'",
+                msgFile);
+        var name = msgFile.getName(1).toString();
+        return Optional.ofNullable(
+                name.endsWith("Action") ? RosInterfaceType.ACTION : RosInterfaceType.MESSAGE);
     }
 
     public String flatName() {
