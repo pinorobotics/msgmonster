@@ -9,3 +9,6 @@ Header header1
 std_msgs/Header header2
 Duration timeout1
 builtin_interfaces/Duration timeout2
+
+Time stamp1
+builtin_interfaces/Time stamp2

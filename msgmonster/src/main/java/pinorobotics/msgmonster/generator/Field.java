@@ -42,6 +42,8 @@ public class Field {
     private static final Map<String, String> BASIC_TYPE_MAP =
             Map.of(
                     "time", "Time",
+                    "Time", "Time",
+                    "builtin_interfaces/Time", "Time",
                     "duration", "Duration",
                     "Duration", "Duration",
                     "builtin_interfaces/Duration", "Duration");

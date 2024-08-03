@@ -34,13 +34,14 @@ import id.xfunction.Preconditions;
 
 import id.jros2messages.std_msgs.HeaderMessage;
 import id.jrosmessages.primitives.Duration;
+import id.jrosmessages.primitives.Time;
 
 /**
  * Definition for test_msgs/TestDifferentFields
  */
 @MessageMetadata(
     name = TestDifferentFieldsMessage.NAME,
-    fields = { "id", "score", "header1", "header2", "timeout1", "timeout2" }
+    fields = { "id", "score", "header1", "header2", "timeout1", "timeout2", "stamp1", "stamp2" }
 )
 public class TestDifferentFieldsMessage implements Message {
    
@@ -66,6 +67,10 @@ public class TestDifferentFieldsMessage implements Message {
    public Duration timeout1 = new Duration();
    
    public Duration timeout2 = new Duration();
+   
+   public Time stamp1 = new Time();
+   
+   public Time stamp2 = new Time();
    
    public TestDifferentFieldsMessage withId(long id) {
        this.id = id;
@@ -97,6 +102,16 @@ public class TestDifferentFieldsMessage implements Message {
        return this;
    }
    
+   public TestDifferentFieldsMessage withStamp1(Time stamp1) {
+       this.stamp1 = stamp1;
+       return this;
+   }
+   
+   public TestDifferentFieldsMessage withStamp2(Time stamp2) {
+       this.stamp2 = stamp2;
+       return this;
+   }
+   
    @Override
    public int hashCode() {
        return Objects.hash(
@@ -105,7 +120,9 @@ public class TestDifferentFieldsMessage implements Message {
            header1,
            header2,
            timeout1,
-           timeout2
+           timeout2,
+           stamp1,
+           stamp2
        );
    }
    
@@ -118,7 +135,9 @@ public class TestDifferentFieldsMessage implements Message {
                Objects.equals(header1, other.header1) &&
                Objects.equals(header2, other.header2) &&
                Objects.equals(timeout1, other.timeout1) &&
-               Objects.equals(timeout2, other.timeout2)
+               Objects.equals(timeout2, other.timeout2) &&
+               Objects.equals(stamp1, other.stamp1) &&
+               Objects.equals(stamp2, other.stamp2)
            ;
        return false;
    }
@@ -131,7 +150,9 @@ public class TestDifferentFieldsMessage implements Message {
            "header1", header1,
            "header2", header2,
            "timeout1", timeout1,
-           "timeout2", timeout2
+           "timeout2", timeout2,
+           "stamp1", stamp1,
+           "stamp2", stamp2
        );
    }
    
