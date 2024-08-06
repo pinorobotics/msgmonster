@@ -18,6 +18,7 @@
 package pinorobotics.msgmonster.tests.integration;
 
 import id.xfunction.lang.XExec;
+import id.xfunction.nio.file.XFiles;
 import id.xfunctiontests.AssertRunCommand;
 import id.xfunctiontests.XAsserts;
 import java.io.IOException;
@@ -108,6 +109,7 @@ public class MsgmonsterAppIT {
     public void test_package_not_found() throws Exception {
         new AssertRunCommand(
                         COMMAND_PATH,
+                        "-d",
                         ROS_VERSION.toString(),
                         "id.jrosmessages.test_msgs",
                         "stdwqwqw_msgs",
@@ -115,6 +117,10 @@ public class MsgmonsterAppIT {
                 .withWildcardMatching()
                 .assertOutputFromResource("test_pkg_not_found." + ROS_VERSION)
                 .run();
+        XAsserts.assertMatches(
+                getClass(),
+                "debug_output",
+                Files.readString(XFiles.TEMP_FOLDER.get().resolve("msgmonster-debug.log")));
     }
 
     private static String generateMsgFilePath(String rosPackage, Optional<String> name) {

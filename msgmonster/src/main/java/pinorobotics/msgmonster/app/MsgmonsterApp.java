@@ -19,8 +19,14 @@ package pinorobotics.msgmonster.app;
 
 import id.xfunction.ResourceUtils;
 import id.xfunction.cli.ArgumentParsingException;
+import id.xfunction.cli.SmartArgs;
 import id.xfunction.logging.XLogger;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import pinorobotics.msgmonster.generator.JRosActionGenerator;
 import pinorobotics.msgmonster.generator.JRosMessageGenerator;
 import pinorobotics.msgmonster.generator.JRosServiceGenerator;
@@ -45,18 +51,27 @@ public class MsgmonsterApp {
         this.rosCommandFactory = rosCommandFactory;
     }
 
-    public void run(String[] args) throws Exception {
-        if (args.length < 4) {
+    public MsgmonsterApp() {
+        this(
+                rosVersion ->
+                        switch (rosVersion) {
+                            case ros1 -> new Ros1MsgCommand();
+                            case ros2 -> new Ros2MsgCommand();
+                        });
+    }
+
+    public void run(List<String> args) throws Exception {
+        if (args.size() < 4) {
             usage();
             return;
         }
-        var rosVersion = RosVersion.valueOf(args[0]);
+        var rosVersion = RosVersion.valueOf(args.get(0));
         var rosmsg = rosCommandFactory.create(rosVersion);
-        var packageName = Paths.get(args[1]);
-        var outputFolder = Paths.get(args[3]);
+        var packageName = Paths.get(args.get(1));
+        var outputFolder = Paths.get(args.get(3));
         outputFolder.toFile().mkdirs();
         LOGGER.info("Output folder {0}", outputFolder);
-        var input = Paths.get(args[2]);
+        var input = Paths.get(args.get(2));
         var messageGenerator = new JRosMessageGenerator(rosmsg, outputFolder, packageName);
         var serviceGenerator = new JRosServiceGenerator(rosmsg, outputFolder, packageName);
         var actionGenerator = new JRosActionGenerator(rosmsg, outputFolder, packageName);
@@ -76,13 +91,26 @@ public class MsgmonsterApp {
     public static void main(String[] args) throws Exception {
         try {
             XLogger.load("logging-msgmonster.properties");
-            new MsgmonsterApp(
-                            rosVersion ->
-                                    switch (rosVersion) {
-                                        case ros1 -> new Ros1MsgCommand();
-                                        case ros2 -> new Ros2MsgCommand();
-                                    })
-                    .run(args);
+            var app = new MsgmonsterApp();
+            Map<String, Consumer<String>> handlers = Map.of();
+            var positionalArgs = new ArrayList<String>();
+            Function<String, Boolean> defaultHandler =
+                    arg -> {
+                        switch (arg) {
+                            case "-d":
+                                {
+                                    XLogger.load("logging-debug-msgmonster.properties");
+                                    return true;
+                                }
+                            default:
+                                {
+                                    positionalArgs.add(arg);
+                                    return true;
+                                }
+                        }
+                    };
+            new SmartArgs(handlers, defaultHandler).parse(args);
+            app.run(positionalArgs);
         } catch (ArgumentParsingException e) {
             usage();
         }

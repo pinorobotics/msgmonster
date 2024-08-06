@@ -18,8 +18,10 @@
 package pinorobotics.msgmonster.ros;
 
 import id.xfunction.lang.XExec;
+import id.xfunction.logging.XLogger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -27,6 +29,7 @@ import java.util.stream.Stream;
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class Ros2MsgCommand implements RosMsgCommand {
+    private static final XLogger LOGGER = XLogger.getLogger(Ros2MsgCommand.class);
 
     private boolean isPackage(Path input) {
         return input.getNameCount() == 1;
@@ -35,8 +38,9 @@ public class Ros2MsgCommand implements RosMsgCommand {
     @Override
     public Stream<RosFile> listFiles(Path rosPath) {
         if (isPackage(rosPath)) {
-            return new XExec("ros2 interface package " + rosPath)
-                    .start()
+            var exec = new XExec("ros2 interface package " + rosPath);
+            LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
+            return exec.start()
                     .stderrThrow()
                     .stdoutAsStream()
                     .map(msg -> Paths.get(msg))
@@ -50,11 +54,9 @@ public class Ros2MsgCommand implements RosMsgCommand {
 
     @Override
     public Stream<String> lines(RosFile msgFile) {
-        return new XExec("ros2 interface show " + msgFile.name())
-                .start()
-                .stderrThrow()
-                .stdoutAsStream()
-                .filter(s -> !s.startsWith("\t"));
+        var exec = new XExec("ros2 interface show " + msgFile.name());
+        LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
+        return exec.start().stderrThrow().stdoutAsStream().filter(s -> !s.startsWith("\t"));
     }
 
     @Override

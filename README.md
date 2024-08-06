@@ -17,7 +17,7 @@
 # Usage
 
 ```bash
-msgmonster <ROS_VERSION> <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
+msgmonster [-d] <ROS_VERSION> <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
 ```
 
 Where: 
@@ -31,6 +31,10 @@ Where:
 - `PACKAGE_NAME` - name of the ROS package for which Java classes will be generated
 
 - `OUTPUT_FOLDER` - output folder where to place all generated Java classes
+
+Options:
+
+- `-d` - enable debug mode when all debug logging is stored in "msgmonster-debug.log" file under system temporary directory
 
 # Examples
 

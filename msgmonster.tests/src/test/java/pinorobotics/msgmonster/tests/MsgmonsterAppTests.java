@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -55,9 +56,11 @@ public class MsgmonsterAppTests {
     public void test_happy(String rosVersion) throws Exception {
         var expectedPath = SAMPLES.resolve("expected").resolve(rosVersion);
         msgmonsterApp.run(
-                new String[] {
-                    rosVersion, "id.jrosmessages.test_msgs", "test_msgs", outputFolder.toString()
-                });
+                List.of(
+                        rosVersion,
+                        "id.jrosmessages.test_msgs",
+                        "test_msgs",
+                        outputFolder.toString()));
         XAsserts.assertContentEquals(expectedPath.resolve("gen"), outputFolder);
         XAsserts.assertMatches(
                 Files.readString(expectedPath.resolve("test_happy")),

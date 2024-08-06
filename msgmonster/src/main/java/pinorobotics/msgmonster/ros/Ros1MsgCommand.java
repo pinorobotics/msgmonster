@@ -19,8 +19,10 @@ package pinorobotics.msgmonster.ros;
 
 import id.xfunction.lang.XExec;
 import id.xfunction.lang.XRE;
+import id.xfunction.logging.XLogger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -28,6 +30,7 @@ import java.util.stream.Stream;
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class Ros1MsgCommand implements RosMsgCommand {
+    private static final XLogger LOGGER = XLogger.getLogger(Ros1MsgCommand.class);
 
     private boolean isPackage(Path input) {
         return input.getNameCount() == 1;
@@ -36,8 +39,9 @@ public class Ros1MsgCommand implements RosMsgCommand {
     @Override
     public Stream<RosFile> listFiles(Path rosPath) {
         if (isPackage(rosPath)) {
-            return new XExec("rosmsg package " + rosPath)
-                    .start()
+            var exec = new XExec("rosmsg package " + rosPath);
+            LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
+            return exec.start()
                     .stderrThrow()
                     .stdoutAsStream()
                     .map(msg -> Paths.get(msg))
@@ -52,7 +56,9 @@ public class Ros1MsgCommand implements RosMsgCommand {
     @Override
     public Optional<String> calcMd5Sum(Path msgFile) {
         var cmd = "rosmsg md5 " + msgFile;
-        var proc = new XExec(cmd).start();
+        var exec = new XExec(cmd);
+        LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
+        var proc = exec.start();
         if (proc.await() != 0) throw new XRE("md5sum calc error: " + proc.stderr());
         String md5sum = proc.stdout();
         if (md5sum.isEmpty()) throw new XRE("Command `%s` returned empty MD5", cmd);
@@ -61,7 +67,9 @@ public class Ros1MsgCommand implements RosMsgCommand {
 
     @Override
     public Stream<String> lines(RosFile msgFile) {
-        return new XExec("rosmsg show -r " + msgFile.name()).start().stderrThrow().stdoutAsStream();
+        var exec = new XExec("rosmsg show -r " + msgFile.name());
+        LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
+        return exec.start().stderrThrow().stdoutAsStream();
     }
 
     @Override
