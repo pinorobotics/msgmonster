@@ -2,8 +2,8 @@
 
 # Features
 
-- generate Java classes for single interface definition file or all files inside ROS package
-- all comments in interfaces definition files are preserved and copied to Java classes
+- generate Java classes for single ROS interface definition file or all files inside ROS package
+- all comments in ROS interface definition files are preserved and copied to Java classes
 
 # Download
 
@@ -17,7 +17,7 @@
 # Usage
 
 ```bash
-msgmonster [-d] <ROS_VERSION> <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
+msgmonster [-d] [-exclude regexp1,...,regexpN] <ROS_VERSION> <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
 ```
 
 Where: 
@@ -35,6 +35,8 @@ Where:
 Options:
 
 - `-d` - enable debug mode when all debug logging is stored in "msgmonster-debug.log" file under system temporary directory
+
+- `-exclude regexp1,...,regexpN` - exclude ROS interface definition files which names match any of the given regexps.
 
 # Examples
 

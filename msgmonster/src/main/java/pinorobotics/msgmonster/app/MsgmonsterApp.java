@@ -23,15 +23,19 @@ import id.xfunction.cli.SmartArgs;
 import id.xfunction.logging.XLogger;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import pinorobotics.msgmonster.generator.JRosActionGenerator;
 import pinorobotics.msgmonster.generator.JRosMessageGenerator;
 import pinorobotics.msgmonster.generator.JRosServiceGenerator;
 import pinorobotics.msgmonster.ros.Ros1MsgCommand;
 import pinorobotics.msgmonster.ros.Ros2MsgCommand;
+import pinorobotics.msgmonster.ros.RosFile;
 import pinorobotics.msgmonster.ros.RosMsgCommandFactory;
 import pinorobotics.msgmonster.ros.RosVersion;
 
@@ -42,6 +46,7 @@ public class MsgmonsterApp {
     private static final XLogger LOGGER = XLogger.getLogger(MsgmonsterApp.class);
     private static final ResourceUtils resourceUtils = new ResourceUtils();
     private RosMsgCommandFactory rosCommandFactory;
+    private List<Predicate<String>> excludePredicates = List.of();
 
     private static void usage() {
         resourceUtils.readResourceAsStream("README-msgmonster.md").forEach(System.out::println);
@@ -58,6 +63,15 @@ public class MsgmonsterApp {
                             case ros1 -> new Ros1MsgCommand();
                             case ros2 -> new Ros2MsgCommand();
                         });
+    }
+
+    public void setExcludePatterns(List<Pattern> patterns) {
+        this.excludePredicates = patterns.stream().map(Pattern::asMatchPredicate).toList();
+    }
+
+    private boolean isExcluded(RosFile rosFile) {
+        var rosFileName = rosFile.name().toString();
+        return excludePredicates.stream().filter(p -> p.test(rosFileName)).findFirst().isPresent();
     }
 
     public void run(List<String> args) throws Exception {
@@ -79,6 +93,10 @@ public class MsgmonsterApp {
         rosFiles.forEach(
                 rosFile -> {
                     LOGGER.info("Processing file {0}", rosFile);
+                    if (isExcluded(rosFile)) {
+                        LOGGER.info("File marked as excluded, ignoring...");
+                        return;
+                    }
                     switch (rosFile.type()) {
                         case MESSAGE -> messageGenerator.generateJavaClass(rosFile);
                         case SERVICE -> serviceGenerator.generateJavaClass(rosFile);
@@ -92,7 +110,15 @@ public class MsgmonsterApp {
         try {
             XLogger.load("logging-msgmonster.properties");
             var app = new MsgmonsterApp();
-            Map<String, Consumer<String>> handlers = Map.of();
+            Map<String, Consumer<String>> handlers =
+                    Map.of(
+                            "-exclude",
+                            val -> {
+                                app.setExcludePatterns(
+                                        Arrays.stream(val.split(","))
+                                                .map(Pattern::compile)
+                                                .toList());
+                            });
             var positionalArgs = new ArrayList<String>();
             Function<String, Boolean> defaultHandler =
                     arg -> {

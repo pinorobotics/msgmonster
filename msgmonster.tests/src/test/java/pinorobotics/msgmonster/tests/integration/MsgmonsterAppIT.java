@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -121,6 +122,23 @@ public class MsgmonsterAppIT {
                 getClass(),
                 "debug_output",
                 Files.readString(XFiles.TEMP_FOLDER.get().resolve("msgmonster-debug.log")));
+    }
+
+    @Test
+    public void test_exclude() throws Exception {
+        new AssertRunCommand(
+                        COMMAND_PATH,
+                        "-exclude",
+                        "tf2_msgs/action/LookupTransform,tf2_msgs/.*/FrameGraph,.*TFMessage",
+                        ROS_VERSION.toString(),
+                        "id.jrosmessages.test_msgs",
+                        generateMsgFilePath("tf2_msgs", Optional.empty()),
+                        outputFolder.toString())
+                .assertReturnCode(0)
+                .withOutputConsumer(System.out::println)
+                .run();
+        var generatedFiles = Files.list(outputFolder).map(Path::getFileName).toList();
+        Assertions.assertEquals("[TF2ErrorMessage.java]", generatedFiles.toString());
     }
 
     private static String generateMsgFilePath(String rosPackage, Optional<String> name) {
