@@ -24,45 +24,23 @@ import pinorobotics.msgmonster.ros.RosVersion;
 /**
  * @author aeon_flux aeon_flux@eclipso.ch
  */
-public class MessageDefinition {
+public class IntConstantDefinition {
 
     private List<Field> fields = new ArrayList<>();
-    private List<EnumDefinition> enums = new ArrayList<>();
-    private List<Field> intConstants = new ArrayList<>();
-    private String comment;
-    private String msgName;
     private RosVersion rosVersion;
 
-    public MessageDefinition(RosVersion rosVersion, String msgName, String comment) {
+    public IntConstantDefinition(
+            RosVersion rosVersion, String type, String name, int id, String comment) {
         this.rosVersion = rosVersion;
-        this.msgName = msgName;
-        this.comment = comment;
-    }
-
-    public MessageDefinition(RosVersion rosVersion, String msgName) {
-        this(rosVersion, msgName, "");
     }
 
     public void addField(String type, String name, String value, String comment) {
         fields.add(new Field(rosVersion, name, type, value, comment));
     }
 
-    public void addEnum(EnumDefinition enumDef) {
-        enums.add(enumDef);
-    }
-
-    public void addConstant(Field constant) {
-        intConstants.add(constant);
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
     @Override
     public String toString() {
         var buf = new StringBuilder();
-        buf.append(comment + "\n");
         for (int i = 0; i < fields.size(); i++) {
             buf.append(fields.get(i));
         }
@@ -71,17 +49,5 @@ public class MessageDefinition {
 
     public List<Field> getFields() {
         return fields;
-    }
-
-    public List<EnumDefinition> getEnums() {
-        return enums;
-    }
-
-    public List<Field> getIntConstants() {
-        return intConstants;
-    }
-
-    public String getName() {
-        return msgName;
     }
 }

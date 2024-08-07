@@ -47,6 +47,70 @@ public class TestDifferentFieldsMessage implements Message {
    
    static final String NAME = "test_msgs/TestDifferentFields";
 
+   public enum UnknownType {
+      DRAWABLE_NOT_SET,
+      
+      DRAWABLE_FRAME_SET,
+      
+      DRAWABLE_SPHERE_SET,
+      
+      DRAWABLE_BOX_SET,
+      
+      DRAWABLE_ARROW_SET,
+      
+      DRAWABLE_CAPSULE_SET,
+      
+      DRAWABLE_CYLINDER_SET,
+      
+      DRAWABLE_LINESTRIP_SET,
+      
+      DRAWABLE_POINTS_SET,
+      
+      
+   }
+   
+   public enum UnknownType {
+      STATUS_UNKNOWN,
+      
+      STATUS_OK,
+      
+      STATUS_AMBIGUOUS,
+      
+      STATUS_HIGH_ERROR,
+      
+      
+   }
+   
+   /**
+    * Comment for HEADER_FIELD_SET
+    * on multiple lines
+    */
+   public static final short HEADER_FIELD_SET = 1;
+   
+   public static final short IMAGE_RESPONSE_FIELD_SET = 4;
+   
+   /**
+    * raandom comment for OTHER_DATA_FIELD_SET
+    */
+   public static final short OTHER_DATA_FIELD_SET = 32;
+   
+   public static final short CUSTOM_PARAM_ERROR_FIELD_SET = 128;
+   
+   public static final short ALERT_DATA_FIELD_SET = 256;
+   
+   public static final byte REQUEST_HEADER_FIELD_SET = 1;
+   
+   public static final byte REQUEST_RECEIVED_TIMESTAMP_FIELD_SET = 2;
+   
+   public static final byte RESPONSE_TIMESTAMP_FIELD_SET = 4;
+   
+   public static final byte ERROR_FIELD_SET = 8;
+   
+   /**
+    * comment for last REQUEST_FIELD_SET
+    */
+   public static final byte REQUEST_FIELD_SET = 16;
+   
    /**
     * field id
     */

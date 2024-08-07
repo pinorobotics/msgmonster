@@ -36,6 +36,7 @@ import pinorobotics.msgmonster.ros.RosMsgCommand;
 import pinorobotics.msgmonster.ros.RosVersion;
 
 /**
+ * @see <a href="https://wiki.ros.org/msg">ROS msg file format</a>
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class JRosMessageGenerator {
@@ -87,6 +88,7 @@ public class JRosMessageGenerator {
         memvarWriter.writeln();
         memvarWriter.writeln(utils.readResource("class_fields_header"));
         generateEnums(memvarWriter, definition);
+        generateConstants(memvarWriter, definition);
         generateClassFields(memvarWriter, definition);
         generateWithMethods(memvarWriter, definition);
         generateHashCode(memvarWriter, definition);
@@ -263,10 +265,18 @@ public class JRosMessageGenerator {
         }
     }
 
+    private void generateConstants(PicoWriter writer, MessageDefinition definition) {
+        var body = utils.readResource("constant_int_field");
+        for (var field : definition.getIntConstants()) {
+            writeField(writer, body, field);
+        }
+    }
+
     private void writeField(PicoWriter writer, String fieldTemplate, Field field) {
         Map<String, String> substitution = new HashMap<>();
         substitution.put("${fieldType}", field.getJavaType());
         substitution.put("${fieldName}", field.getName());
+        substitution.put("${fieldValue}", field.getValue());
         substitution.put("${arraySize}", "" + field.getArraySize());
         fieldTemplate = substitutor.substitute(fieldTemplate, substitution);
         if (!field.getComment().isEmpty()) utils.generateJavadocComment(writer, field.getComment());
@@ -353,7 +363,16 @@ public class JRosMessageGenerator {
                     if (curEnum != null) def.addEnum(curEnum);
                     curEnum = new EnumDefinition(rosmsg.getRosVersion());
                 }
-                if (id == curEnum.getFields().size()) {
+                if (curEnum == null) {
+                    def.addConstant(
+                            new Field(
+                                    rosmsg.getRosVersion(),
+                                    name,
+                                    type,
+                                    Integer.toString(id),
+                                    comment));
+                    continue;
+                } else if (id == curEnum.getFields().size()) {
                     curEnum.addField(type, name, value, comment);
                     continue;
                 }
