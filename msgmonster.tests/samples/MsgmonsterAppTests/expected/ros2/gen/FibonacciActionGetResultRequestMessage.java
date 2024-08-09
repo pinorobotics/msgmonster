@@ -36,7 +36,7 @@ import pinorobotics.jros2actionlib.actionlib_msgs.Action2GoalIdMessage;
         interfaceType = RosInterfaceType.ACTION)
 public class FibonacciActionGetResultRequestMessage implements Action2GetResultRequestMessage {
 
-    static final String NAME = "test_msgs/Fibonacci";
+    static final String NAME = "test_msgs/FibonacciActionGetResult";
 
     public Action2GoalIdMessage goal_id = new Action2GoalIdMessage();
 

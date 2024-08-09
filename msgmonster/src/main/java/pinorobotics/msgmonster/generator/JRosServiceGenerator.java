@@ -102,8 +102,14 @@ public class JRosServiceGenerator {
             return;
         }
         try {
-            var request = new RosFile(rosFile.name() + "Request", RosInterfaceType.MESSAGE);
-            var response = new RosFile(rosFile.name() + "Response", RosInterfaceType.MESSAGE);
+            var request =
+                    new RosFile(
+                            rosFile.name() + JRosConstants.SERVICE_REQUEST,
+                            RosInterfaceType.MESSAGE);
+            var response =
+                    new RosFile(
+                            rosFile.name() + JRosConstants.SERVICE_RESPONSE,
+                            RosInterfaceType.MESSAGE);
             var messageGenerator =
                     new JRosMessageGenerator(
                             new InMemoryRosMsgCommand(

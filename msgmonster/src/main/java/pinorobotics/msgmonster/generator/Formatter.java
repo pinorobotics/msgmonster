@@ -49,8 +49,13 @@ public class Formatter {
                                             .getFileName()
                                             .toString()
                                             .replaceAll(".action", "")));
-            default ->
-                    String.format("%sMessage", camelCase(rosFile.name().getFileName().toString()));
+            default -> {
+                var name =
+                        camelCase(rosFile.name().getFileName().toString())
+                                .replaceAll(JRosConstants.SERVICE_RESPONSE, "Response")
+                                .replaceAll(JRosConstants.SERVICE_REQUEST, "Request");
+                yield String.format("%sMessage", name);
+            }
         };
     }
 

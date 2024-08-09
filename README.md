@@ -36,7 +36,7 @@ Options:
 
 - `-d` - enable debug mode when all debug logging is stored in "msgmonster-debug.log" file under system temporary directory
 
-- `-exclude regexp1,...,regexpN` - exclude ROS interface definition files which names match any of the given regexps.
+- `-exclude regexp1,...,regexpN` - exclude ROS interface definition files which names match any of the given regexps. This option can be used to skip any problematic ROS interface definition files.
 
 # Examples
 

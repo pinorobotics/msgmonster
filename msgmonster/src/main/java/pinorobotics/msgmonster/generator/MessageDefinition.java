@@ -19,6 +19,7 @@ package pinorobotics.msgmonster.generator;
 
 import java.util.ArrayList;
 import java.util.List;
+import pinorobotics.msgmonster.ros.RosInterfaceType;
 import pinorobotics.msgmonster.ros.RosVersion;
 
 /**
@@ -83,5 +84,12 @@ public class MessageDefinition {
 
     public String getName() {
         return msgName;
+    }
+
+    public RosInterfaceType getType() {
+        if (msgName.endsWith(JRosConstants.SERVICE_REQUEST)
+                || msgName.endsWith(JRosConstants.SERVICE_RESPONSE))
+            return RosInterfaceType.SERVICE;
+        return RosInterfaceType.MESSAGE;
     }
 }

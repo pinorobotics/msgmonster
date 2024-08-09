@@ -32,6 +32,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 import org.ainslec.picocog.PicoWriter;
 import pinorobotics.msgmonster.ros.RosFile;
+import pinorobotics.msgmonster.ros.RosInterfaceType;
 import pinorobotics.msgmonster.ros.RosMsgCommand;
 import pinorobotics.msgmonster.ros.RosVersion;
 
@@ -196,6 +197,8 @@ public class JRosMessageGenerator {
     private void generateMessageMetadata(PicoWriter writer, MessageDefinition definition) {
         var metadataMap = new LinkedHashMap<String, String>();
         metadataMap.put("name", "${className}.NAME");
+        if (definition.getType() == RosInterfaceType.SERVICE)
+            metadataMap.put("interfaceType", "RosInterfaceType.SERVICE");
         if (definition.getFields().size() > 1) {
             metadataMap.put(
                     "fields",
@@ -447,6 +450,8 @@ public class JRosMessageGenerator {
     private void generateImports(PicoWriter writer, MessageDefinition definition) {
         writer.write(utils.readResource("imports"));
         var imports = new ArrayList<String>();
+        if (definition.getType() == RosInterfaceType.SERVICE)
+            imports.add("import id.jrosmessages.RosInterfaceType;");
         for (var field : definition.getFields()) {
             if (field.hasArrayType()) imports.add("import java.util.Arrays;");
             if (field.hasPrimitiveType()) continue;

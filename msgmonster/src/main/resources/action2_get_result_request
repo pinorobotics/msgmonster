@@ -36,7 +36,7 @@ import pinorobotics.jros2actionlib.actionlib_msgs.Action2GoalIdMessage;
         interfaceType = RosInterfaceType.ACTION)
 public class ${actionName}ActionGetResultRequestMessage implements Action2GetResultRequestMessage {
 
-    static final String NAME = "${msgName}";
+    static final String NAME = "${msgName}ActionGetResult";
 
     public Action2GoalIdMessage goal_id = new Action2GoalIdMessage();
 
