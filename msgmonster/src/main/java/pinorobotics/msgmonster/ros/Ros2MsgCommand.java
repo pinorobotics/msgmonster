@@ -17,19 +17,16 @@
  */
 package pinorobotics.msgmonster.ros;
 
-import id.xfunction.lang.XExec;
-import id.xfunction.logging.XLogger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
+import pinorobotics.msgmonster.utils.MsgMonsterUtils;
 
 /**
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class Ros2MsgCommand implements RosMsgCommand {
-    private static final XLogger LOGGER = XLogger.getLogger(Ros2MsgCommand.class);
 
     private boolean isPackage(Path input) {
         return input.getNameCount() == 1;
@@ -38,11 +35,7 @@ public class Ros2MsgCommand implements RosMsgCommand {
     @Override
     public Stream<RosFile> listFiles(Path rosPath) {
         if (isPackage(rosPath)) {
-            var exec = new XExec("ros2 interface package " + rosPath);
-            LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
-            return exec.start()
-                    .stderrThrow()
-                    .stdoutAsStream()
+            return MsgMonsterUtils.runCommand("ros2 interface package " + rosPath)
                     .map(msg -> Paths.get(msg))
                     .map(fileName -> RosFile.create(RosVersion.ros2, fileName))
                     .filter(Optional::isPresent)
@@ -54,9 +47,8 @@ public class Ros2MsgCommand implements RosMsgCommand {
 
     @Override
     public Stream<String> lines(RosFile msgFile) {
-        var exec = new XExec("ros2 interface show " + msgFile.name());
-        LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
-        return exec.start().stderrThrow().stdoutAsStream().filter(s -> !s.startsWith("\t"));
+        return MsgMonsterUtils.runCommand("ros2 interface show " + msgFile.name())
+                .filter(s -> !s.startsWith("\t"));
     }
 
     @Override

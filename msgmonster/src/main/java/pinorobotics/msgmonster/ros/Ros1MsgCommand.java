@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
+import pinorobotics.msgmonster.utils.MsgMonsterUtils;
 
 /**
  * @author aeon_flux aeon_flux@eclipso.ch
@@ -39,11 +40,7 @@ public class Ros1MsgCommand implements RosMsgCommand {
     @Override
     public Stream<RosFile> listFiles(Path rosPath) {
         if (isPackage(rosPath)) {
-            var exec = new XExec("rosmsg package " + rosPath);
-            LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
-            return exec.start()
-                    .stderrThrow()
-                    .stdoutAsStream()
+            return MsgMonsterUtils.runCommand("rosmsg package " + rosPath)
                     .map(msg -> Paths.get(msg))
                     .map(fileName -> RosFile.create(RosVersion.ros1, fileName))
                     .filter(Optional::isPresent)
@@ -67,9 +64,7 @@ public class Ros1MsgCommand implements RosMsgCommand {
 
     @Override
     public Stream<String> lines(RosFile msgFile) {
-        var exec = new XExec("rosmsg show -r " + msgFile.name());
-        LOGGER.fine("Executing command: {0}", Arrays.toString(exec.getCommand()));
-        return exec.start().stderrThrow().stdoutAsStream();
+        return MsgMonsterUtils.runCommand("rosmsg show -r " + msgFile.name());
     }
 
     @Override
