@@ -120,16 +120,20 @@ public class MsgmonsterAppIT {
                 .run();
         XAsserts.assertMatches(
                 getClass(),
-                "debug_output",
+                "debug_output." + ROS_VERSION,
                 Files.readString(XFiles.TEMP_FOLDER.get().resolve("msgmonster-debug.log")));
     }
 
     @Test
     public void test_exclude() throws Exception {
+        var excludeRegexp =
+                ROS_VERSION == RosVersion.ros2
+                        ? "tf2_msgs/action/LookupTransform,tf2_msgs/.*/FrameGraph,.*TFMessage"
+                        : "tf2_msgs/LookupTransform.*,tf2_msgs/FrameGraph,.*TFMessage";
         new AssertRunCommand(
                         COMMAND_PATH,
                         "-exclude",
-                        "tf2_msgs/action/LookupTransform,tf2_msgs/.*/FrameGraph,.*TFMessage",
+                        excludeRegexp,
                         ROS_VERSION.toString(),
                         "id.jrosmessages.test_msgs",
                         generateMsgFilePath("tf2_msgs", Optional.empty()),
