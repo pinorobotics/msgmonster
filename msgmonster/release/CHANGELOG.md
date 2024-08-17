@@ -1,3 +1,15 @@
+# Version 6
+
+- Fixing tests for ROS1
+- Issue #3 Fixing app hangs on big output from external commands
+- Issue #5 Fixing NAME in Service messages and including interfaceType
+- Adding generation for int constants
+- Issue #3 Adding "-exclude" option
+- Issue #3 Adding debug mode
+- Issue #4 Fix for Time primitive type
+
+[msgmonster-v6.0.zip](https://github.com/pinorobotics/msgmonster/raw/main/msgmonster/release/msgmonster-v6.0.zip)
+
 # Version 5
 
 - Fixing tests for ROS1

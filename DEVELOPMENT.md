@@ -21,7 +21,7 @@ gradle eclipse
 # Release steps
 
 - Close version in gradle.properties
-- Run `gradle clean build` (separately in each environment: ROS2, ROS1)
+- Run `gradle clean build` (separately in each environment: ROS1, ROS2)
 - Open next SNAPSHOT version
 - Update [CHANGELOG.md](msgmonster/release/CHANGELOG.md) with new release (for changelog generation use `git log --format=%s`)
 - Commit changes
