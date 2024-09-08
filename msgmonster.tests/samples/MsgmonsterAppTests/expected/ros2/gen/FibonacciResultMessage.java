@@ -32,7 +32,6 @@ import id.jrosmessages.Array;
 import id.xfunction.XJson;
 import id.xfunction.Preconditions;
 
-import id.jrosmessages.std_msgs.Int32Message;
 import java.util.Arrays;
 
 /**
@@ -45,9 +44,9 @@ public class FibonacciResultMessage implements Message {
    
    static final String NAME = "test_msgs/FibonacciResult";
 
-   public Int32Message[] sequence = new Int32Message[0];
+   public int[] sequence = new int[0];
    
-   public FibonacciResultMessage withSequence(Int32Message... sequence) {
+   public FibonacciResultMessage withSequence(int... sequence) {
        this.sequence = sequence;
        return this;
    }

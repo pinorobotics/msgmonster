@@ -27,17 +27,20 @@ import pinorobotics.msgmonster.ros.RosVersion;
 public class Field {
     /** Map from ROS type to Java type */
     private static final Map<String, String> PRIMITIVES_TYPE_MAP =
-            Map.of(
-                    "float64", "double",
-                    "float32", "float",
-                    "uint32", "int",
-                    "uint16", "short",
-                    "uint8", "byte",
-                    "byte", "byte",
-                    "int64", "long",
-                    "char", "byte",
-                    "bool", "boolean",
-                    "int8", "byte");
+            Map.ofEntries(
+                    Map.entry("bool", "boolean"),
+                    Map.entry("byte", "byte"),
+                    Map.entry("char", "byte"),
+                    Map.entry("float32", "float"),
+                    Map.entry("float64", "double"),
+                    Map.entry("int8", "byte"),
+                    Map.entry("uint8", "byte"),
+                    Map.entry("int16", "short"),
+                    Map.entry("uint16", "short"),
+                    Map.entry("int32", "int"),
+                    Map.entry("uint32", "int"),
+                    Map.entry("int64", "long"),
+                    Map.entry("uint64", "long"));
 
     private static final Map<String, String> BASIC_TYPE_MAP =
             Map.of(

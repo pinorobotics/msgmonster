@@ -24,6 +24,7 @@
 
 package id.jrosmessages.test_msgs;
 
+
 import java.util.Objects;
 
 import id.jrosmessages.Message;
@@ -31,8 +32,6 @@ import id.jrosmessages.MessageMetadata;
 import id.jrosmessages.Array;
 import id.xfunction.XJson;
 import id.xfunction.Preconditions;
-
-import id.jrosmessages.std_msgs.Int32Message;
 
 /**
  * Definition for test_msgs/FibonacciGoal
@@ -44,9 +43,9 @@ public class FibonacciGoalMessage implements Message {
    
    static final String NAME = "test_msgs/FibonacciGoal";
 
-   public Int32Message order = new Int32Message();
+   public int order;
    
-   public FibonacciGoalMessage withOrder(Int32Message order) {
+   public FibonacciGoalMessage withOrder(int order) {
        this.order = order;
        return this;
    }
@@ -62,7 +61,7 @@ public class FibonacciGoalMessage implements Message {
    public boolean equals(Object obj) {
        if (obj instanceof FibonacciGoalMessage other)
            return
-               Objects.equals(order, other.order)
+               order == other.order
            ;
        return false;
    }
