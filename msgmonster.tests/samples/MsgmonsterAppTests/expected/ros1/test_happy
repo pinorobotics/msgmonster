@@ -1,4 +1,3 @@
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Output folder /tmp/*
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/AddTwoInts, type=SERVICE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/AllowedCollisionEntry, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/AllowedCollisionMatrix, type=MESSAGE]

@@ -24,27 +24,26 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import pinorobotics.msgmonster.app.MsgmonsterApp;
+import pinorobotics.msgmonster.Msgmonster;
+import pinorobotics.msgmonster.ros.RosVersion;
 
 /**
  * @author aeon_flux aeon_flux@eclipso.ch
  */
-public class MsgmonsterAppTests {
+public class MsgmonsterTests {
 
-    private static final Path SAMPLES =
-            Paths.get("samples").resolve(MsgmonsterAppTests.class.getSimpleName());
+    private static final Path SAMPLES = Paths.get("samples").resolve("MsgmonsterAppTests");
     private static Path outputFolder;
-    private static MsgmonsterApp msgmonsterApp;
+    private static Msgmonster msgmonster;
 
     @BeforeEach
     public void setup() throws IOException {
         XLogger.load("msgmonster-test.properties");
         outputFolder = Files.createTempDirectory("msgmonster");
-        msgmonsterApp = new MsgmonsterApp(rosVersion -> new RosMsgCommandMock(rosVersion, SAMPLES));
+        msgmonster = new Msgmonster(rosVersion -> new RosMsgCommandMock(rosVersion, SAMPLES));
     }
 
     /**
@@ -55,12 +54,11 @@ public class MsgmonsterAppTests {
     @CsvSource({"ros1", "ros2"})
     public void test_happy(String rosVersion) throws Exception {
         var expectedPath = SAMPLES.resolve("expected").resolve(rosVersion);
-        msgmonsterApp.run(
-                List.of(
-                        rosVersion,
-                        "id.jrosmessages.test_msgs",
-                        "test_msgs",
-                        outputFolder.toString()));
+        msgmonster.run(
+                RosVersion.valueOf(rosVersion),
+                Paths.get("id.jrosmessages.test_msgs"),
+                Paths.get("test_msgs"),
+                outputFolder);
         XAsserts.assertContentEquals(expectedPath.resolve("gen"), outputFolder);
         XAsserts.assertMatches(
                 Files.readString(expectedPath.resolve("test_happy")),
