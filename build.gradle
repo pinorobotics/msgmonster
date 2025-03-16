@@ -14,7 +14,8 @@ subprojects {
   apply plugin: 'java'
   apply plugin: 'eclipse'
 
-  def javaVersion = 17
+  // update README when updating Java version
+  def javaVersion = 22
   sourceCompatibility = javaVersion
   targetCompatibility = javaVersion
   tasks.withType(JavaCompile) {
@@ -66,7 +67,7 @@ ext {
  * be checked everytime when it is updated (otherwise it do not seems secure)
  * To avoid using it we rely on manual version check
  */
-def requiredGradleVersion = "8.3"
+def requiredGradleVersion = "8.10.1"
 if ("$gradle.gradleVersion" != "$requiredGradleVersion")
   throw new RuntimeException("Running gradle version $gradle.gradleVersion, required $requiredGradleVersion");
 

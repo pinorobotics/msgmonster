@@ -1,17 +1,16 @@
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Output folder /tmp/*
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/LaserScan, type=MESSAGE]
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/TestDifferentFields, type=MESSAGE]
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/AllowedCollisionMatrix, type=MESSAGE]
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/String, type=MESSAGE]
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/AllowedCollisionEntry, type=MESSAGE]
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/GoalStatus, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/srv/AddTwoInts, type=SERVICE]
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/MessageWithNoFields, type=MESSAGE]
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/GoalStatusArray, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/AllowedCollisionEntry, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/AllowedCollisionMatrix, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/CollisionObject, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/GoalID, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/GoalStatus, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/GoalStatusArray, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/Invalid, type=MESSAGE]
 * [SEVERE ] pinorobotics.msgmonster.generator.JRosMessageGenerator - Error generating class for RosFile[name=test_msgs/msg/Invalid, type=MESSAGE]
 java.util.NoSuchElementException
 *
-* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/GoalID, type=MESSAGE]
-*
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/LaserScan, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/MessageWithNoFields, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/String, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/TestDifferentFields, type=MESSAGE]

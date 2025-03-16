@@ -62,6 +62,7 @@ public class RosMsgCommandMock implements RosMsgCommand {
         return Unchecked.get(() -> Files.list(folder.resolve(rosPackage)).map(Path::getFileName))
                 .map(msgName -> rosPackage.resolve(msgName))
                 .peek(System.out::println)
+                .sorted()
                 .map(this::fromFilePath);
     }
 

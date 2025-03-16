@@ -11,7 +11,7 @@
 
 # Requirements
 
-- Java 17+
+- Java 22+
 - rosmsg command
 
 # Usage
