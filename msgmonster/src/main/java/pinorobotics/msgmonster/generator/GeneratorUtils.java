@@ -21,6 +21,7 @@ import id.xfunction.ResourceUtils;
 import id.xfunction.text.Substitutor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Stream;
@@ -48,9 +49,10 @@ public class GeneratorUtils {
 
     public void generateJavadocComment(PicoWriter writer, String comment) {
         writer.writeln("/**");
-        var scanner = new Scanner(comment);
-        while (scanner.hasNext()) {
-            writer.writeln(" * " + scanner.nextLine());
+        try (var scanner = new Scanner(comment)) {
+            while (scanner.hasNext()) {
+                writer.writeln(" * " + scanner.nextLine());
+            }
         }
         writer.writeln(" */");
     }
@@ -60,5 +62,16 @@ public class GeneratorUtils {
             if (!lines.get(0).isEmpty()) break;
             lines.remove(0);
         }
+    }
+
+    public void generateUserImports(PicoWriter writer, List<String> userImports) {
+        if (userImports.isEmpty()) return;
+        writer.writeln("// user defined imports");
+        userImports.stream()
+                .sorted()
+                .distinct()
+                .map(pkg -> "import %s;".formatted(pkg))
+                .forEach(writer::writeln);
+        writer.writeln();
     }
 }

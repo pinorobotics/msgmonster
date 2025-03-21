@@ -17,7 +17,7 @@
 # Usage
 
 ```bash
-msgmonster [-d] [-exclude regexp1,...,regexpN] <ROS_VERSION> <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
+msgmonster [-d] [-exclude regexp1,...,regexpN] [-import package1,...,packageN] <ROS_VERSION> <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
 ```
 
 Where: 
@@ -37,6 +37,14 @@ Options:
 - `-d` - enable debug mode when all debug logging is stored in "msgmonster-debug.log" file under system temporary directory
 
 - `-exclude regexp1,...,regexpN` - exclude ROS interface definition files which names match any of the given regexps. This option can be used to skip any problematic ROS interface definition files.
+
+- `-import package1,...,packageN` - add imports to all generated Java classes in the following form:
+``` java
+import package1;
+...
+import packageN;
+```
+This is useful when messages are generated into a separate Java packages than service or action definitions (for example messages are generated into "java.package.msg" and service definitions which rely on these messages, are generated into "java.package.srv")
 
 # Examples
 

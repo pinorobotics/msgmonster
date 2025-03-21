@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -31,6 +32,9 @@ import pinorobotics.msgmonster.Msgmonster;
 import pinorobotics.msgmonster.ros.RosVersion;
 
 /**
+ * Not an integration tests. Instead of executing ROS commands it relies on {@link
+ * RosMsgCommandMock}
+ *
  * @author aeon_flux aeon_flux@eclipso.ch
  */
 public class MsgmonsterTests {
@@ -46,10 +50,6 @@ public class MsgmonsterTests {
         msgmonster = new Msgmonster(rosVersion -> new RosMsgCommandMock(rosVersion, SAMPLES));
     }
 
-    /**
-     * Not an integration test. Instead of executing ROS commands it relies on {@link
-     * RosMsgCommandMock}
-     */
     @ParameterizedTest
     @CsvSource({"ros1", "ros2"})
     public void test_happy(String rosVersion) throws Exception {
@@ -63,5 +63,18 @@ public class MsgmonsterTests {
         XAsserts.assertMatches(
                 Files.readString(expectedPath.resolve("test_happy")),
                 Files.readString(XFiles.TEMP_FOLDER.orElseThrow().resolve("msgmonster-test.log")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"ros1", "ros2"})
+    public void test_imports(String rosVersion) throws Exception {
+        var expectedPath = SAMPLES.resolve("expected").resolve(rosVersion);
+        msgmonster.setUserImports(List.of("java.util.*", "java.io.IOException"));
+        msgmonster.run(
+                RosVersion.valueOf(rosVersion),
+                Paths.get("id.jrosmessages.test_msgs"),
+                Paths.get("test_msgs/AddTwoInts.srv"),
+                outputFolder);
+        XAsserts.assertContentEquals(expectedPath.resolve("gen_userImports"), outputFolder);
     }
 }

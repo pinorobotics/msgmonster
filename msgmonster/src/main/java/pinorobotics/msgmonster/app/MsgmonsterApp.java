@@ -54,6 +54,10 @@ public class MsgmonsterApp {
                                         Arrays.stream(val.split(","))
                                                 .map(Pattern::compile)
                                                 .toList());
+                            },
+                            "-import",
+                            val -> {
+                                app.setUserImports(Arrays.stream(val.split(",")).toList());
                             });
             var positionalArgs = new ArrayList<String>();
             Function<String, Boolean> defaultHandler =

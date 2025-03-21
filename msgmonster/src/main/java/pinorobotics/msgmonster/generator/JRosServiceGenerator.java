@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.ainslec.picocog.PicoWriter;
@@ -40,7 +41,7 @@ import pinorobotics.msgmonster.ros.RosMsgCommand;
  *
  * @author aeon_flux aeon_flux@eclipso.ch
  */
-public class JRosServiceGenerator {
+public class JRosServiceGenerator implements JRosGenerator {
     private static final XLogger LOGGER = XLogger.getLogger(JRosMessageGenerator.class);
     private Formatter formatter = new Formatter();
     private Map<String, String> substitution = new HashMap<>();
@@ -56,16 +57,18 @@ public class JRosServiceGenerator {
         this.packageName = packageName;
     }
 
-    public void generateJavaClass(RosFile rosFile) {
+    @Override
+    public void generateJavaClass(RosFile rosFile, List<String> userImports) {
         try {
-            generateJavaInternal(rosFile);
+            generateJavaInternal(rosFile, userImports);
         } catch (Exception e) {
             LOGGER.severe("Error generating service class for " + rosFile, e);
             e.printStackTrace();
         }
     }
 
-    private void generateJavaInternal(RosFile rosFile) throws IOException {
+    private void generateJavaInternal(RosFile rosFile, List<String> userImports)
+            throws IOException {
         substitution.clear();
         String className = formatter.formatAsJavaClassName(rosFile);
         Path outFile = outputFolder.resolve(className + ".java");
@@ -85,10 +88,10 @@ public class JRosServiceGenerator {
         substitution.put("${serviceName}", className.replaceAll("ServiceDefinition", ""));
         classOutput = substitutor.substitute(classOutput, substitution);
         Files.writeString(outFile, classOutput, StandardOpenOption.CREATE_NEW);
-        generateRequestResponse(rosFile);
+        generateRequestResponse(rosFile, userImports);
     }
 
-    private void generateRequestResponse(RosFile rosFile) {
+    private void generateRequestResponse(RosFile rosFile, List<String> userImports) {
         var lines =
                 rosmsg.lines(rosFile)
                         .map(String::trim)
@@ -119,8 +122,8 @@ public class JRosServiceGenerator {
                                     rosmsg.getRosVersion()),
                             outputFolder,
                             packageName);
-            messageGenerator.generateJavaClass(request);
-            messageGenerator.generateJavaClass(response);
+            messageGenerator.generateJavaClass(request, userImports);
+            messageGenerator.generateJavaClass(response, userImports);
         } catch (Exception e) {
             LOGGER.severe("Error generating request/response messages", e);
         }

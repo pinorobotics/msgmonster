@@ -27,6 +27,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ import pinorobotics.msgmonster.ros.RosVersion;
  * @see <a href="https://wiki.ros.org/msg">ROS msg file format</a>
  * @author aeon_flux aeon_flux@eclipso.ch
  */
-public class JRosMessageGenerator {
+public class JRosMessageGenerator implements JRosGenerator {
     private static final XLogger LOGGER = XLogger.getLogger(JRosMessageGenerator.class);
     private Formatter formatter = new Formatter();
     private Map<String, String> substitution = new HashMap<>();
@@ -56,15 +57,17 @@ public class JRosMessageGenerator {
         this.packageName = packageName;
     }
 
-    public void generateJavaClass(RosFile rosFile) {
+    @Override
+    public void generateJavaClass(RosFile rosFile, List<String> userImports) {
         try {
-            generateJavaInternal(rosFile);
+            generateJavaInternal(rosFile, userImports);
         } catch (Exception e) {
             LOGGER.severe("Error generating class for " + rosFile, e);
         }
     }
 
-    private void generateJavaInternal(RosFile rosFile) throws IOException {
+    private void generateJavaInternal(RosFile rosFile, List<String> userImports)
+            throws IOException {
         substitution.clear();
         String className = formatter.formatAsJavaClassName(rosFile);
         Path outFile = outputFolder.resolve(className + ".java");
@@ -81,6 +84,7 @@ public class JRosMessageGenerator {
         topWriter.writeln(String.format("package %s;", packageName));
         topWriter.writeln();
         generateImports(topWriter, definition);
+        utils.generateUserImports(topWriter, userImports);
         generateJavadocComment(topWriter, definition);
         generateMessageMetadata(topWriter, definition);
         topWriter.writeln_r(String.format("public class %s implements Message {", className));

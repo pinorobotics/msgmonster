@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.ainslec.picocog.PicoWriter;
@@ -43,7 +44,7 @@ import pinorobotics.msgmonster.ros.RosVersion;
  *
  * @author aeon_flux aeon_flux@eclipso.ch
  */
-public class JRosActionGenerator {
+public class JRosActionGenerator implements JRosGenerator {
     private static final XLogger LOGGER = XLogger.getLogger(JRosMessageGenerator.class);
     private Formatter formatter = new Formatter();
     private Map<String, String> substitution = new HashMap<>();
@@ -59,19 +60,21 @@ public class JRosActionGenerator {
         this.packageName = packageName;
     }
 
-    public void generateJavaClass(RosFile rosFile) {
+    @Override
+    public void generateJavaClass(RosFile rosFile, List<String> userImports) {
         try {
-            generateJavaInternal(rosFile);
+            generateJavaInternal(rosFile, userImports);
         } catch (Exception e) {
             LOGGER.severe("Error generating service class for " + rosFile, e);
             e.printStackTrace();
         }
     }
 
-    private void generateJavaInternal(RosFile rosFile) throws IOException {
+    private void generateJavaInternal(RosFile rosFile, List<String> userImports)
+            throws IOException {
         generateActionDefinition(rosFile);
         if (rosmsg.getRosVersion() == RosVersion.ros2) generateAction2Classes(rosFile);
-        generateActionMessages(rosFile);
+        generateActionMessages(rosFile, userImports);
     }
 
     private void generateAction2Classes(RosFile rosFile) throws IOException {
@@ -131,7 +134,7 @@ public class JRosActionGenerator {
         Files.writeString(outFile, classOutput, StandardOpenOption.CREATE_NEW);
     }
 
-    private void generateActionMessages(RosFile rosFile) {
+    private void generateActionMessages(RosFile rosFile, List<String> userImports) {
         var lines =
                 rosmsg.lines(rosFile)
                         .map(String::trim)
@@ -165,8 +168,8 @@ public class JRosActionGenerator {
                                     rosmsg.getRosVersion()),
                             outputFolder,
                             packageName);
-            messageGenerator.generateJavaClass(goal);
-            messageGenerator.generateJavaClass(result);
+            messageGenerator.generateJavaClass(goal, userImports);
+            messageGenerator.generateJavaClass(result, userImports);
         } catch (Exception e) {
             LOGGER.severe("Error generating goal/result messages", e);
         }

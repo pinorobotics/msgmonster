@@ -59,11 +59,14 @@ public class RosMsgCommandMock implements RosMsgCommand {
 
     @Override
     public Stream<RosFile> listFiles(Path rosPackage) {
-        return Unchecked.get(() -> Files.list(folder.resolve(rosPackage)).map(Path::getFileName))
-                .map(msgName -> rosPackage.resolve(msgName))
-                .peek(System.out::println)
-                .sorted()
-                .map(this::fromFilePath);
+        var files = Stream.of(rosPackage);
+        var path = folder.resolve(rosPackage);
+        if (path.toFile().isDirectory())
+            files =
+                    Unchecked.get(() -> Files.list(path))
+                            .map(Path::getFileName)
+                            .map(msgName -> rosPackage.resolve(msgName));
+        return files.peek(System.out::println).sorted().map(this::fromFilePath);
     }
 
     private Path toFilePath(RosFile msgFile) {

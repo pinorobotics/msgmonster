@@ -36,6 +36,7 @@ public class Msgmonster {
     private static final XLogger LOGGER = XLogger.getLogger(MsgmonsterApp.class);
     private RosMsgCommandFactory rosCommandFactory;
     private List<Predicate<String>> excludePredicates = List.of();
+    private List<String> imports = List.of();
 
     public Msgmonster(RosMsgCommandFactory rosCommandFactory) {
         this.rosCommandFactory = rosCommandFactory;
@@ -52,6 +53,10 @@ public class Msgmonster {
 
     public void setExcludePatterns(List<Pattern> patterns) {
         this.excludePredicates = patterns.stream().map(Pattern::asMatchPredicate).toList();
+    }
+
+    public void setUserImports(List<String> imports) {
+        this.imports = imports;
     }
 
     private boolean isExcluded(RosFile rosFile) {
@@ -74,9 +79,9 @@ public class Msgmonster {
                         return;
                     }
                     switch (rosFile.type()) {
-                        case MESSAGE -> messageGenerator.generateJavaClass(rosFile);
-                        case SERVICE -> serviceGenerator.generateJavaClass(rosFile);
-                        case ACTION -> actionGenerator.generateJavaClass(rosFile);
+                        case MESSAGE -> messageGenerator.generateJavaClass(rosFile, imports);
+                        case SERVICE -> serviceGenerator.generateJavaClass(rosFile, imports);
+                        case ACTION -> actionGenerator.generateJavaClass(rosFile, imports);
                         default -> LOGGER.warning("ROS file type not supported: {0}", rosFile);
                     }
                 });

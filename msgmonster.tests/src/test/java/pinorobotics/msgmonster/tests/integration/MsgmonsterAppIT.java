@@ -25,12 +25,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -43,34 +41,30 @@ public class MsgmonsterAppIT {
 
     private static final String COMMAND_PATH =
             Paths.get("").toAbsolutePath().resolve("build/msgmonster/msgmonster").toString();
-    private static Path outputFolder;
     private static final RosVersion ROS_VERSION = findRosVersion();
     private static final Path SAMPLES_PATH = Paths.get("samples", ROS_VERSION.toString());
+    private static Path outputFolder;
 
-    @BeforeAll
-    public static void setup() throws IOException {
+    @BeforeEach
+    public void setup() throws IOException {
         outputFolder = Files.createTempDirectory("msgmonster");
     }
 
     private record TestCase(String msgName, Path expectedPath) {}
 
     static Stream<TestCase> dataProvider() {
-        var testCases = new ArrayList<TestCase>();
-        testCases.addAll(
-                List.of(
-                        new TestCase(
-                                generateMsgFilePath("std_msgs", Optional.of("String")),
-                                SAMPLES_PATH.resolve("StringMessage.java")),
-                        new TestCase(
-                                generateMsgFilePath("tf2_msgs", Optional.empty()),
-                                SAMPLES_PATH.resolve("tf2_msgs"))));
-        testCases.add(
+        return Stream.of(
+                new TestCase(
+                        generateMsgFilePath("std_msgs", Optional.of("String")),
+                        SAMPLES_PATH.resolve("StringMessage.java")),
+                new TestCase(
+                        generateMsgFilePath("tf2_msgs", Optional.empty()),
+                        SAMPLES_PATH.resolve("tf2_msgs")),
                 new TestCase(
                         generateMsgFilePath(
                                 ROS_VERSION == RosVersion.ros2 ? "example_interfaces" : "std_msgs",
                                 Optional.of("Char")),
                         SAMPLES_PATH.resolve("CharMessage.java")));
-        return testCases.stream();
     }
 
     @ParameterizedTest
@@ -143,6 +137,24 @@ public class MsgmonsterAppIT {
                 .run();
         var generatedFiles = Files.list(outputFolder).map(Path::getFileName).toList();
         Assertions.assertEquals("[TF2ErrorMessage.java]", generatedFiles.toString());
+    }
+
+    @Test
+    public void test_import() throws Exception {
+        new AssertRunCommand(
+                        COMMAND_PATH,
+                        "-import",
+                        "java.util.*,java.io.IOException",
+                        ROS_VERSION.toString(),
+                        "id.jrosmessages.test_msgs",
+                        generateMsgFilePath("std_msgs", Optional.of("String")),
+                        outputFolder.toString())
+                .assertReturnCode(0)
+                .withOutputConsumer(System.out::println)
+                .run();
+        XAsserts.assertContentEquals(
+                SAMPLES_PATH.resolve("StringMessage_userImports.java"),
+                outputFolder.resolve("StringMessage.java"));
     }
 
     private static String generateMsgFilePath(String rosPackage, Optional<String> name) {
