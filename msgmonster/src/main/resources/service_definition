@@ -1,13 +1,17 @@
 public class ${serviceName}ServiceDefinition
         implements ServiceDefinition<${serviceName}RequestMessage, ${serviceName}ResponseMessage> {
+    private static final MessageDescriptor<AddTwoIntsRequestMessage> REQUEST_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(${serviceName}RequestMessage.class);
+    private static final MessageDescriptor<AddTwoIntsResponseMessage> RESPONSE_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(${serviceName}ResponseMessage.class);
 
     @Override
-    public Class<${serviceName}RequestMessage> getServiceRequestMessage() {
-        return ${serviceName}RequestMessage.class;
+    public MessageDescriptor<AddTwoIntsRequestMessage> getServiceRequestMessage() {
+        return REQUEST_MESSAGE_DESCRIPTOR;
     }
 
     @Override
-    public Class<${serviceName}ResponseMessage> getServiceResponseMessage() {
-        return ${serviceName}ResponseMessage.class;
+    public MessageDescriptor<AddTwoIntsResponseMessage> getServiceResponseMessage() {
+        return RESPONSE_MESSAGE_DESCRIPTOR;
     }
 }

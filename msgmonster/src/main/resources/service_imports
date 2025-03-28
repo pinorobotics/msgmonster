@@ -1,3 +1,4 @@
+import id.jrosmessages.MessageDescriptor;
 import pinorobotics.jrosservices.msgs.ServiceDefinition;
 
 

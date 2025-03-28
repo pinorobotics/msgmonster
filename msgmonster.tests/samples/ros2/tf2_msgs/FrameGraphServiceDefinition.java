@@ -24,6 +24,7 @@
 
 package id.jrosmessages.test_msgs;
 
+import id.jrosmessages.MessageDescriptor;
 import pinorobotics.jrosservices.msgs.ServiceDefinition;
 
 /**
@@ -31,14 +32,18 @@ import pinorobotics.jrosservices.msgs.ServiceDefinition;
  */
 public class FrameGraphServiceDefinition
         implements ServiceDefinition<FrameGraphRequestMessage, FrameGraphResponseMessage> {
+    private static final MessageDescriptor<AddTwoIntsRequestMessage> REQUEST_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(FrameGraphRequestMessage.class);
+    private static final MessageDescriptor<AddTwoIntsResponseMessage> RESPONSE_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(FrameGraphResponseMessage.class);
 
     @Override
-    public Class<FrameGraphRequestMessage> getServiceRequestMessage() {
-        return FrameGraphRequestMessage.class;
+    public MessageDescriptor<AddTwoIntsRequestMessage> getServiceRequestMessage() {
+        return REQUEST_MESSAGE_DESCRIPTOR;
     }
 
     @Override
-    public Class<FrameGraphResponseMessage> getServiceResponseMessage() {
-        return FrameGraphResponseMessage.class;
+    public MessageDescriptor<AddTwoIntsResponseMessage> getServiceResponseMessage() {
+        return RESPONSE_MESSAGE_DESCRIPTOR;
     }
 }
