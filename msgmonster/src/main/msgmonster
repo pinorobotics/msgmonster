@@ -1,34 +1,48 @@
-#!/bin/bash
+#!/usr/bin/env -S java --source 17
 
-#
-# Copyright 2021 msgmonster project
-# 
-# Website: https://github.com/pinorobotics
-#
-# Authors:
-# - aeon_flux <aeon_flux@eclipso.ch>
-#
+import java.util.*;
+import java.util.stream.*;
+import java.io.*;
+import java.nio.file.*;
 
-#set -x
+/**
+ * Cross-platform launcher script.
+ *
+ * Website: https://github.com/pinorobotics
+ *
+ * @author aeon_flux <aeon_flux@eclipso.ch>
+ */
+ class Launcher {
 
-# User can make a symbolic link to the file
-# In that case RUN_PATH should be resolved and
-# point to the original file, otherwise we would
-# not be able to find all libs and jars it
-# depends on
-RUN_PATH=$(readlink "$0")
-if [ $? -ne 0 ]; then
-   RUN_PATH="$0"
-fi
-RUN_PATH=$(dirname "$RUN_PATH")
+    static final String MAIN_CLASS = "pinorobotics.msgmonster.app.MsgmonsterApp";
+    
+    /**
+     * Parent folder of this script
+     */
+    static Path BASE_DIR;
 
-# When started under cygwin or MSYS we need to 
-# process classpath in the way that Java on Windows
-# expects it
-CP_SEP=":"
-if [[ "$OS" =~ Windows ]]; then
-    RUN_PATH=$(cygpath -d "$RUN_PATH")
-    CP_SEP=";"
-fi
+    static void fail(String msg) {
+        System.err.println(msg);
+        System.exit(1);
+    }
 
-java -cp "${RUN_PATH}/libs/*" pinorobotics.msgmonster.app.MsgmonsterApp "$@"
+    public static void main(String... args) throws Exception {
+        var javaVersion = 22;
+        if (Runtime.version().feature() < javaVersion)
+            fail("Java %s is required".formatted(javaVersion));
+
+        BASE_DIR = Paths.get(Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+            .getParent();
+        var classpath = BASE_DIR.resolve("libs").toString();
+        var argsList = new ArrayList<String>(List.of(
+            "java",
+            "-p", classpath,
+            "--add-modules", "msgmonster"));
+        argsList.add(MAIN_CLASS);
+        argsList.addAll(Arrays.asList(args));
+        System.err.println("Running command: " + argsList);
+        // separate further output from application with a newline
+        System.err.println();
+        System.exit(new ProcessBuilder(argsList).inheritIO().start().waitFor());
+    }
+ }
