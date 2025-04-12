@@ -1,3 +1,16 @@
+# Version 7
+
+- Support generation for jros2actionlib v5
+- Support generation for jros2services v8
+- Replace Bash launcher with Java
+- Update Gradle
+- Issue #6 Add support for "-import" option
+- Move all non CLI related logic out from MsgmonsterApp
+- Update to Java 22
+- Issue lambdaprime/jros2client#13 Adding more primitive types
+
+[msgmonster-v7.0.zip](https://github.com/pinorobotics/msgmonster/raw/main/msgmonster/release/msgmonster-v7.0.zip)
+
 # Version 6
 
 - Fixing tests for ROS1
