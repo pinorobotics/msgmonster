@@ -1,3 +1,4 @@
+import id.jrosmessages.MessageDescriptor;
 import pinorobotics.jros${rosVersion}actionlib.actionlib_msgs.Action${rosVersion}Definition;
 import pinorobotics.jros${rosVersion}actionlib.actionlib_msgs.Action${rosVersion}GetResultRequestMessage;
 import pinorobotics.jros${rosVersion}actionlib.actionlib_msgs.Action${rosVersion}GoalMessage;

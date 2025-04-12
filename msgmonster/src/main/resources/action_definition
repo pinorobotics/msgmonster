@@ -1,18 +1,24 @@
 public class ${actionName}ActionDefinition
         implements Action${rosVersion}Definition<${actionName}GoalMessage, ${actionName}ResultMessage> {
+    private static final MessageDescriptor<? extends Action${rosVersion}GoalMessage<${actionName}GoalMessage>> GOAL_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(${actionName}ActionGoalMessage.class);
+    private static final MessageDescriptor<? extends Action${rosVersion}ResultMessage<${actionName}ResultMessage>> RESULT_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(${actionName}ActionResultMessage.class);
+    private static final MessageDescriptor<? extends Action${rosVersion}GetResultRequestMessage> RESULT_REQUEST_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(${actionName}ActionGetResultRequestMessage.class);
 
     @Override
-    public Class<? extends Action${rosVersion}GoalMessage<${actionName}GoalMessage>> getActionGoalMessage() {
-        return ${actionName}ActionGoalMessage.class;
+    public MessageDescriptor<? extends Action${rosVersion}GoalMessage<${actionName}GoalMessage>> getActionGoalMessage() {
+        return GOAL_MESSAGE_DESCRIPTOR;
     }
 
     @Override
-    public Class<? extends Action${rosVersion}ResultMessage<${actionName}ResultMessage>> getActionResultMessage() {
-        return ${actionName}ActionResultMessage.class;
+    public MessageDescriptor<? extends Action${rosVersion}ResultMessage<${actionName}ResultMessage>> getActionResultMessage() {
+        return RESULT_MESSAGE_DESCRIPTOR;
     }
 
     @Override
-    public Class<? extends Action${rosVersion}GetResultRequestMessage> getActionResultRequestMessage() {
-        return ${actionName}ActionGetResultRequestMessage.class;
+    public MessageDescriptor<? extends Action${rosVersion}GetResultRequestMessage> getActionResultRequestMessage() {
+        return RESULT_REQUEST_MESSAGE_DESCRIPTOR;
     }
 }

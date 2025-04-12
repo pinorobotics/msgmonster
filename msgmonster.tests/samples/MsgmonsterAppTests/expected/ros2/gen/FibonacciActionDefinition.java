@@ -24,6 +24,7 @@
 
 package id.jrosmessages.test_msgs;
 
+import id.jrosmessages.MessageDescriptor;
 import pinorobotics.jros2actionlib.actionlib_msgs.Action2Definition;
 import pinorobotics.jros2actionlib.actionlib_msgs.Action2GetResultRequestMessage;
 import pinorobotics.jros2actionlib.actionlib_msgs.Action2GoalMessage;
@@ -34,19 +35,25 @@ import pinorobotics.jros2actionlib.actionlib_msgs.Action2ResultMessage;
  */
 public class FibonacciActionDefinition
         implements Action2Definition<FibonacciGoalMessage, FibonacciResultMessage> {
+    private static final MessageDescriptor<? extends Action2GoalMessage<FibonacciGoalMessage>> GOAL_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(FibonacciActionGoalMessage.class);
+    private static final MessageDescriptor<? extends Action2ResultMessage<FibonacciResultMessage>> RESULT_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(FibonacciActionResultMessage.class);
+    private static final MessageDescriptor<? extends Action2GetResultRequestMessage> RESULT_REQUEST_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(FibonacciActionGetResultRequestMessage.class);
 
     @Override
-    public Class<? extends Action2GoalMessage<FibonacciGoalMessage>> getActionGoalMessage() {
-        return FibonacciActionGoalMessage.class;
+    public MessageDescriptor<? extends Action2GoalMessage<FibonacciGoalMessage>> getActionGoalMessage() {
+        return GOAL_MESSAGE_DESCRIPTOR;
     }
 
     @Override
-    public Class<? extends Action2ResultMessage<FibonacciResultMessage>> getActionResultMessage() {
-        return FibonacciActionResultMessage.class;
+    public MessageDescriptor<? extends Action2ResultMessage<FibonacciResultMessage>> getActionResultMessage() {
+        return RESULT_MESSAGE_DESCRIPTOR;
     }
 
     @Override
-    public Class<? extends Action2GetResultRequestMessage> getActionResultRequestMessage() {
-        return FibonacciActionGetResultRequestMessage.class;
+    public MessageDescriptor<? extends Action2GetResultRequestMessage> getActionResultRequestMessage() {
+        return RESULT_REQUEST_MESSAGE_DESCRIPTOR;
     }
 }

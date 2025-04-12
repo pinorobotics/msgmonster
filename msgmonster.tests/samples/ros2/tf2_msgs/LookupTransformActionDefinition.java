@@ -24,6 +24,7 @@
 
 package id.jrosmessages.test_msgs;
 
+import id.jrosmessages.MessageDescriptor;
 import pinorobotics.jros2actionlib.actionlib_msgs.Action2Definition;
 import pinorobotics.jros2actionlib.actionlib_msgs.Action2GetResultRequestMessage;
 import pinorobotics.jros2actionlib.actionlib_msgs.Action2GoalMessage;
@@ -34,19 +35,25 @@ import pinorobotics.jros2actionlib.actionlib_msgs.Action2ResultMessage;
  */
 public class LookupTransformActionDefinition
         implements Action2Definition<LookupTransformGoalMessage, LookupTransformResultMessage> {
+    private static final MessageDescriptor<? extends Action2GoalMessage<LookupTransformGoalMessage>> GOAL_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(LookupTransformActionGoalMessage.class);
+    private static final MessageDescriptor<? extends Action2ResultMessage<LookupTransformResultMessage>> RESULT_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(LookupTransformActionResultMessage.class);
+    private static final MessageDescriptor<? extends Action2GetResultRequestMessage> RESULT_REQUEST_MESSAGE_DESCRIPTOR =
+            new MessageDescriptor<>(LookupTransformActionGetResultRequestMessage.class);
 
     @Override
-    public Class<? extends Action2GoalMessage<LookupTransformGoalMessage>> getActionGoalMessage() {
-        return LookupTransformActionGoalMessage.class;
+    public MessageDescriptor<? extends Action2GoalMessage<LookupTransformGoalMessage>> getActionGoalMessage() {
+        return GOAL_MESSAGE_DESCRIPTOR;
     }
 
     @Override
-    public Class<? extends Action2ResultMessage<LookupTransformResultMessage>> getActionResultMessage() {
-        return LookupTransformActionResultMessage.class;
+    public MessageDescriptor<? extends Action2ResultMessage<LookupTransformResultMessage>> getActionResultMessage() {
+        return RESULT_MESSAGE_DESCRIPTOR;
     }
 
     @Override
-    public Class<? extends Action2GetResultRequestMessage> getActionResultRequestMessage() {
-        return LookupTransformActionGetResultRequestMessage.class;
+    public MessageDescriptor<? extends Action2GetResultRequestMessage> getActionResultRequestMessage() {
+        return RESULT_REQUEST_MESSAGE_DESCRIPTOR;
     }
 }
