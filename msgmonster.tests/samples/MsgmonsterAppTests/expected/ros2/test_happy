@@ -13,3 +13,4 @@ java.util.NoSuchElementException
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/MessageWithNoFields, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/String, type=MESSAGE]
 * [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/msg/TestDifferentFields, type=MESSAGE]
+* [INFO   ] pinorobotics.msgmonster.app.MsgmonsterApp - Processing file RosFile[name=test_msgs/srv/Trigger, type=SERVICE]
