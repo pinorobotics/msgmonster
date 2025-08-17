@@ -8,6 +8,13 @@ import java.nio.file.*;
 /**
  * Cross-platform launcher script.
  *
+ * Note:
+ *
+ * Trying to run Java scripts (Single-File Source-Code Programs) with JRE only,
+ * results in the following error: "Module jdk.compiler not in boot Layer".
+ * Java scripts are compiled on the fly and so, they require JDK to be present in the system.
+ * See: https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html#using-source-file-mode-to-launch-single-file-source-code-programs
+ *
  * Website: https://github.com/pinorobotics
  *
  * @author aeon_flux <aeon_flux@eclipso.ch>
@@ -32,7 +39,9 @@ import java.nio.file.*;
             fail("Java %s is required".formatted(javaVersion));
 
         BASE_DIR = Paths.get(Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-            .getParent();
+            .toRealPath()
+            .getParent()
+            .toAbsolutePath();
         var classpath = BASE_DIR.resolve("libs").toString();
         var argsList = new ArrayList<String>(List.of(
             "java",
