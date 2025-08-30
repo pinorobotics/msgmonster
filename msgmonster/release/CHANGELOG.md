@@ -1,3 +1,11 @@
+# Version 8
+
+- Fix ActionGoal generation: include missing getGoal, getGoalId
+- Fix launcher script when started through symlink
+- Issue #7 Fix signature generation for getServiceRequestMessage/getServiceResponseMessage
+
+[msgmonster-v8.0.zip](https://github.com/pinorobotics/msgmonster/raw/main/msgmonster/release/msgmonster-v8.0.zip)
+
 # Version 7
 
 - Support generation for jros2actionlib v5
