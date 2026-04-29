@@ -11,13 +11,20 @@
 
 # Requirements
 
-- Java 22+
+- Java 25+
 - rosmsg command
 
 # Usage
 
 ```bash
-msgmonster [-d] [-exclude regexp1,...,regexpN] [-import package1,...,packageN] <ROS_VERSION> <JAVA_PACKAGE_NAME> < PACKAGE_NAME | MESSAGE_NAME > <OUTPUT_FOLDER>
+msgmonster \
+  [-d] \
+  [-exclude regexp1,...,regexpN] \
+  [-import package1,...,packageN] \
+  <ROS_VERSION> \
+  <JAVA_PACKAGE_NAME> \
+  <PACKAGE_NAME | MESSAGE_NAME> \
+  <OUTPUT_FOLDER>
 ```
 
 Where: 

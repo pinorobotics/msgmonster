@@ -34,7 +34,7 @@ import java.nio.file.*;
     }
 
     public static void main(String... args) throws Exception {
-        var javaVersion = 22;
+        var javaVersion = 25;
         if (Runtime.version().feature() < javaVersion)
             fail("Java %s is required".formatted(javaVersion));
 

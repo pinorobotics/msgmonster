@@ -2,8 +2,13 @@
 **/build/
 **/.gradle/
 **/.settings/
-**/src/gen/
 **/bld/
 **/.project
 **/.classpath
 /**/release/*-SNAPSHOT.zip
+**/.catkin_tools
+**/devel
+**/logs
+**/log
+**/install
+.catkin_workspace

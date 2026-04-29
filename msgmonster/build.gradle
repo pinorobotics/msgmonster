@@ -4,7 +4,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath "io.github.lambdaprime:id.xfunction:23.0"
+    classpath "io.github.lambdaprime:id.xfunction:27.0"
   }
 }
 
@@ -45,6 +45,13 @@ task createRelease(type: Zip) {
   archiveFileName = "$releaseFileName"
   destinationDirectory = file("$projectDir/release")
   from file("$packageDir/..")
+  filePermissions {
+    user {
+      read = true
+      execute = true
+    }
+    other.execute = false
+  }
 }
 
 task copyLibs(type: Copy) {

@@ -1,6 +1,6 @@
 # Build
 
-Building  module locally and making changes to it (this is optional and not intended for users).
+Building module locally and making changes to it (this is optional and not intended for users).
 
 ## With Gradle
 
