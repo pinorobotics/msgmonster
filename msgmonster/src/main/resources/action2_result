@@ -50,6 +50,12 @@ public class ${actionName}ActionResultMessage implements Action2ResultMessage<${
         return this;
     }
 
+    @Override
+    public ${actionName}ActionResultMessage withStatus(StatusType status) {
+        this.status = (byte) status.ordinal();
+        return this;
+    }
+
     public ${actionName}ActionResultMessage withResult(${actionName}ResultMessage result) {
         this.result = result;
         return this;

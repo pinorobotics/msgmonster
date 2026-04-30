@@ -50,6 +50,12 @@ public class FibonacciActionResultMessage implements Action2ResultMessage<Fibona
         return this;
     }
 
+    @Override
+    public FibonacciActionResultMessage withStatus(StatusType status) {
+        this.status = (byte) status.ordinal();
+        return this;
+    }
+
     public FibonacciActionResultMessage withResult(FibonacciResultMessage result) {
         this.result = result;
         return this;

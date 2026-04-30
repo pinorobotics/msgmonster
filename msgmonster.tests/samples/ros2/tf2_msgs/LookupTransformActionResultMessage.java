@@ -50,6 +50,12 @@ public class LookupTransformActionResultMessage implements Action2ResultMessage<
         return this;
     }
 
+    @Override
+    public LookupTransformActionResultMessage withStatus(StatusType status) {
+        this.status = (byte) status.ordinal();
+        return this;
+    }
+
     public LookupTransformActionResultMessage withResult(LookupTransformResultMessage result) {
         this.result = result;
         return this;
