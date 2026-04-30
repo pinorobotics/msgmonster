@@ -70,12 +70,10 @@ public class AddTwoIntsRequestMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof AddTwoIntsRequestMessage other)
-           return
-               a == other.a &&
-               b == other.b
+       return obj instanceof AddTwoIntsRequestMessage other &&
+           a == other.a &&
+           b == other.b
            ;
-       return false;
    }
    
    @Override

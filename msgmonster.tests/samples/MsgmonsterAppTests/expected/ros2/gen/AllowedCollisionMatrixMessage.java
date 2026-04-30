@@ -104,14 +104,12 @@ public class AllowedCollisionMatrixMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof AllowedCollisionMatrixMessage other)
-           return
-               Arrays.equals(entry_names, other.entry_names) &&
-               Arrays.equals(entry_values, other.entry_values) &&
-               Arrays.equals(default_entry_names, other.default_entry_names) &&
-               Arrays.equals(default_entry_values, other.default_entry_values)
+       return obj instanceof AllowedCollisionMatrixMessage other &&
+           Arrays.equals(entry_names, other.entry_names) &&
+           Arrays.equals(entry_values, other.entry_values) &&
+           Arrays.equals(default_entry_names, other.default_entry_names) &&
+           Arrays.equals(default_entry_values, other.default_entry_values)
            ;
-       return false;
    }
    
    @Override

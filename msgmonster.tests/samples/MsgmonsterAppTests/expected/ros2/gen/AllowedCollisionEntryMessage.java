@@ -64,11 +64,9 @@ public class AllowedCollisionEntryMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof AllowedCollisionEntryMessage other)
-           return
-               Arrays.equals(enabled, other.enabled)
+       return obj instanceof AllowedCollisionEntryMessage other &&
+           Arrays.equals(enabled, other.enabled)
            ;
-       return false;
    }
    
    @Override

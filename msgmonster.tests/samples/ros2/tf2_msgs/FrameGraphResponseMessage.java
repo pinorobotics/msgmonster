@@ -62,11 +62,9 @@ public class FrameGraphResponseMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof FrameGraphResponseMessage other)
-           return
-               Objects.equals(frame_yaml, other.frame_yaml)
+       return obj instanceof FrameGraphResponseMessage other &&
+           Objects.equals(frame_yaml, other.frame_yaml)
            ;
-       return false;
    }
    
    @Override

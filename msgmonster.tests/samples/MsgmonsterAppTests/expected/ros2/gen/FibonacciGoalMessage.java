@@ -59,11 +59,9 @@ public class FibonacciGoalMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof FibonacciGoalMessage other)
-           return
-               order == other.order
+       return obj instanceof FibonacciGoalMessage other &&
+           order == other.order
            ;
-       return false;
    }
    
    @Override

@@ -69,11 +69,9 @@ public class StringMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof StringMessage other)
-           return
-               Objects.equals(data, other.data)
+       return obj instanceof StringMessage other &&
+           Objects.equals(data, other.data)
            ;
-       return false;
    }
    
    @Override

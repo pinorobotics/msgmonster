@@ -141,13 +141,11 @@ public class GoalStatusMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof GoalStatusMessage other)
-           return
-               Objects.equals(goal_id, other.goal_id) &&
-               status == other.status &&
-               Objects.equals(text, other.text)
+       return obj instanceof GoalStatusMessage other &&
+           Objects.equals(goal_id, other.goal_id) &&
+           status == other.status &&
+           Objects.equals(text, other.text)
            ;
-       return false;
    }
    
    @Override

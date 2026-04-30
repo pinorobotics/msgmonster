@@ -87,12 +87,10 @@ public class TF2ErrorMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof TF2ErrorMessage other)
-           return
-               error == other.error &&
-               Objects.equals(error_string, other.error_string)
+       return obj instanceof TF2ErrorMessage other &&
+           error == other.error &&
+           Objects.equals(error_string, other.error_string)
            ;
-       return false;
    }
    
    @Override

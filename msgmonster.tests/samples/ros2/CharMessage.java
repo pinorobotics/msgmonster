@@ -65,11 +65,9 @@ public class CharMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof CharMessage other)
-           return
-               data == other.data
+       return obj instanceof CharMessage other &&
+           data == other.data
            ;
-       return false;
    }
    
    @Override

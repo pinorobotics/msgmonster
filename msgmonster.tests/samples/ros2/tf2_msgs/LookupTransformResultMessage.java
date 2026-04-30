@@ -70,12 +70,10 @@ public class LookupTransformResultMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof LookupTransformResultMessage other)
-           return
-               Objects.equals(transform, other.transform) &&
-               Objects.equals(error, other.error)
+       return obj instanceof LookupTransformResultMessage other &&
+           Objects.equals(transform, other.transform) &&
+           Objects.equals(error, other.error)
            ;
-       return false;
    }
    
    @Override

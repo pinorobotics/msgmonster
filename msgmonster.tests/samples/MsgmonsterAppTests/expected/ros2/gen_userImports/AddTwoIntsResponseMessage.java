@@ -65,11 +65,9 @@ public class AddTwoIntsResponseMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof AddTwoIntsResponseMessage other)
-           return
-               sum == other.sum
+       return obj instanceof AddTwoIntsResponseMessage other &&
+           sum == other.sum
            ;
-       return false;
    }
    
    @Override

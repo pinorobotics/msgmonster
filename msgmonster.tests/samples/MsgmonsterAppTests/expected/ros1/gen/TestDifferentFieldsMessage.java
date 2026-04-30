@@ -193,18 +193,16 @@ public class TestDifferentFieldsMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof TestDifferentFieldsMessage other)
-           return
-               id == other.id &&
-               score == other.score &&
-               Objects.equals(header1, other.header1) &&
-               Objects.equals(header2, other.header2) &&
-               Objects.equals(timeout1, other.timeout1) &&
-               Objects.equals(timeout2, other.timeout2) &&
-               Objects.equals(stamp1, other.stamp1) &&
-               Objects.equals(stamp2, other.stamp2)
+       return obj instanceof TestDifferentFieldsMessage other &&
+           id == other.id &&
+           score == other.score &&
+           Objects.equals(header1, other.header1) &&
+           Objects.equals(header2, other.header2) &&
+           Objects.equals(timeout1, other.timeout1) &&
+           Objects.equals(timeout2, other.timeout2) &&
+           Objects.equals(stamp1, other.stamp1) &&
+           Objects.equals(stamp2, other.stamp2)
            ;
-       return false;
    }
    
    @Override

@@ -80,12 +80,10 @@ public class GoalIdMessage implements Message {
    
    @Override
    public boolean equals(Object obj) {
-       if (obj instanceof GoalIdMessage other)
-           return
-               Objects.equals(stamp, other.stamp) &&
-               Objects.equals(id, other.id)
+       return obj instanceof GoalIdMessage other &&
+           Objects.equals(stamp, other.stamp) &&
+           Objects.equals(id, other.id)
            ;
-       return false;
    }
    
    @Override
